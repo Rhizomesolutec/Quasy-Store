@@ -52,7 +52,7 @@ export default function Hero() {
 
   // GSAP Scroll Animation
   useEffect(() => {
-    if (!containerRef.current || !imgRef.current || !cardRef.current) return;
+    if (!isLoaded || !containerRef.current || !imgRef.current || !cardRef.current) return;
 
     const pad = (num: number, size: number) => {
       let s = num + "";
@@ -154,7 +154,7 @@ export default function Hero() {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [isLoaded]);
 
   // Framer Motion Interactive Mouse 3D Tilt for Full Screen Viewport
   const mouseX = useMotionValue(0);
