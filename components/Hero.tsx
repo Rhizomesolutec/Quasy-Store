@@ -15,16 +15,6 @@ export default function Hero() {
 
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const totalFrames = 169;
 
@@ -62,7 +52,7 @@ export default function Hero() {
 
   // GSAP Scroll Animation
   useEffect(() => {
-    if (!isLoaded || !containerRef.current || !imgRef.current || !cardRef.current) return;
+    if (!containerRef.current || !imgRef.current || !cardRef.current) return;
 
     const pad = (num: number, size: number) => {
       let s = num + "";
@@ -164,7 +154,7 @@ export default function Hero() {
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [isLoaded]);
+  }, []);
 
   // Framer Motion Interactive Mouse 3D Tilt for Full Screen Viewport
   const mouseX = useMotionValue(0);
@@ -195,21 +185,7 @@ export default function Hero() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Preloading Screen */}
-      {!isLoaded && (
-        <div className="fixed inset-0 bg-[#111111] z-50 flex flex-col justify-center items-center font-sans text-xs tracking-widest text-[#D8CFC0]/70">
-          <div className="space-y-4 text-center">
-            <p className="uppercase animate-pulse">Forging Relic</p>
-            <div className="w-48 h-[1px] bg-[#D8CFC0]/20 mx-auto overflow-hidden">
-              <div
-                className="h-full bg-[#8E1F1F] transition-all duration-300"
-                style={{ width: `${loadingProgress}%` }}
-              />
-            </div>
-            <p className="font-mono">{loadingProgress}%</p>
-          </div>
-        </div>
-      )}
+
 
       {/* Sticky Interactive Full Screen Container */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center perspective-[1200px]">
@@ -223,16 +199,8 @@ export default function Hero() {
           {/* Soft vignette — pendant stays bright, edges fade gently */}
           <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden">
             <div 
-              className="absolute pointer-events-none flex items-center justify-center transition-all duration-300"
-              style={isMobile ? {
-                width: "auto",
-                height: "100vh",
-                aspectRatio: "16/9",
-                minWidth: "177.78vh",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%) scale(1.2)",
-              } : {
+              className="absolute pointer-events-none flex items-center justify-center"
+              style={{
                 width: "100vw",
                 height: "56.25vw",
                 maxWidth: "177.78vh",
@@ -250,12 +218,10 @@ export default function Hero() {
               />
               
               {/* Clean Cover for the star symbol in the bottom right */}
-              {!isMobile && (
-                <div 
-                  id="star-cover"
-                  className="absolute bottom-[16.9%] right-[9.6%] translate-x-1/2 translate-y-1/2 w-[4.5%] aspect-square rounded-full bg-[#c7c0c2] mix-blend-darken blur-[4px] pointer-events-none"
-                />
-              )}
+              <div 
+                id="star-cover"
+                className="absolute bottom-[16.9%] right-[9.6%] translate-x-1/2 translate-y-1/2 w-[4.5%] aspect-square rounded-full bg-[#c7c0c2] mix-blend-darken blur-[4px] pointer-events-none"
+              />
             </div>
 
             {/* Fullscreen Vignette & Edge Blenders */}
@@ -310,33 +276,7 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Left bottom zone */}
-        <div
-          data-zone="left"
-          className="scroll-text absolute left-[3%] md:left-[6%] bottom-[10%] md:bottom-[12%] text-left max-w-[9.5rem] sm:max-w-[11rem] md:max-w-xs pointer-events-none select-none z-10 opacity-0"
-        >
-          <span className="text-[#8E1F1F] uppercase tracking-[0.3em] text-xs font-semibold mb-4 block">Collection</span>
-          <h2 className="font-heading text-2xl sm:text-3xl md:text-5xl text-[#D8CFC0] leading-none mb-4">
-            A Gothic Relic
-          </h2>
-          <p className="font-sans text-xs md:text-sm text-[#D8CFC0]/60 leading-relaxed">
-            Limited run, serialized engraving on clasp. Restored catalog scroll below.
-          </p>
-        </div>
 
-        {/* Right bottom zone */}
-        <div
-          data-zone="right"
-          className="scroll-text absolute right-[3%] md:right-[6%] bottom-[10%] md:bottom-[12%] text-right max-w-[9.5rem] sm:max-w-[11rem] md:max-w-xs pointer-events-none select-none z-10 flex flex-col items-end opacity-0"
-        >
-          <span className="text-[#8E1F1F] uppercase tracking-[0.3em] text-xs font-semibold mb-4 block">Chamber</span>
-          <h2 className="font-heading text-2xl sm:text-3xl md:text-5xl text-[#D8CFC0] leading-none mb-4">
-            Glow-In-The-Dark Heart
-          </h2>
-          <p className="font-sans text-xs md:text-sm text-[#D8CFC0]/60 leading-relaxed">
-            The hollowed abdomen holds a custom photoluminescent compound, shining crimson in low light.
-          </p>
-        </div>
 
       </div>
     </div>
