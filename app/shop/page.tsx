@@ -1,0 +1,25 @@
+import type { Metadata } from "next";
+import { PageHero } from "@/components/ui/PageHero";
+import { ShopExplorer } from "@/components/shop/ShopExplorer";
+import { PRODUCTS } from "@/lib/products";
+
+export const metadata: Metadata = {
+  title: "Shop All",
+  description: "Browse the full Quasy Store catalog of gothic fine jewelry.",
+};
+
+export default function ShopPage() {
+  return (
+    <main className="relative w-full flex flex-col items-center">
+      <div className="bg-noise" />
+      <PageHero
+        eyebrow="The Full Catalog"
+        title="Shop All Relics"
+        description="Every piece currently in the vault — filter by category, finish, size, and price to find the one that finds you."
+        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg")}
+      />
+      <ShopExplorer products={PRODUCTS} />
+    </main>
+  );
+}
