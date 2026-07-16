@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cutive_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import CustomCursor from "@/components/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#111111] text-[#D8CFC0] font-sans selection:bg-[#8E1F1F] selection:text-[#D8CFC0]">
         <CartProvider>
           <WishlistProvider>
+            <CustomCursor />
             <Navbar />
             {children}
           </WishlistProvider>
