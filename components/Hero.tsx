@@ -3,26 +3,57 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const strongVignetteRef = useRef<HTMLDivElement>(null);
 
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const currentFrameRef = useRef<number>(0);
   const totalFrames = 169;
 
-  // Preload Images
+  // Helper to draw a frame onto the canvas
+  const drawImage = (frameIndex: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+    const img = imagesRef.current[frameIndex];
+    if (img) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  // 1. Load the first frame immediately so the hero is visible on mount
+  useEffect(() => {
+    const firstImg = new Image();
+    firstImg.src = "/images/Hero-section/frame_001.png";
+    firstImg.onload = () => {
+      imagesRef.current[0] = firstImg;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        const context = canvas.getContext("2d");
+        if (context) {
+          context.drawImage(firstImg, 0, 0, canvas.width, canvas.height);
+        }
+      }
+    };
+  }, []);
+
+  // 2. Preload the remaining frames in the background
   useEffect(() => {
     let loadedCount = 0;
-    const images: HTMLImageElement[] = [];
-
     const pad = (num: number, size: number) => {
       let s = num + "";
       while (s.length < size) s = "0" + s;
@@ -33,6 +64,7 @@ export default function Hero() {
       const img = new Image();
       img.src = `/images/Hero-section/frame_${pad(i, 3)}.png`;
       img.onload = () => {
+        imagesRef.current[i - 1] = img;
         loadedCount++;
         setLoadingProgress(Math.round((loadedCount / totalFrames) * 100));
         if (loadedCount === totalFrames) {
@@ -46,23 +78,30 @@ export default function Hero() {
           setIsLoaded(true);
         }
       };
-      images.push(img);
     }
   }, []);
 
-  // GSAP Scroll Animation
+  // 3. Resize handler to keep canvas dimensions matching its layout dimensions
   useEffect(() => {
-    if (!isLoaded || !containerRef.current || !imgRef.current || !cardRef.current) return;
-
-    const pad = (num: number, size: number) => {
-      let s = num + "";
-      while (s.length < size) s = "0" + s;
-      return s;
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+      drawImage(currentFrameRef.current);
     };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isLoaded]);
+
+  // 4. GSAP Scroll Animation (Starts once frames are fully cached)
+  useEffect(() => {
+    if (!isLoaded || !containerRef.current || !canvasRef.current || !cardRef.current) return;
 
     const sequenceObj = { frame: 0 };
 
-    // GSAP Scroll Trigger Timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
@@ -73,21 +112,20 @@ export default function Hero() {
       },
     });
 
-    // Scrub through frames
+    // Scrub through frame indices
     tl.to(sequenceObj, {
       frame: totalFrames - 1,
       snap: "frame",
       ease: "none",
       onUpdate: () => {
         const idx = Math.round(sequenceObj.frame);
-        const frameNum = Math.min(totalFrames, Math.max(1, idx + 1));
-        if (imgRef.current) {
-          imgRef.current.src = `/images/Hero-section/frame_${pad(frameNum, 3)}.png`;
-        }
+        const frameIndex = Math.min(totalFrames - 1, Math.max(0, idx));
+        currentFrameRef.current = frameIndex;
+        drawImage(frameIndex);
       },
     }, 0);
 
-    // Fade in strong rounded vignette on scroll to dark screens
+    // Vignette opacity transition
     if (strongVignetteRef.current) {
       tl.to(strongVignetteRef.current, {
         opacity: 1,
@@ -95,7 +133,7 @@ export default function Hero() {
       }, 0);
     }
 
-    // Subtle 3D rotation — keep pendant centered and fully visible
+    // Subtle 3D perspective rotation on scroll
     tl.fromTo(
       cardRef.current,
       { rotateY: 5, rotateX: 3, scale: 0.98 },
@@ -103,7 +141,7 @@ export default function Hero() {
       0
     );
 
-    // Animate feature texts — drift toward chain zones, never over the pendant
+    // Animate floating text elements
     const textBlocks = gsap.utils.toArray(".scroll-text") as HTMLElement[];
     const textMotion: Record<string, { enter: gsap.TweenVars; exit: gsap.TweenVars }> = {
       left: {
@@ -114,20 +152,12 @@ export default function Hero() {
         enter: { opacity: 1, x: -28, y: 18, duration: 0.15, ease: "power2.out" },
         exit: { opacity: 0, x: 48, y: -12, duration: 0.15, ease: "power2.in" },
       },
-      top: {
-        enter: { opacity: 1, y: 6, duration: 0.15, ease: "power2.out" },
-        exit: { opacity: 0, y: -28, duration: 0.15, ease: "power2.in" },
-      },
-      bottom: {
-        enter: { opacity: 1, y: -6, duration: 0.15, ease: "power2.out" },
-        exit: { opacity: 0, y: 28, duration: 0.15, ease: "power2.in" },
-      },
     };
 
     textBlocks.forEach((text, i) => {
       const start = i / textBlocks.length;
       const end = (i + 1) / textBlocks.length;
-      const zone = text.dataset.zone ?? "top";
+      const zone = text.dataset.zone ?? "left";
       const motion = textMotion[zone];
 
       const enterFrom: gsap.TweenVars = { opacity: 0 };
@@ -136,14 +166,8 @@ export default function Hero() {
       if (zone === "left") {
         Object.assign(enterFrom, { x: -72, y: -24 });
         Object.assign(exitTo, motion.exit);
-      } else if (zone === "right") {
-        Object.assign(enterFrom, { x: 72, y: -24 });
-        Object.assign(exitTo, motion.exit);
-      } else if (zone === "top") {
-        Object.assign(enterFrom, { y: -36 });
-        Object.assign(exitTo, motion.exit);
       } else {
-        Object.assign(enterFrom, { y: 36 });
+        Object.assign(enterFrom, { x: 72, y: -24 });
         Object.assign(exitTo, motion.exit);
       }
 
@@ -156,7 +180,7 @@ export default function Hero() {
     };
   }, [isLoaded]);
 
-  // Framer Motion Interactive Mouse 3D Tilt for Full Screen Viewport
+  // Mouse move tilt effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -185,8 +209,6 @@ export default function Hero() {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-
-
       {/* Sticky Interactive Full Screen Container */}
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center perspective-[1200px]">
         
@@ -210,10 +232,8 @@ export default function Hero() {
                 transform: "translate(-50%, -50%)",
               }}
             >
-              <img
-                ref={imgRef}
-                src="/images/Hero-section/frame_001.png"
-                alt="Spider Necklace Full Screen"
+              <canvas
+                ref={canvasRef}
                 className="w-full h-full pointer-events-none select-none"
               />
               
@@ -247,8 +267,7 @@ export default function Hero() {
 
         </motion.div>
 
-        {/* Scroll-Triggered Text HUDs — anchored to chain paths, clear of the stone */}
-        {/* Left top zone */}
+        {/* Scroll-Triggered Text HUDs — Design Origin & Detail */}
         <div
           data-zone="left"
           className="scroll-text absolute left-[3%] md:left-[6%] top-[14%] md:top-[16%] text-left max-w-[9.5rem] sm:max-w-[11rem] md:max-w-xs pointer-events-none select-none z-10 opacity-0"
@@ -262,7 +281,6 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Right top zone */}
         <div
           data-zone="right"
           className="scroll-text absolute right-[3%] md:right-[6%] top-[14%] md:top-[16%] text-right max-w-[9.5rem] sm:max-w-[11rem] md:max-w-xs pointer-events-none select-none z-10 flex flex-col items-end opacity-0"
@@ -275,8 +293,6 @@ export default function Hero() {
             Oxidized crevices highlight the fine leg joints and hand-etched gothic scrollwork of the body.
           </p>
         </div>
-
-
 
       </div>
     </div>
