@@ -41,7 +41,7 @@ export default function Hero() {
 
     for (let i = 1; i <= totalFrames; i++) {
       const img = new Image();
-      img.src = `/images/hero-section/frame_${pad(i, 3)}.png`;
+      img.src = `/images/Hero-section/frame_${pad(i, 3)}.png`;
       img.onload = () => {
         loadedCount++;
         setLoadingProgress(Math.round((loadedCount / totalFrames) * 100));
@@ -92,7 +92,7 @@ export default function Hero() {
         const idx = Math.round(sequenceObj.frame);
         const frameNum = Math.min(totalFrames, Math.max(1, idx + 1));
         if (imgRef.current) {
-          imgRef.current.src = `/images/hero-section/frame_${pad(frameNum, 3)}.png`;
+          imgRef.current.src = `/images/Hero-section/frame_${pad(frameNum, 3)}.png`;
         }
       },
     }, 0);
@@ -244,7 +244,7 @@ export default function Hero() {
             >
               <img
                 ref={imgRef}
-                src="/images/hero-section/frame_001.png"
+                src="/images/Hero-section/frame_001.png"
                 alt="Spider Necklace Full Screen"
                 className="w-full h-full pointer-events-none select-none"
               />
