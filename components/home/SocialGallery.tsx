@@ -18,7 +18,7 @@ export function SocialGallery() {
     <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32 border-t border-white/[0.05]">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
-          eyebrow="@quasystore"
+          eyebrow="@qusaystore"
           title="Worn in the Wild"
           description="A glimpse of how collectors style the relics — tag us to be featured."
         />
@@ -36,7 +36,7 @@ export function SocialGallery() {
               <div className={`relative w-full ${item.tall ? "aspect-[3/4]" : "aspect-square"}`}>
                 <Image
                   src={item.src}
-                  alt={`Quasy Store social ${idx + 1}`}
+                  alt={`Qusay Store social ${idx + 1}`}
                   fill
                   sizes="(min-width: 768px) 33vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"

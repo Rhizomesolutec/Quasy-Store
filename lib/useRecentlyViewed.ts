@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { PRODUCTS } from "@/lib/products";
 import { Product } from "@/lib/types";
 
-const STORAGE_KEY = "quasy_recently_viewed_v1";
+const STORAGE_KEY = "qusay_recently_viewed_v1";
 const MAX_ITEMS = 8;
 
 export function trackRecentlyViewed(productId: string) {

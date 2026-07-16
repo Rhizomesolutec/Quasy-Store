@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { WishlistItem } from "@/lib/types";
 
-const STORAGE_KEY = "quasy_wishlist_v1";
+const STORAGE_KEY = "qusay_wishlist_v1";
 
 interface WishlistContextValue {
   wishlist: WishlistItem[];

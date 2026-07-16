@@ -7,7 +7,7 @@ import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
 
 export const metadata: Metadata = {
   title: "Categories",
-  description: "Browse Quasy Store jewelry by category — necklaces, glow dark, and bracelets.",
+  description: "Browse Qusay Store jewelry by category — necklaces, glow dark, and bracelets.",
 };
 
 const CATEGORY_IMAGES: Record<string, string> = {

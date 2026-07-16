@@ -489,7 +489,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <header className="border-b border-white/[0.08] bg-[#161616]/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="font-heading text-2xl tracking-widest text-[#D8CFC0]">QUASY</span>
+          <span className="font-heading text-2xl tracking-widest text-[#D8CFC0]">QUSAY</span>
           <span className="text-[10px] uppercase bg-[#8E1F1F]/20 text-[#8E1F1F] px-2 py-0.5 border border-[#8E1F1F]/30 tracking-widest">
             Vault Dashboard
           </span>

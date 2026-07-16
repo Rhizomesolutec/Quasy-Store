@@ -7,7 +7,7 @@ import { PRODUCTS } from "@/lib/products";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { EmptyState } from "@/components/ui/EmptyState";
 
-const RECENT_KEY = "quasy_recent_searches_v1";
+const RECENT_KEY = "qusay_recent_searches_v1";
 const POPULAR_SEARCHES = ["Spider Necklace", "Glow Necklace", "Silver Bracelet", "Midnight Coven", "Locket"];
 
 function readRecent(): string[] {

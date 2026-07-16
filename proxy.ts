@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/middleware";
 
 export async function proxy(request: NextRequest) {
   // 1. Enforce admin protection first
-  const adminSession = request.cookies.get("quasy_admin_session")?.value;
+  const adminSession = request.cookies.get("qusay_admin_session")?.value;
   const url = request.nextUrl.clone();
 
   if (url.pathname.startsWith("/admin")) {

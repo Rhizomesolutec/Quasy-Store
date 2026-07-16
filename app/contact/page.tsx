@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Quasy Store — order inquiries, repairs, and press.",
+  description: "Get in touch with Qusay Store — order inquiries, repairs, and press.",
 };
 
 const SOCIALS = [
@@ -61,7 +61,7 @@ export default function ContactPage() {
                 <p>New Haven Quarter, NH 06510</p>
               </div>
               <div className="font-sans text-sm text-[#D8CFC0]/60 space-y-1.5 pt-2 border-t border-white/[0.06]">
-                <p>hello@quasystore.com</p>
+                <p>hello@qusaystore.com</p>
                 <p>+1 (555) 019-2426</p>
               </div>
               <div className="font-sans text-sm text-[#D8CFC0]/60 pt-2 border-t border-white/[0.06]">

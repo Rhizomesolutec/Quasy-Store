@@ -8,7 +8,7 @@ import { getBestSellers } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Best Sellers",
-  description: "Customer favourites and top rated pieces from Quasy Store.",
+  description: "Customer favourites and top rated pieces from Qusay Store.",
 };
 
 export default function BestSellersPage() {

@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const category = resolveCategoryFromSlug(slug);
   if (!category) return { title: "Category Not Found" };
-  return { title: category, description: `Shop ${category} at Quasy Store.` };
+  return { title: category, description: `Shop ${category} at Qusay Store.` };
 }
 
 function getCategoryBgImage(category: string): string {

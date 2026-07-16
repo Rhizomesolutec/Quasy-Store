@@ -1,5 +1,5 @@
 -- ==========================================
--- SUPABASE DATABASE SCHEMA FOR QUASY STORE
+-- SUPABASE DATABASE SCHEMA FOR QUSAY STORE
 -- ==========================================
 
 -- 1. Create Collections Table

@@ -13,7 +13,7 @@ export function AuthForms({ onAuthenticated }: { onAuthenticated: (email: string
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const email = String(formData.get("email") ?? "collector@quasystore.com");
+    const email = String(formData.get("email") ?? "collector@qusaystore.com");
 
     if (tab === "forgot") {
       setSubmitting(true);

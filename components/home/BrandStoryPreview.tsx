@@ -18,8 +18,8 @@ export function BrandStoryPreview() {
           className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden shadow-2xl shadow-[#8E1F1F]/10"
         >
           <Image
-            src={SHARED_SPIDER_IMAGES.one}
-            alt="Quasy Store workshop"
+            src="/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"
+            alt="Qusay Store Gothic Spider Necklace"
             fill
             sizes="(min-width: 768px) 40vw, 100vw"
             className="object-cover"
@@ -45,7 +45,7 @@ export function BrandStoryPreview() {
             spider motif meant to symbolize patience, and a heart-shaped cavity built to hold a hidden inlay.
           </p>
           <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed mb-10">
-            Quasy Store exists to finish what that first workshop started — slowly, and without cutting corners.
+            Qusay Store exists to finish what that first workshop started — slowly, and without cutting corners.
           </p>
           <LinkButton href="/about" variant="outline" size="lg">
             Read Our Story

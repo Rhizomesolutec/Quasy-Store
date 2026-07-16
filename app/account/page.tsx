@@ -5,7 +5,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { AuthForms } from "@/components/account/AuthForms";
 import { Dashboard } from "@/components/account/Dashboard";
 
-const STORAGE_KEY = "quasy_demo_session_v1";
+const STORAGE_KEY = "qusay_demo_session_v1";
 
 export default function AccountPage() {
   const [email, setEmail] = useState<string | null>(null);

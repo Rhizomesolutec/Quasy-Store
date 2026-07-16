@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
 
         <div className="text-center mb-8">
           <h1 className="font-heading text-3xl uppercase tracking-widest text-[#D8CFC0]">
-            QUASY
+            QUSAY
           </h1>
           <p className="font-sans text-[10px] uppercase tracking-widest text-[#8E1F1F] mt-2">
             Admin Vault Portal

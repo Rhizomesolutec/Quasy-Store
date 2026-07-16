@@ -15,7 +15,7 @@ const supabase = createClient();
 
 type PaymentMethod = "card" | "upi" | "netbanking";
 
-const STORAGE_SESSION_KEY = "quasy_demo_session_v1";
+const STORAGE_SESSION_KEY = "qusay_demo_session_v1";
 
 export default function PaymentPage() {
   const router = useRouter();

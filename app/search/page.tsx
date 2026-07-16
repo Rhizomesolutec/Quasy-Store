@@ -4,7 +4,7 @@ import { SearchClient } from "@/components/search/SearchClient";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search the Quasy Store catalog.",
+  description: "Search the Qusay Store catalog.",
 };
 
 export default async function SearchPage({

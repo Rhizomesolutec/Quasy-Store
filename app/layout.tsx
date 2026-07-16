@@ -18,8 +18,8 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   title: {
-    default: "Quasy Store — Gothic Fine Jewelry",
-    template: "%s — Quasy Store",
+    default: "Qusay Store — Gothic Fine Jewelry",
+    template: "%s — Qusay Store",
   },
   description: "A unique vintage aesthetic landing page and premium gothic jewelry store.",
 };

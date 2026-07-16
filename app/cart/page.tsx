@@ -13,7 +13,7 @@ import { formatPrice } from "@/lib/utils";
 import { getBestSellers } from "@/lib/products";
 
 const VALID_COUPONS: Record<string, number> = {
-  QUASY10: 0.1,
+  QUSAY10: 0.1,
   RELIC15: 0.15,
 };
 
@@ -149,7 +149,7 @@ export default function CartPage() {
                       Code {appliedCoupon.code} applied — {Math.round(appliedCoupon.rate * 100)}% off.
                     </p>
                   )}
-                  <p className="font-sans text-[9px] text-[#D8CFC0]/30 mt-2">Try QUASY10 or RELIC15</p>
+                  <p className="font-sans text-[9px] text-[#D8CFC0]/30 mt-2">Try QUSAY10 or RELIC15</p>
                 </div>
 
                 {/* Shipping estimator */}

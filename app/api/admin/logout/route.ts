@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 export async function POST() {
   try {
     const cookieStore = await cookies();
-    cookieStore.set("quasy_admin_session", "", {
+    cookieStore.set("qusay_admin_session", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

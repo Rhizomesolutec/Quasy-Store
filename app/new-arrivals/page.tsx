@@ -10,7 +10,7 @@ import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "New Arrivals",
-  description: "The latest additions to the Quasy Store catalog.",
+  description: "The latest additions to the Qusay Store catalog.",
 };
 
 export default function NewArrivalsPage() {

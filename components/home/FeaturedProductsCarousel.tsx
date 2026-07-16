@@ -24,7 +24,7 @@ export function FeaturedProductsCarousel() {
           <SectionHeader
             eyebrow="From the Catalog"
             title="Featured Relics"
-            description="A curated selection of pieces that define the Quasy aesthetic."
+            description="A curated selection of pieces that define the Qusay aesthetic."
             align="left"
             className="mb-0"
           />

@@ -7,7 +7,7 @@ import { COLLECTIONS, getProductsByCollection } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Collections",
-  description: "Explore the Quasy Store collections — Arachnid Requiem, Midnight Coven, and Gilded Relics.",
+  description: "Explore the Qusay Store collections — Arachnid Requiem, Midnight Coven, and Gilded Relics.",
 };
 
 export default function CollectionsPage() {

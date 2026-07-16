@@ -47,7 +47,7 @@ export function WhyShopWithUs() {
     <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32 border-t border-white/[0.05]">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
-          eyebrow="The Quasy Promise"
+          eyebrow="The Qusay Promise"
           title="Why Shop With Us"
           description="Four quiet assurances behind every relic that leaves the workshop."
         />

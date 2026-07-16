@@ -5,7 +5,7 @@ import { PRODUCTS } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Shop All",
-  description: "Browse the full Quasy Store catalog of gothic fine jewelry.",
+  description: "Browse the full Qusay Store catalog of gothic fine jewelry.",
 };
 
 export default function ShopPage() {

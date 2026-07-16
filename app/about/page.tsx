@@ -8,7 +8,7 @@ import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "The story behind Quasy Store — gothic fine jewelry cast in tarnished silver since 1924.",
+  description: "The story behind Qusay Store — gothic fine jewelry cast in tarnished silver since 1924.",
 };
 
 const VALUES = [
@@ -30,7 +30,7 @@ const TIMELINE = [
   { year: "1924", title: "The Original Catalog", body: "A small silversmith workshop begins casting gothic mourning jewelry for a private clientele." },
   { year: "1962", title: "The Vault Closes", body: "The workshop shutters. Moulds and sketches are archived, believed lost for decades." },
   { year: "2019", title: "Rediscovery", body: "The original moulds resurface at an estate sale, sparking the idea to restore the catalog." },
-  { year: "2023", title: "Quasy Store Founded", body: "The Arachnid Requiem collection launches — the first reissue from the restored catalog." },
+  { year: "2023", title: "Qusay Store Founded", body: "The Arachnid Requiem collection launches — the first reissue from the restored catalog." },
   { year: "2026", title: "Three Collections Strong", body: "Midnight Coven and Gilded Relics expand the language beyond the flagship silhouette." },
 ];
 
@@ -73,7 +73,7 @@ export default function AboutPage() {
               cavity built to hold a hidden inlay.
             </p>
             <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed">
-              Quasy Store exists to finish what that first workshop started — slowly, and without cutting corners.
+              Qusay Store exists to finish what that first workshop started — slowly, and without cutting corners.
             </p>
           </RevealOnScroll>
         </div>
@@ -132,7 +132,7 @@ export default function AboutPage() {
       {/* Why Choose Us */}
       <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-6xl border-t border-white/[0.06]">
         <RevealOnScroll>
-          <h2 className="font-heading text-2xl text-[#D8CFC0] text-center mb-12">Why Choose Quasy Store</h2>
+          <h2 className="font-heading text-2xl text-[#D8CFC0] text-center mb-12">Why Choose Qusay Store</h2>
         </RevealOnScroll>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {WHY_US.map((item, idx) => (

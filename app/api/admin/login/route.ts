@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     if (username === expectedUsername && password === expectedPassword) {
       const cookieStore = await cookies();
-      cookieStore.set("quasy_admin_session", "true", {
+      cookieStore.set("qusay_admin_session", "true", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",

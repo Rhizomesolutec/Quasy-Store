@@ -177,7 +177,7 @@ export default function Navbar() {
             href="/"
             className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#D8CFC0] tracking-[0.15em] font-medium hover:text-[#D8CFC0]/90 transition-colors"
           >
-            QUASY STORE
+            QUSAY STORE
           </Link>
 
           {/* Action Utilities (Right) */}
