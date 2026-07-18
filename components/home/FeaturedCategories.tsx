@@ -69,18 +69,18 @@ export function FeaturedCategories() {
                     sizes="(min-width: 640px) 50vw, 100vw"
                     className="object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/30 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-8">
-                    <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#8E1F1F] mb-2">
+                    <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#E50914] mb-2">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
-                    <h3 className="font-heading text-3xl md:text-4xl text-[#D8CFC0] mb-2 transition-colors duration-300 group-hover:text-[#D8CFC0]">
+                    <h3 className="font-heading text-3xl md:text-4xl text-outline-red mb-2 transition-all duration-300">
                       {category}
                     </h3>
-                    <p className="font-sans text-xs text-[#D8CFC0]/55 max-w-xs leading-relaxed mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                    <p className="font-sans text-xs text-[#F5F2EF]/55 max-w-xs leading-relaxed mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                       {meta.tagline}
                     </p>
-                    <span className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0] border-b border-[#8E1F1F] pb-1 transition-colors duration-300 group-hover:text-[#8E1F1F]">
+                    <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1 transition-colors duration-300 group-hover:text-[#E50914]">
                       Explore {category} →
                     </span>
                   </div>

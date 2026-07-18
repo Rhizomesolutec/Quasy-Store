@@ -10,7 +10,19 @@ import { PRODUCTS, COLLECTIONS, CATEGORIES } from "@/lib/products";
 
 const supabase = createClient();
 
-type Tab = "products" | "categories" | "orders" | "users";
+type Tab = "products" | "categories" | "orders" | "users" | "reviews";
+
+interface AdminReview {
+  id: string;
+  author: string;
+  rating: number;
+  date: string;
+  title: string;
+  body: string;
+  verified?: boolean;
+  productSlug: string;
+  productName: string;
+}
 
 interface DBProduct {
   id: string;
@@ -72,6 +84,7 @@ export default function AdminDashboard() {
   const [categories, setCategories] = useState<DBCategory[]>([]);
   const [orders, setOrders] = useState<DBOrder[]>([]);
   const [users, setUsers] = useState<DBProfile[]>([]);
+  const [adminReviews, setAdminReviews] = useState<AdminReview[]>([]);
 
   // Search & Modals State
   const [productSearch, setProductSearch] = useState("");
@@ -113,7 +126,44 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchData();
+    loadReviewsFromStorage();
   }, []);
+
+  const loadReviewsFromStorage = () => {
+    try {
+      const allReviews: AdminReview[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("quasy_reviews_")) {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const parsed: AdminReview[] = JSON.parse(raw);
+            allReviews.push(...parsed);
+          }
+        }
+      }
+      // Sort newest first by id (timestamp-based)
+      allReviews.sort((a, b) => b.id.localeCompare(a.id));
+      setAdminReviews(allReviews);
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleDeleteReview = (reviewId: string, productSlug: string) => {
+    try {
+      const key = `quasy_reviews_${productSlug}`;
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed: AdminReview[] = JSON.parse(raw);
+        const updated = parsed.filter((r) => r.id !== reviewId);
+        localStorage.setItem(key, JSON.stringify(updated));
+      }
+      setAdminReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    } catch {
+      // ignore
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -483,14 +533,14 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#111111] text-[#D8CFC0] font-sans flex flex-col relative">
+    <div className="min-h-screen bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative">
       <div className="bg-noise" />
 
       {/* Header */}
-      <header className="border-b border-white/[0.08] bg-[#161616]/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+      <header className="border-b border-white/[0.08] bg-[#170909]/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="font-heading text-2xl tracking-widest text-[#D8CFC0]">QUSAY</span>
-          <span className="text-[10px] uppercase bg-[#8E1F1F]/20 text-[#8E1F1F] px-2 py-0.5 border border-[#8E1F1F]/30 tracking-widest">
+          <span className="font-heading text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
+          <span className="text-[10px] uppercase bg-[#E50914]/20 text-[#E50914] px-2 py-0.5 border border-[#E50914]/30 tracking-widest">
             Vault Dashboard
           </span>
         </div>
@@ -498,7 +548,7 @@ export default function AdminDashboard() {
           <Link
             id="admin-storefront-btn"
             href="/"
-            className="border border-white/[0.1] hover:border-[#8E1F1F] hover:text-[#8E1F1F] bg-transparent text-[#D8CFC0]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
           >
             Go to Store
           </Link>
@@ -506,14 +556,14 @@ export default function AdminDashboard() {
             id="admin-seed-btn"
             onClick={handleSeedDatabase}
             disabled={seeding}
-            className="border border-[#8E1F1F] bg-[#8E1F1F]/10 hover:bg-[#8E1F1F] text-[#D8CFC0] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 cursor-pointer"
+            className="border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 cursor-pointer"
           >
             {seeding ? "Seeding..." : "Seed Database"}
           </button>
           <button
             id="admin-signout-btn"
             onClick={handleSignOut}
-            className="border border-white/[0.1] hover:border-[#8E1F1F] hover:text-[#8E1F1F] bg-transparent text-[#D8CFC0]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
           >
             Sign Out
           </button>
@@ -525,16 +575,16 @@ export default function AdminDashboard() {
         {/* Sidebar */}
         <aside className="border-r border-white/[0.08] bg-[#141414] p-6 space-y-6">
           <div className="space-y-1">
-            <p className="font-heading text-sm text-[#D8CFC0]/40 uppercase tracking-widest">Navigation</p>
+            <p className="font-heading text-sm text-[#F5F2EF]/40 uppercase tracking-widest">Navigation</p>
             <nav className="flex flex-col gap-1.5 pt-3">
-              {(["products", "categories", "orders", "users"] as Tab[]).map((tab) => (
+              {(["products", "categories", "orders", "users", "reviews"] as Tab[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`text-left px-4 py-3 text-xs uppercase tracking-widest transition-all duration-200 border-l-2 cursor-pointer ${
                     activeTab === tab
-                      ? "bg-[#8E1F1F]/10 text-[#8E1F1F] border-[#8E1F1F]"
-                      : "text-[#D8CFC0]/50 hover:text-[#D8CFC0] hover:bg-white/[0.02] border-transparent"
+                      ? "bg-[#E50914]/10 text-[#E50914] border-[#E50914]"
+                      : "text-[#F5F2EF]/50 hover:text-[#F5F2EF] hover:bg-white/[0.02] border-transparent"
                   }`}
                 >
                   {tab}
@@ -543,15 +593,15 @@ export default function AdminDashboard() {
             </nav>
           </div>
           <div className="border-t border-white/[0.08] pt-6 space-y-3">
-            <p className="font-heading text-xs text-[#D8CFC0]/40 uppercase tracking-widest">System Overview</p>
+            <p className="font-heading text-xs text-[#F5F2EF]/40 uppercase tracking-widest">System Overview</p>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[#181818] border border-white/[0.04] p-3 rounded-sm">
-                <p className="text-xl font-heading text-[#8E1F1F]">{products.length}</p>
-                <p className="text-[9px] uppercase tracking-wider text-[#D8CFC0]/40">Products</p>
+              <div className="bg-[#170909] border border-white/[0.04] p-3 rounded-sm">
+                <p className="text-xl font-heading text-[#E50914]">{products.length}</p>
+                <p className="text-[9px] uppercase tracking-wider text-[#F5F2EF]/40">Products</p>
               </div>
-              <div className="bg-[#181818] border border-white/[0.04] p-3 rounded-sm">
-                <p className="text-xl font-heading text-[#8E1F1F]">{orders.length}</p>
-                <p className="text-[9px] uppercase tracking-wider text-[#D8CFC0]/40">Orders</p>
+              <div className="bg-[#170909] border border-white/[0.04] p-3 rounded-sm">
+                <p className="text-xl font-heading text-[#E50914]">{orders.length}</p>
+                <p className="text-[9px] uppercase tracking-wider text-[#F5F2EF]/40">Orders</p>
               </div>
             </div>
           </div>
@@ -561,8 +611,8 @@ export default function AdminDashboard() {
         <main className="p-8 md:p-10 overflow-y-auto">
           {loading ? (
             <div className="h-64 flex items-center justify-center flex-col gap-3">
-              <span className="w-8 h-8 border-3 border-[#8E1F1F] border-t-transparent rounded-full animate-spin" />
-              <p className="text-xs uppercase tracking-widest text-[#D8CFC0]/40">Retrieving Vault Data...</p>
+              <span className="w-8 h-8 border-3 border-[#E50914] border-t-transparent rounded-full animate-spin" />
+              <p className="text-xs uppercase tracking-widest text-[#F5F2EF]/40">Retrieving Vault Data...</p>
             </div>
           ) : (
             <>
@@ -571,13 +621,13 @@ export default function AdminDashboard() {
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                      <h2 className="font-heading text-3xl text-[#D8CFC0]">Product Inventory</h2>
-                      <p className="text-xs text-[#D8CFC0]/50 mt-1">Manage and update all pieces of the vault.</p>
+                      <h2 className="font-heading text-3xl text-[#F5F2EF]">Product Inventory</h2>
+                      <p className="text-xs text-[#F5F2EF]/50 mt-1">Manage and update all pieces of the vault.</p>
                     </div>
                     <button
                       id="admin-add-product-btn"
                       onClick={openAddProductModal}
-                      className="border border-[#8E1F1F] bg-[#8E1F1F]/15 hover:bg-[#8E1F1F] text-[#D8CFC0] px-5 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
+                      className="border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] px-5 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
                     >
                       Add New Product
                     </button>
@@ -591,31 +641,31 @@ export default function AdminDashboard() {
                       value={productSearch}
                       onChange={(e) => setProductSearch(e.target.value)}
                       placeholder="Search by name, slug, or category..."
-                      className="w-full bg-[#161616] border border-white/[0.08] px-4 py-3 pl-10 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans"
+                      className="w-full bg-[#170909] border border-white/[0.08] px-4 py-3 pl-10 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans"
                     />
                     <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30">🔍</span>
                   </div>
 
                   {/* Products Grid */}
                   {products.length === 0 ? (
-                    <div className="border border-[#8E1F1F]/20 p-12 text-center bg-[#161616]/60 space-y-4">
-                      <p className="text-sm text-[#D8CFC0]/60">Your Supabase database is currently empty.</p>
+                    <div className="border border-[#E50914]/20 p-12 text-center bg-[#170909]/60 space-y-4">
+                      <p className="text-sm text-[#F5F2EF]/60">Your Supabase database is currently empty.</p>
                       <button
                         onClick={handleSeedDatabase}
                         disabled={seeding}
-                        className="border border-[#8E1F1F] bg-[#8E1F1F]/20 hover:bg-[#8E1F1F] text-[#D8CFC0] px-5 py-2.5 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+                        className="border border-[#E50914] bg-[#E50914]/20 hover:bg-[#E50914] text-[#F5F2EF] px-5 py-2.5 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
                       >
                         {seeding ? "Importing Data..." : "Import All Mock Products & Categories"}
                       </button>
                     </div>
                   ) : filteredProducts.length === 0 ? (
-                    <div className="border border-white/[0.06] p-12 text-center bg-[#161616]/40">
-                      <p className="text-sm text-[#D8CFC0]/50">No products found matching your search.</p>
+                    <div className="border border-white/[0.06] p-12 text-center bg-[#170909]/40">
+                      <p className="text-sm text-[#F5F2EF]/50">No products found matching your search.</p>
                     </div>
                   ) : (
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {filteredProducts.map((p) => (
-                        <div key={p.id} className="border border-white/[0.08] bg-[#161616]/50 p-4 flex flex-col justify-between group">
+                        <div key={p.id} className="border border-white/[0.08] bg-[#170909]/50 p-4 flex flex-col justify-between group">
                           <div>
                             <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden mb-3">
                               {p.images && p.images[0] ? (
@@ -627,17 +677,17 @@ export default function AdminDashboard() {
                                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               ) : (
-                                <div className="absolute inset-0 flex items-center justify-center text-xs text-[#D8CFC0]/30 bg-[#222]">
+                                <div className="absolute inset-0 flex items-center justify-center text-xs text-[#F5F2EF]/30 bg-[#222]">
                                   No Image
                                 </div>
                               )}
                             </div>
                             <div className="space-y-1">
                               <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-heading text-lg text-[#D8CFC0] truncate">{p.name}</h3>
-                                <span className="font-mono text-sm text-[#8E1F1F] font-semibold">{formatPrice(p.price)}</span>
+                                <h3 className="font-heading text-lg text-[#F5F2EF] truncate">{p.name}</h3>
+                                <span className="font-mono text-sm text-[#E50914] font-semibold">{formatPrice(p.price)}</span>
                               </div>
-                              <p className="text-[10px] uppercase tracking-wider text-[#D8CFC0]/40">{p.category}</p>
+                              <p className="text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">{p.category}</p>
                               <div className="flex gap-2 pt-2">
                                 {p.isNew && (
                                   <span className="text-[8px] uppercase tracking-wider bg-green-950/40 text-green-400 border border-green-800/40 px-1.5 py-0.5">
@@ -645,13 +695,13 @@ export default function AdminDashboard() {
                                   </span>
                                 )}
                                 {p.isBestSeller && (
-                                  <span className="text-[8px] uppercase tracking-wider bg-[#8E1F1F]/20 text-[#8E1F1F] border border-[#8E1F1F]/30 px-1.5 py-0.5">
+                                  <span className="text-[8px] uppercase tracking-wider bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/30 px-1.5 py-0.5">
                                     Best Seller
                                   </span>
                                 )}
                                 <span className={`text-[8px] uppercase tracking-wider px-1.5 py-0.5 border ${
                                   p.inStock 
-                                    ? "bg-zinc-900 text-[#D8CFC0]/60 border-white/[0.08]" 
+                                    ? "bg-zinc-900 text-[#F5F2EF]/60 border-white/[0.08]" 
                                     : "bg-red-950/20 text-red-500 border-red-800/20"
                                 }`}>
                                   Stock: {p.stockCount}
@@ -663,7 +713,7 @@ export default function AdminDashboard() {
                           <div className="pt-4 mt-4 border-t border-white/[0.06] flex gap-2">
                             <button
                               onClick={() => openEditProductModal(p)}
-                              className="flex-1 border border-white/[0.08] hover:border-[#8E1F1F] hover:text-[#8E1F1F] text-xs uppercase py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
+                              className="flex-1 border border-white/[0.08] hover:border-[#E50914] hover:text-[#E50914] text-xs uppercase py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
                             >
                               Edit Piece
                             </button>
@@ -679,23 +729,23 @@ export default function AdminDashboard() {
               {activeTab === "categories" && (
                 <div className="space-y-8 max-w-3xl">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#D8CFC0]">Store Categories</h2>
-                    <p className="text-xs text-[#D8CFC0]/50 mt-1">Add and view product classifications.</p>
+                    <h2 className="font-heading text-3xl text-[#F5F2EF]">Store Categories</h2>
+                    <p className="text-xs text-[#F5F2EF]/50 mt-1">Add and view product classifications.</p>
                   </div>
 
                   <div className="grid md:grid-cols-[1fr_320px] gap-8">
                     {/* Categories List */}
-                    <div className="border border-white/[0.08] bg-[#161616]/40 p-6 space-y-4">
-                      <h3 className="font-heading text-lg text-[#D8CFC0]">Active Categories</h3>
+                    <div className="border border-white/[0.08] bg-[#170909]/40 p-6 space-y-4">
+                      <h3 className="font-heading text-lg text-[#F5F2EF]">Active Categories</h3>
                       {categories.length === 0 ? (
-                        <p className="text-xs text-[#D8CFC0]/40">No categories found. Seed data to populate.</p>
+                        <p className="text-xs text-[#F5F2EF]/40">No categories found. Seed data to populate.</p>
                       ) : (
                         <div className="divide-y divide-white/[0.06]">
                           {categories.map((c) => (
                             <div key={c.name} className="py-3 flex justify-between items-center gap-4">
                               <div>
-                                <p className="font-sans text-sm font-semibold text-[#D8CFC0]">{c.name}</p>
-                                <p className="font-sans text-xs text-[#D8CFC0]/40 mt-0.5">{c.description || "No description"}</p>
+                                <p className="font-sans text-sm font-semibold text-[#F5F2EF]">{c.name}</p>
+                                <p className="font-sans text-xs text-[#F5F2EF]/40 mt-0.5">{c.description || "No description"}</p>
                               </div>
                             </div>
                           ))}
@@ -704,8 +754,8 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Add Category Form */}
-                    <div className="border border-white/[0.08] bg-[#161616]/70 p-6 self-start space-y-5">
-                      <h3 className="font-heading text-lg text-[#D8CFC0]">Add Category</h3>
+                    <div className="border border-white/[0.08] bg-[#170909]/70 p-6 self-start space-y-5">
+                      <h3 className="font-heading text-lg text-[#F5F2EF]">Add Category</h3>
                       {catError && (
                         <p className="text-xs text-red-500 bg-red-950/20 border border-red-800/30 p-2 text-center">
                           {catError}
@@ -713,7 +763,7 @@ export default function AdminDashboard() {
                       )}
                       <form onSubmit={handleAddCategory} className="space-y-4">
                         <div>
-                          <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                          <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                             Category Name
                           </label>
                           <input
@@ -721,24 +771,24 @@ export default function AdminDashboard() {
                             required
                             value={newCatName}
                             onChange={(e) => setNewCatName(e.target.value)}
-                            className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all"
+                            className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all"
                             placeholder="e.g. Rings"
                           />
                         </div>
                         <div>
-                          <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                          <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                             Description
                           </label>
                           <textarea
                             value={newCatDesc}
                             onChange={(e) => setNewCatDesc(e.target.value)}
-                            className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all h-20 resize-none"
+                            className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all h-20 resize-none"
                             placeholder="Brief description..."
                           />
                         </div>
                         <button
                           type="submit"
-                          className="w-full border border-[#8E1F1F] bg-[#8E1F1F]/10 hover:bg-[#8E1F1F] text-[#D8CFC0] py-2.5 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+                          className="w-full border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] py-2.5 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
                         >
                           Add Category
                         </button>
@@ -752,20 +802,20 @@ export default function AdminDashboard() {
               {activeTab === "orders" && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#D8CFC0]">Purchase History</h2>
-                    <p className="text-xs text-[#D8CFC0]/50 mt-1">Track and manage customer receipts.</p>
+                    <h2 className="font-heading text-3xl text-[#F5F2EF]">Purchase History</h2>
+                    <p className="text-xs text-[#F5F2EF]/50 mt-1">Track and manage customer receipts.</p>
                   </div>
 
-                  <div className="border border-white/[0.08] bg-[#161616]/40 overflow-hidden">
+                  <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
                     {orders.length === 0 ? (
                       <div className="p-12 text-center">
-                        <p className="text-sm text-[#D8CFC0]/40">No orders recorded in database.</p>
+                        <p className="text-sm text-[#F5F2EF]/40">No orders recorded in database.</p>
                       </div>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#D8CFC0]/40">
+                            <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
                               <th className="p-4 pl-6">Order ID</th>
                               <th className="p-4">Date</th>
                               <th className="p-4">Customer</th>
@@ -778,11 +828,11 @@ export default function AdminDashboard() {
                           <tbody className="divide-y divide-white/[0.06] text-xs">
                             {orders.map((o) => (
                               <tr key={o.id} className="hover:bg-white/[0.01] transition-colors">
-                                <td className="p-4 pl-6 font-mono font-semibold text-[#8E1F1F]">{o.id}</td>
-                                <td className="p-4 text-[#D8CFC0]/60">{o.date}</td>
+                                <td className="p-4 pl-6 font-mono font-semibold text-[#E50914]">{o.id}</td>
+                                <td className="p-4 text-[#F5F2EF]/60">{o.date}</td>
                                 <td className="p-4">
                                   <p className="font-semibold">{o.customerName}</p>
-                                  <p className="text-[10px] text-[#D8CFC0]/40">{o.customerEmail}</p>
+                                  <p className="text-[10px] text-[#F5F2EF]/40">{o.customerEmail}</p>
                                 </td>
                                 <td className="p-4 max-w-xs truncate">
                                   {o.items?.map((item: any, idx: number) => (
@@ -808,7 +858,7 @@ export default function AdminDashboard() {
                                   <select
                                     value={o.status}
                                     onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
-                                    className="bg-[#111] border border-white/[0.08] px-2 py-1 text-[11px] text-[#D8CFC0] outline-none focus:border-[#8E1F1F]"
+                                    className="bg-[#070707] border border-white/[0.08] px-2 py-1 text-[11px] text-[#F5F2EF] outline-none focus:border-[#E50914]"
                                   >
                                     <option value="Pending">Pending</option>
                                     <option value="Processing">Processing</option>
@@ -831,20 +881,20 @@ export default function AdminDashboard() {
               {activeTab === "users" && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#D8CFC0]">User Registry</h2>
-                    <p className="text-xs text-[#D8CFC0]/50 mt-1">View list of registered profiles and addresses.</p>
+                    <h2 className="font-heading text-3xl text-[#F5F2EF]">User Registry</h2>
+                    <p className="text-xs text-[#F5F2EF]/50 mt-1">View list of registered profiles and addresses.</p>
                   </div>
 
-                  <div className="border border-white/[0.08] bg-[#161616]/40 overflow-hidden">
+                  <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
                     {users.length === 0 ? (
                       <div className="p-12 text-center">
-                        <p className="text-sm text-[#D8CFC0]/40">No registered profiles in database.</p>
+                        <p className="text-sm text-[#F5F2EF]/40">No registered profiles in database.</p>
                       </div>
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
-                            <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#D8CFC0]/40">
+                            <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
                               <th className="p-4 pl-6">Email</th>
                               <th className="p-4">Full Name</th>
                               <th className="p-4">Default Shipping Address</th>
@@ -856,12 +906,12 @@ export default function AdminDashboard() {
                           <tbody className="divide-y divide-white/[0.06] text-xs">
                             {users.map((u) => (
                               <tr key={u.email} className="hover:bg-white/[0.01] transition-colors">
-                                <td className="p-4 pl-6 font-semibold text-[#8E1F1F]">{u.email}</td>
+                                <td className="p-4 pl-6 font-semibold text-[#E50914]">{u.email}</td>
                                 <td className="p-4">{u.fullName || "Not provided"}</td>
-                                <td className="p-4 text-[#D8CFC0]/75">{u.address || "Not provided"}</td>
+                                <td className="p-4 text-[#F5F2EF]/75">{u.address || "Not provided"}</td>
                                 <td className="p-4">{u.city || "-"}</td>
                                 <td className="p-4 font-mono">{u.postalCode || "-"}</td>
-                                <td className="p-4 pr-6 text-[#D8CFC0]/40">
+                                <td className="p-4 pr-6 text-[#F5F2EF]/40">
                                   {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "-"}
                                 </td>
                               </tr>
@@ -873,6 +923,102 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               )}
+
+              {/* REVIEWS TAB */}
+              {activeTab === "reviews" && (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <h2 className="font-heading text-3xl text-[#F5F2EF]">Customer Reviews</h2>
+                      <p className="text-xs text-[#F5F2EF]/50 mt-1">Moderate and delete customer-submitted product reviews.</p>
+                    </div>
+                    <button
+                      onClick={loadReviewsFromStorage}
+                      className="border border-white/[0.08] hover:border-[#E50914] text-[#F5F2EF]/60 hover:text-[#E50914] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
+                    >
+                      Refresh Reviews
+                    </button>
+                  </div>
+
+                  {adminReviews.length === 0 ? (
+                    <div className="border border-white/[0.06] bg-[#170909]/40 p-12 text-center">
+                      <p className="text-sm text-[#F5F2EF]/40 mb-2">No customer reviews found.</p>
+                      <p className="text-xs text-[#F5F2EF]/25">Reviews submitted by customers on product pages will appear here.</p>
+                    </div>
+                  ) : (
+                    <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
+                              <th className="p-4 pl-6">Product</th>
+                              <th className="p-4">Author</th>
+                              <th className="p-4">Rating</th>
+                              <th className="p-4">Title</th>
+                              <th className="p-4">Review</th>
+                              <th className="p-4">Date</th>
+                              <th className="p-4">Verified</th>
+                              <th className="p-4 pr-6 text-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-white/[0.06] text-xs">
+                            {adminReviews.map((r) => (
+                              <tr key={r.id} className="hover:bg-white/[0.01] transition-colors">
+                                <td className="p-4 pl-6">
+                                  <span className="font-semibold text-[#E50914]">{r.productName}</span>
+                                  <br />
+                                  <span className="text-[10px] text-[#F5F2EF]/30 font-mono">{r.productSlug}</span>
+                                </td>
+                                <td className="p-4 text-[#F5F2EF]/80 font-semibold">{r.author}</td>
+                                <td className="p-4">
+                                  <span className="flex items-center gap-0.5 text-[#E50914] text-sm">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                      <span key={i} className={i < r.rating ? "text-[#E50914]" : "text-white/10"}>
+                                        ★
+                                      </span>
+                                    ))}
+                                  </span>
+                                  <span className="text-[10px] text-[#F5F2EF]/30 mt-0.5 block">{r.rating}/5</span>
+                                </td>
+                                <td className="p-4 text-[#F5F2EF] font-heading">{r.title}</td>
+                                <td className="p-4 text-[#F5F2EF]/60 max-w-xs">
+                                  <span className="line-clamp-2 leading-relaxed">{r.body}</span>
+                                </td>
+                                <td className="p-4 text-[#F5F2EF]/40 whitespace-nowrap">{r.date}</td>
+                                <td className="p-4">
+                                  {r.verified ? (
+                                    <span className="text-[10px] text-emerald-400 border border-emerald-800/50 bg-emerald-950/30 px-2 py-0.5 uppercase tracking-widest">
+                                      Verified
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] text-[#F5F2EF]/30">—</span>
+                                  )}
+                                </td>
+                                <td className="p-4 pr-6 text-right">
+                                  <button
+                                    onClick={() => handleDeleteReview(r.id, r.productSlug)}
+                                    className="border border-[#E50914]/50 bg-[#E50914]/10 hover:bg-[#E50914] text-[#E50914] hover:text-white px-3 py-1.5 text-[10px] uppercase tracking-widest transition-all duration-200 cursor-pointer"
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="px-6 py-3 border-t border-white/[0.06] flex items-center justify-between">
+                        <p className="text-[10px] uppercase tracking-wider text-[#F5F2EF]/30">
+                          Total: {adminReviews.length} review{adminReviews.length !== 1 ? "s" : ""}
+                        </p>
+                        <p className="text-[10px] text-[#F5F2EF]/20">
+                          Avg Rating: {adminReviews.length > 0 ? (adminReviews.reduce((s, r) => s + r.rating, 0) / adminReviews.length).toFixed(1) : "—"} / 5
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </>
           )}
         </main>
@@ -881,14 +1027,14 @@ export default function AdminDashboard() {
       {/* PRODUCT ADD/EDIT MODAL */}
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 overflow-y-auto">
-          <div className="bg-[#161616] border border-white/[0.08] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-6 md:p-8 space-y-6">
+          <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-6 md:p-8 space-y-6">
             <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <h3 className="font-heading text-2xl text-[#D8CFC0]">
+              <h3 className="font-heading text-2xl text-[#F5F2EF]">
                 {isNewProduct ? "Forging New Piece" : `Modifying Piece: ${formName}`}
               </h3>
               <button
                 onClick={() => setIsProductModalOpen(false)}
-                className="text-2xl text-[#D8CFC0]/40 hover:text-white cursor-pointer"
+                className="text-2xl text-[#F5F2EF]/40 hover:text-white cursor-pointer"
               >
                 &times;
               </button>
@@ -898,7 +1044,7 @@ export default function AdminDashboard() {
               {/* Product Basic Fields */}
               <div className="grid md:grid-cols-3 gap-5">
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Product ID
                   </label>
                   <input
@@ -907,11 +1053,11 @@ export default function AdminDashboard() {
                     readOnly={!isNewProduct}
                     value={formId}
                     onChange={(e) => setFormId(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 read-only:opacity-50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 read-only:opacity-50"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Product Name
                   </label>
                   <input
@@ -919,19 +1065,19 @@ export default function AdminDashboard() {
                     required
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="e.g. Cathedral Pendant"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     URL Slug
                   </label>
                   <input
                     type="text"
                     value={formSlug}
                     onChange={(e) => setFormSlug(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="Auto-generated if empty"
                   />
                 </div>
@@ -939,14 +1085,14 @@ export default function AdminDashboard() {
 
               <div className="grid md:grid-cols-4 gap-5">
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Category
                   </label>
                   <select
                     required
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]"
                   >
                     <option value="" disabled>-- Choose Category --</option>
                     {(categories.length > 0 ? categories.map((c) => c.name) : CATEGORIES).map((catName) => (
@@ -957,13 +1103,13 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Collection
                   </label>
                   <select
                     value={formCollection}
                     onChange={(e) => setFormCollection(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]"
                   >
                     <option value="">No Collection</option>
                     {COLLECTIONS.map((col) => (
@@ -974,7 +1120,7 @@ export default function AdminDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Price (₹)
                   </label>
                   <input
@@ -983,11 +1129,11 @@ export default function AdminDashboard() {
                     required
                     value={formPrice}
                     onChange={(e) => setFormPrice(Number(e.target.value))}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 font-mono"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Compare At Price (₹)
                   </label>
                   <input
@@ -997,7 +1143,7 @@ export default function AdminDashboard() {
                     onChange={(e) =>
                       setFormCompareAtPrice(e.target.value === "" ? "" : Number(e.target.value))
                     }
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 font-mono"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 font-mono"
                     placeholder="None"
                   />
                 </div>
@@ -1006,7 +1152,7 @@ export default function AdminDashboard() {
               {/* Status and Stock Details */}
               <div className="grid md:grid-cols-4 gap-5">
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Stock Count
                   </label>
                   <input
@@ -1014,7 +1160,7 @@ export default function AdminDashboard() {
                     required
                     value={formStockCount}
                     onChange={(e) => setFormStockCount(Number(e.target.value))}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 font-mono"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 font-mono"
                   />
                 </div>
                 <div className="flex items-end gap-2 pb-2">
@@ -1023,7 +1169,7 @@ export default function AdminDashboard() {
                       type="checkbox"
                       checked={formInStock}
                       onChange={(e) => setFormInStock(e.target.checked)}
-                      className="accent-[#8E1F1F] w-4 h-4"
+                      className="accent-[#E50914] w-4 h-4"
                     />
                     <span>Available In Stock</span>
                   </label>
@@ -1034,7 +1180,7 @@ export default function AdminDashboard() {
                       type="checkbox"
                       checked={formIsNew}
                       onChange={(e) => setFormIsNew(e.target.checked)}
-                      className="accent-[#8E1F1F] w-4 h-4"
+                      className="accent-[#E50914] w-4 h-4"
                     />
                     <span>Tag as New</span>
                   </label>
@@ -1045,7 +1191,7 @@ export default function AdminDashboard() {
                       type="checkbox"
                       checked={formIsBestSeller}
                       onChange={(e) => setFormIsBestSeller(e.target.checked)}
-                      className="accent-[#8E1F1F] w-4 h-4"
+                      className="accent-[#E50914] w-4 h-4"
                     />
                     <span>Tag as Best Seller</span>
                   </label>
@@ -1055,40 +1201,40 @@ export default function AdminDashboard() {
               {/* Info texts */}
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Tagline
                   </label>
                   <input
                     type="text"
                     value={formTagline}
                     onChange={(e) => setFormTagline(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="Brief highlight description"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Variant Label
                   </label>
                   <input
                     type="text"
                     value={formVariantLabel}
                     onChange={(e) => setFormVariantLabel(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="e.g. Sterling Silver"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                   Description
                 </label>
                 <textarea
                   required
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 h-24"
+                  className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 h-24"
                   placeholder="Detailed explanation..."
                 />
               </div>
@@ -1096,12 +1242,12 @@ export default function AdminDashboard() {
               {/* Lists Section: Images, Sizes, Details, and Colors */}
               <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-white/[0.08]">
                 <div className="space-y-3">
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Product Images
                   </label>
                   
                   {/* Upload button wrapper */}
-                  <div className="relative border border-dashed border-white/[0.08] hover:border-[#8E1F1F]/60 transition-colors p-4 text-center cursor-pointer flex flex-col items-center justify-center gap-1 bg-[#1a1a1a]">
+                  <div className="relative border border-dashed border-white/[0.08] hover:border-[#E50914]/60 transition-colors p-4 text-center cursor-pointer flex flex-col items-center justify-center gap-1 bg-[#1A0A0A]">
                     <input
                       type="file"
                       accept="image/*"
@@ -1110,14 +1256,14 @@ export default function AdminDashboard() {
                       className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
                     />
                     {uploadingImage ? (
-                      <span className="w-5 h-5 border-2 border-[#8E1F1F] border-t-transparent rounded-full animate-spin mb-1" />
+                      <span className="w-5 h-5 border-2 border-[#E50914] border-t-transparent rounded-full animate-spin mb-1" />
                     ) : (
-                      <span className="text-xl text-[#8E1F1F]">📤</span>
+                      <span className="text-xl text-[#E50914]">📤</span>
                     )}
-                    <span className="text-xs font-semibold text-[#D8CFC0]">
+                    <span className="text-xs font-semibold text-[#F5F2EF]">
                       {uploadingImage ? "Uploading image..." : "Upload Image from Device"}
                     </span>
-                    <span className="text-[9px] text-[#D8CFC0]/40 uppercase tracking-wide">
+                    <span className="text-[9px] text-[#F5F2EF]/40 uppercase tracking-wide">
                       PNG, JPG, WEBP up to 5MB
                     </span>
                   </div>
@@ -1147,13 +1293,13 @@ export default function AdminDashboard() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Craft Details / Specs (One item per line)
                   </label>
                   <textarea
                     value={formDetailsText}
                     onChange={(e) => setFormDetailsText(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 h-28"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/50 h-28"
                     placeholder="e.g. Cast in oxidized sterling silver"
                   />
                 </div>
@@ -1161,38 +1307,38 @@ export default function AdminDashboard() {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Sizes (Comma separated)
                   </label>
                   <input
                     type="text"
                     value={formSizesText}
                     onChange={(e) => setFormSizesText(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="e.g. 18&quot;, 20&quot;, 22&quot;"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                     Shipping & Returns Details
                   </label>
                   <input
                     type="text"
                     value={formShippingInfo}
                     onChange={(e) => setFormShippingInfo(e.target.value)}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                   />
                 </div>
               </div>
 
               {/* Dynamic Color Palette Picker */}
               <div className="space-y-3 pt-4 border-t border-white/[0.08]">
-                <h4 className="font-heading text-sm text-[#D8CFC0] uppercase tracking-widest">Color Options</h4>
+                <h4 className="font-heading text-sm text-[#F5F2EF] uppercase tracking-widest">Color Options</h4>
                 <div className="flex flex-wrap gap-2">
                   {formColors.map((color, idx) => (
                     <div
                       key={idx}
-                      className="border border-white/[0.08] px-2.5 py-1.5 flex items-center gap-2 bg-[#1a1a1a] text-xs text-[#D8CFC0]"
+                      className="border border-white/[0.08] px-2.5 py-1.5 flex items-center gap-2 bg-[#1A0A0A] text-xs text-[#F5F2EF]"
                     >
                       <span className="w-3.5 h-3.5 rounded-full border border-black/30" style={{ backgroundColor: color.hex }} />
                       <span>{color.name} ({color.hex})</span>
@@ -1212,7 +1358,7 @@ export default function AdminDashboard() {
                     type="text"
                     value={tempColorName}
                     onChange={(e) => setTempColorName(e.target.value)}
-                    className="bg-[#1a1a1a] border border-white/[0.08] px-3 py-1.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="bg-[#1A0A0A] border border-white/[0.08] px-3 py-1.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     placeholder="Color Name (e.g. Aged Silver)"
                   />
                   <input
@@ -1224,7 +1370,7 @@ export default function AdminDashboard() {
                   <button
                     type="button"
                     onClick={addColorToForm}
-                    className="border border-white/[0.08] bg-[#1a1a1a] text-[#D8CFC0] hover:border-[#8E1F1F] text-xs uppercase px-3 py-1.5 transition-all duration-200 cursor-pointer"
+                    className="border border-white/[0.08] bg-[#1A0A0A] text-[#F5F2EF] hover:border-[#E50914] text-xs uppercase px-3 py-1.5 transition-all duration-200 cursor-pointer"
                   >
                     Add Option
                   </button>
@@ -1236,13 +1382,13 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
-                  className="border border-white/[0.08] bg-transparent text-[#D8CFC0]/60 px-5 py-3 text-xs uppercase tracking-widest hover:text-white transition-all cursor-pointer"
+                  className="border border-white/[0.08] bg-transparent text-[#F5F2EF]/60 px-5 py-3 text-xs uppercase tracking-widest hover:text-white transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="border border-[#8E1F1F] bg-[#8E1F1F]/20 hover:bg-[#8E1F1F] text-[#D8CFC0] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+                  className="border border-[#E50914] bg-[#E50914]/20 hover:bg-[#E50914] text-[#F5F2EF] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
                 >
                   Save Piece
                 </button>

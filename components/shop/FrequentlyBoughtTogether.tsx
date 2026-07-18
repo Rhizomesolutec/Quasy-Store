@@ -18,7 +18,7 @@ export function FrequentlyBoughtTogether({ main, companions }: { main: Product; 
 
   return (
     <div className="border border-white/[0.08] p-6 md:p-8 bg-white/[0.015]">
-      <h3 className="font-heading text-xl text-[#D8CFC0] mb-6">Frequently Bought Together</h3>
+      <h3 className="font-heading text-xl text-[#F5F2EF] mb-6">Frequently Bought Together</h3>
       <div className="flex flex-wrap items-center gap-4 mb-6">
         {bundle.map((p, idx) => (
           <div key={p.id} className="flex items-center gap-3">
@@ -38,23 +38,23 @@ export function FrequentlyBoughtTogether({ main, companions }: { main: Product; 
                     return next;
                   })
                 }
-                className="w-4 h-4 accent-[#8E1F1F]"
+                className="w-4 h-4 accent-[#E50914]"
               />
               <div className="relative w-16 aspect-[4/5] bg-black rounded-sm overflow-hidden border border-white/[0.08]">
                 <Image src={p.images[0]} alt={p.name} fill className="object-cover" />
               </div>
               <div>
-                <p className="font-sans text-xs text-[#D8CFC0]">{p.name}</p>
-                <p className="font-sans text-xs text-[#8E1F1F]">{formatPrice(p.price)}</p>
+                <p className="font-sans text-xs text-[#F5F2EF]">{p.name}</p>
+                <p className="font-heading text-xs text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(p.price)}</p>
               </div>
             </label>
-            {idx < bundle.length - 1 && <span className="text-[#D8CFC0]/30 font-heading text-xl">+</span>}
+            {idx < bundle.length - 1 && <span className="text-[#F5F2EF]/30 font-heading text-xl">+</span>}
           </div>
         ))}
       </div>
       <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/[0.08]">
-        <p className="font-sans text-sm text-[#D8CFC0]">
-          Total: <span className="text-[#8E1F1F] font-semibold">{formatPrice(total)}</span>
+        <p className="font-sans text-sm text-[#F5F2EF]">
+          Total: <span className="text-[#FF2A45] font-heading drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(total)}</span>
         </p>
         <Button
           variant="outline"

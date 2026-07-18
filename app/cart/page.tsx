@@ -86,10 +86,10 @@ export default function CartPage() {
                   </Link>
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>
-                      <Link href={`/shop/${item.slug}`} className="font-heading text-lg text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors">
+                      <Link href={`/shop/${item.slug}`} className="font-heading text-lg text-[#F5F2EF] hover:text-[#E50914] transition-colors">
                         {item.name}
                       </Link>
-                      <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mt-1">
+                      <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mt-1">
                         {item.variant}
                         {item.size ? ` · ${item.size}` : ""}
                       </p>
@@ -98,27 +98,27 @@ export default function CartPage() {
                       <div className="flex items-center border border-white/[0.1]">
                         <button
                           onClick={() => updateQuantity(item.productId, item.variant, item.size, -1)}
-                          className="px-3 py-1.5 text-[#D8CFC0]/60 hover:text-[#D8CFC0] text-sm"
+                          className="px-3 py-1.5 text-[#F5F2EF]/60 hover:text-[#F5F2EF] text-sm"
                         >
                           −
                         </button>
-                        <span className="px-3 font-mono text-sm text-[#D8CFC0]">{item.quantity}</span>
+                        <span className="px-3 font-mono text-sm text-[#F5F2EF]">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.productId, item.variant, item.size, 1)}
-                          className="px-3 py-1.5 text-[#D8CFC0]/60 hover:text-[#D8CFC0] text-sm"
+                          className="px-3 py-1.5 text-[#F5F2EF]/60 hover:text-[#F5F2EF] text-sm"
                         >
                           +
                         </button>
                       </div>
                       <button
                         onClick={() => removeItem(item.productId, item.variant, item.size)}
-                        className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 hover:text-[#8E1F1F] transition-colors"
+                        className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 hover:text-[#E50914] transition-colors"
                       >
                         Remove
                       </button>
                     </div>
                   </div>
-                  <div className="font-mono text-sm text-[#D8CFC0] flex-shrink-0">
+                  <div className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)] flex-shrink-0">
                     {formatPrice(item.price * item.quantity)}
                   </div>
                 </div>
@@ -128,7 +128,7 @@ export default function CartPage() {
             {/* Summary */}
             <div className="space-y-6">
               <div className="border border-white/[0.08] p-6 space-y-5">
-                <h3 className="font-heading text-sm uppercase tracking-widest text-[#D8CFC0]">Order Summary</h3>
+                <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">Order Summary</h3>
 
                 {/* Coupon */}
                 <div>
@@ -137,48 +137,48 @@ export default function CartPage() {
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value)}
                       placeholder="Coupon code"
-                      className="flex-1 bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                      className="flex-1 bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                     />
                     <Button variant="outline" size="sm" onClick={handleApplyCoupon}>
                       Apply
                     </Button>
                   </div>
-                  {couponError && <p className="font-sans text-[10px] text-[#8E1F1F] mt-2">{couponError}</p>}
+                  {couponError && <p className="font-sans text-[10px] text-[#E50914] mt-2">{couponError}</p>}
                   {appliedCoupon && (
                     <p className="font-sans text-[10px] text-green-500 mt-2">
                       Code {appliedCoupon.code} applied — {Math.round(appliedCoupon.rate * 100)}% off.
                     </p>
                   )}
-                  <p className="font-sans text-[9px] text-[#D8CFC0]/30 mt-2">Try QUSAY10 or RELIC15</p>
+                  <p className="font-sans text-[9px] text-[#F5F2EF]/30 mt-2">Try QUSAY10 or RELIC15</p>
                 </div>
 
                 {/* Shipping estimator */}
                 <div>
-                  <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/50 mb-2">Estimate Shipping</p>
+                  <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/50 mb-2">Estimate Shipping</p>
                   <select
                     value={shippingZone}
                     onChange={(e) => setShippingZone(e.target.value as "domestic" | "international")}
-                    className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3 py-2 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50"
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
                   >
                     <option value="domestic">Domestic — {formatPrice(SHIPPING_RATES.domestic)}</option>
                     <option value="international">International — {formatPrice(SHIPPING_RATES.international)}</option>
                   </select>
                 </div>
 
-                <div className="space-y-2 pt-4 border-t border-white/[0.06] font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/60">
+                <div className="space-y-2 pt-4 border-t border-white/[0.06] font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="font-mono text-[#D8CFC0]">{formatPrice(subtotal)}</span>
+                    <span className="font-heading text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-green-500">
                       <span>Discount</span>
-                      <span className="font-mono">−{formatPrice(discount)}</span>
+                      <span className="font-heading">−{formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="font-mono text-[#D8CFC0]">{formatPrice(shipping)}</span>
+                    <span className="font-heading text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(shipping)}</span>
                   </div>
                 </div>
 
@@ -188,8 +188,8 @@ export default function CartPage() {
                   animate={{ opacity: 1 }}
                   className="flex justify-between items-baseline pt-4 border-t border-white/[0.08]"
                 >
-                  <span className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70">Total</span>
-                  <span className="font-mono text-2xl text-[#8E1F1F]">{formatPrice(total)}</span>
+                  <span className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70">Total</span>
+                  <span className="font-heading text-2xl text-[#FF2A45] drop-shadow-[0_0_6px_rgba(255,42,69,0.4)]">{formatPrice(total)}</span>
                 </motion.div>
 
                 <LinkButton href="/payment" variant="filled" size="lg" className="w-full text-center">
@@ -203,7 +203,7 @@ export default function CartPage() {
 
       {recommended.length > 0 && (
         <section className="w-full px-4 md:px-12 lg:px-24 pb-24 max-w-7xl border-t border-white/[0.06] pt-16">
-          <h2 className="font-heading text-2xl text-[#D8CFC0] text-center mb-12">You Might Also Like</h2>
+          <h2 className="font-heading text-2xl text-[#F5F2EF] text-center mb-12">You Might Also Like</h2>
           <ProductGrid products={recommended} />
         </section>
       )}

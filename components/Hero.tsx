@@ -376,23 +376,23 @@ export default function Hero() {
       {/* Pulsing Crimson and Silver Backdrops */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Central glowing red shadow */}
-        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[75vw] max-w-[550px] max-h-[550px] rounded-full bg-[#8E1F1F]/12 blur-[120px] animate-pulse" style={{ animationDuration: "12s" }} />
+        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[75vw] max-w-[550px] max-h-[550px] rounded-full bg-[#E50914]/12 blur-[120px] animate-pulse" style={{ animationDuration: "12s" }} />
         {/* Cold silver glow */}
-        <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full bg-[#D8CFC0]/3 blur-[140px]" />
+        <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full bg-[#F5F2EF]/3 blur-[140px]" />
       </div>
 
       {/* Ornate Filigree Corner Borders */}
-      <div className="absolute inset-0 pointer-events-none z-20 border border-[#D8CFC0]/5 m-3 md:m-6 select-none">
-        <svg className="absolute top-2 left-2 w-8 h-8 text-[#D8CFC0]/15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+      <div className="absolute inset-0 pointer-events-none z-20 border border-[#F5F2EF]/5 m-3 md:m-6 select-none">
+        <svg className="absolute top-2 left-2 w-8 h-8 text-[#F5F2EF]/15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
           <path d="M2,2 L14,2 M2,2 L2,14 M2,2 L10,10 M6,2 L2,6 M10,2 L2,10" />
         </svg>
-        <svg className="absolute top-2 right-2 w-8 h-8 text-[#D8CFC0]/15 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+        <svg className="absolute top-2 right-2 w-8 h-8 text-[#F5F2EF]/15 rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
           <path d="M2,2 L14,2 M2,2 L2,14 M2,2 L10,10 M6,2 L2,6 M10,2 L2,10" />
         </svg>
-        <svg className="absolute bottom-2 left-2 w-8 h-8 text-[#D8CFC0]/15 -rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+        <svg className="absolute bottom-2 left-2 w-8 h-8 text-[#F5F2EF]/15 -rotate-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
           <path d="M2,2 L14,2 M2,2 L2,14 M2,2 L10,10 M6,2 L2,6 M10,2 L2,10" />
         </svg>
-        <svg className="absolute bottom-2 right-2 w-8 h-8 text-[#D8CFC0]/15 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+        <svg className="absolute bottom-2 right-2 w-8 h-8 text-[#F5F2EF]/15 rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
           <path d="M2,2 L14,2 M2,2 L2,14 M2,2 L10,10 M6,2 L2,6 M10,2 L2,10" />
         </svg>
       </div>
@@ -412,9 +412,9 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 0.3 }}
             className="flex items-center gap-3 mb-2"
           >
-            <div className="h-[1px] w-6 bg-[#D8CFC0]/20" />
-            <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-[#D8CFC0]/55">ESTD 2026</span>
-            <div className="h-[1px] w-6 bg-[#D8CFC0]/20" />
+            <div className="h-[1px] w-6 bg-[#F5F2EF]/20" />
+            <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-[#F5F2EF]/55">ESTD 2026</span>
+            <div className="h-[1px] w-6 bg-[#F5F2EF]/20" />
           </motion.div>
 
           {/* Bouncing Silk Letters of "QUSAY" */}
@@ -431,7 +431,7 @@ export default function Hero() {
                     damping: 16,
                     delay: i * 0.12 + 0.6,
                   }}
-                  className="w-[1px] bg-gradient-to-b from-[#8E1F1F]/15 via-[#8E1F1F]/60 to-[#D8CFC0]/30 origin-top"
+                  className="w-[1px] bg-gradient-to-b from-[#E50914]/15 via-[#E50914]/60 to-[#F5F2EF]/30 origin-top"
                 />
 
                 {/* Hanging swaying Letter */}
@@ -459,7 +459,7 @@ export default function Hero() {
                       setTimeout(() => setSpiderRecoil(false), 800);
                     }
                   }}
-                  className="font-heading text-5xl sm:text-6xl md:text-8xl lg:text-[8.5rem] text-[#D8CFC0] uppercase tracking-normal select-none filter drop-shadow-[0_12px_22px_rgba(0,0,0,0.85)] font-bold relative"
+                  className="font-heading text-5xl sm:text-6xl md:text-8xl lg:text-[8.5rem] text-[#F5F2EF] uppercase tracking-normal select-none filter drop-shadow-[0_12px_22px_rgba(0,0,0,0.85)] font-bold relative"
                 >
                   {letter}
 
@@ -472,7 +472,7 @@ export default function Hero() {
                       <defs>
                         <radialGradient id="silverMetalS" cx="35%" cy="30%" r="50%">
                           <stop offset="0%" stopColor="#FFFFFF" />
-                          <stop offset="35%" stopColor="#D8CFC0" />
+                          <stop offset="35%" stopColor="#F5F2EF" />
                           <stop offset="70%" stopColor="#6E6B64" />
                           <stop offset="100%" stopColor="#2A2927" />
                         </radialGradient>
@@ -483,17 +483,17 @@ export default function Hero() {
                       <path d="M 23,25 C 32,55 68,55 77,25" stroke="#FFFFFF" strokeWidth="0.6" strokeDasharray="2.5 2" fill="none" opacity="0.85" />
 
                       {/* Left side silver spacer beads & Star link */}
-                      <path d="M 31,35 L 32.5,33.5 L 34,35 L 33,33 L 34.5,32 L 32.5,32.5 L 31.5,31 L 32,33 Z" fill="none" stroke="#D8CFC0" strokeWidth="0.5" />
+                      <path d="M 31,35 L 32.5,33.5 L 34,35 L 33,33 L 34.5,32 L 32.5,32.5 L 31.5,31 L 32,33 Z" fill="none" stroke="#F5F2EF" strokeWidth="0.5" />
                       <circle cx="36" cy="40" r="2.2" fill="url(#silverMetalS)" stroke="#1c1c1c" strokeWidth="0.3" />
                       <circle cx="41.5" cy="44.5" r="1.8" fill="url(#silverMetalS)" stroke="#1c1c1c" strokeWidth="0.3" />
 
                       {/* Right side silver spacer beads & Star link */}
-                      <path d="M 69,35 L 67.5,33.5 L 66,35 L 67,33 L 65.5,32 L 67.5,32.5 L 68.5,31 L 68,33 Z" fill="none" stroke="#D8CFC0" strokeWidth="0.5" />
+                      <path d="M 69,35 L 67.5,33.5 L 66,35 L 67,33 L 65.5,32 L 67.5,32.5 L 68.5,31 L 68,33 Z" fill="none" stroke="#F5F2EF" strokeWidth="0.5" />
                       <circle cx="64" cy="40" r="2.2" fill="url(#silverMetalS)" stroke="#1c1c1c" strokeWidth="0.3" />
                       <circle cx="58.5" cy="44.5" r="1.8" fill="url(#silverMetalS)" stroke="#1c1c1c" strokeWidth="0.3" />
 
                       {/* Center Clasp Silver Link */}
-                      <circle cx="50" cy="49" r="2.4" stroke="#D8CFC0" strokeWidth="0.8" fill="none" />
+                      <circle cx="50" cy="49" r="2.4" stroke="#F5F2EF" strokeWidth="0.8" fill="none" />
 
                       {/* Hanging Spider Pendant (All Sterling Silver) */}
                       <motion.g 
@@ -512,7 +512,7 @@ export default function Hero() {
                         style={{ transformOrigin: "50px 49px" }}
                       >
                         {/* Silver Link to Head */}
-                        <path d="M 50,51.4 L 50,53.5" stroke="#D8CFC0" strokeWidth="1.0" />
+                        <path d="M 50,51.4 L 50,53.5" stroke="#F5F2EF" strokeWidth="1.0" />
 
                         {/* Head */}
                         <circle cx="50" cy="55.5" r="2.0" fill="url(#silverMetalS)" stroke="#1c1c1c" strokeWidth="0.4" />
@@ -585,7 +585,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
             transition={{ duration: 0.9, delay: 1.1 }}
-            className="font-sans text-[10px] md:text-xs tracking-[0.24em] uppercase text-[#8E1F1F] font-bold mt-2"
+            className="font-sans text-[10px] md:text-xs tracking-[0.24em] uppercase text-[#E50914] font-bold mt-2"
           >
             Forged in Shadow &bull; Wearable Gothic Lore
           </motion.p>
@@ -595,7 +595,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
             transition={{ duration: 0.9, delay: 1.3 }}
-            className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#D8CFC0]/55 max-w-md mt-5 mb-8 text-center lg:text-left"
+            className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#F5F2EF]/55 max-w-md mt-5 mb-8 text-center lg:text-left"
           >
             A dark synthesis of raw gothic lore and sterling silver artistry. Discover our limited-edition wearable relics, forged in darkness and designed for those who walk between the shadows.
           </motion.p>
@@ -607,14 +607,14 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 1.5 }}
             className="flex flex-row gap-4 items-center justify-center lg:justify-start w-full"
           >
-            <Link href="/shop" className="relative group overflow-hidden border border-[#D8CFC0]/30 px-6 py-3 rounded-sm bg-transparent transition-all duration-300 hover:border-[#8E1F1F]/80">
-              <div className="absolute inset-0 w-0 bg-[#8E1F1F]/10 group-hover:w-full transition-all duration-500 ease-out" />
-              <span className="relative font-sans text-[10px] tracking-widest uppercase text-[#D8CFC0] group-hover:text-white transition-colors duration-300">
+            <Link href="/shop" className="relative group overflow-hidden border border-[#F5F2EF]/30 px-6 py-3 rounded-sm bg-transparent transition-all duration-300 hover:border-[#E50914]/80">
+              <div className="absolute inset-0 w-0 bg-[#E50914]/10 group-hover:w-full transition-all duration-500 ease-out" />
+              <span className="relative font-sans text-[10px] tracking-widest uppercase text-[#F5F2EF] group-hover:text-white transition-colors duration-300">
                 Shop Relics
               </span>
             </Link>
-            <Link href="/about" className="relative group overflow-hidden px-6 py-3 rounded-sm bg-[#D8CFC0]/5 border border-transparent transition-all duration-300 hover:bg-[#D8CFC0]/10">
-              <span className="font-sans text-[10px] tracking-widest uppercase text-[#D8CFC0]/70 group-hover:text-[#D8CFC0] transition-colors duration-300">
+            <Link href="/about" className="relative group overflow-hidden px-6 py-3 rounded-sm bg-[#F5F2EF]/5 border border-transparent transition-all duration-300 hover:bg-[#F5F2EF]/10">
+              <span className="font-sans text-[10px] tracking-widest uppercase text-[#F5F2EF]/70 group-hover:text-[#F5F2EF] transition-colors duration-300">
                 Our Lore
               </span>
             </Link>
@@ -638,21 +638,21 @@ export default function Hero() {
             className="relative w-[65vw] h-[65vw] md:w-[26vw] md:h-[26vw] max-w-[260px] max-h-[260px] aspect-square flex items-center justify-center select-none pointer-events-none overflow-visible z-20"
           >
             {/* Subtle Ambient Pulsing Glow Rings behind amulet */}
-            <div className="absolute w-[60%] h-[60%] rounded-full bg-[#8e1f1f]/22 blur-[30px] animate-pulse pointer-events-none" />
+            <div className="absolute w-[60%] h-[60%] rounded-full bg-[#E50914]/22 blur-[30px] animate-pulse pointer-events-none" />
             <div className="absolute w-[45%] h-[45%] rounded-full bg-[#00ff88]/4 blur-[20px] animate-pulse pointer-events-none" style={{ animationDuration: "5s" }} />
 
             {/* Ornate Double-Ring Gothic Silver Frame */}
-            <div className="absolute inset-0 rounded-full border-2 border-double border-[#D8CFC0]/30 shadow-[0_0_40px_rgba(0,0,0,0.92)] flex items-center justify-center pointer-events-none z-20">
+            <div className="absolute inset-0 rounded-full border-2 border-double border-[#F5F2EF]/30 shadow-[0_0_40px_rgba(0,0,0,0.92)] flex items-center justify-center pointer-events-none z-20">
               {/* Subtle notch detail ring */}
-              <div className="absolute inset-[3px] rounded-full border border-dashed border-[#D8CFC0]/12" />
+              <div className="absolute inset-[3px] rounded-full border border-dashed border-[#F5F2EF]/12" />
             </div>
             
             {/* Inner bezel ring */}
-            <div className="absolute inset-[8px] rounded-full border border-[#D8CFC0]/18 pointer-events-none z-20 shadow-[inset_0_0_12px_rgba(0,0,0,0.85)]" />
+            <div className="absolute inset-[8px] rounded-full border border-[#F5F2EF]/18 pointer-events-none z-20 shadow-[inset_0_0_12px_rgba(0,0,0,0.85)]" />
 
             {/* Video Container with Radial Transparency Mask */}
             <div 
-              className="absolute inset-[10px] rounded-full overflow-hidden bg-[#111111]/35 backdrop-blur-[2px]"
+              className="absolute inset-[10px] rounded-full overflow-hidden bg-[#070707]/35 backdrop-blur-[2px]"
               style={{
                 maskImage: "radial-gradient(circle, black 52%, transparent 72%)",
                 WebkitMaskImage: "radial-gradient(circle, black 52%, transparent 72%)"
@@ -686,11 +686,11 @@ export default function Hero() {
           });
         }}
       >
-        <span className="font-sans text-[8px] tracking-[0.25em] uppercase text-[#D8CFC0]/60">SCROLL DOWN</span>
+        <span className="font-sans text-[8px] tracking-[0.25em] uppercase text-[#F5F2EF]/60">SCROLL DOWN</span>
         <motion.svg
           animate={{ y: [0, 5, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-          className="w-3.5 h-3.5 text-[#D8CFC0]/55"
+          className="w-3.5 h-3.5 text-[#F5F2EF]/55"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -712,38 +712,38 @@ export default function Hero() {
           >
             {/* The Silk Thread stretching from viewport top */}
             <div 
-              className="w-[0.8px] bg-gradient-to-b from-[#8E1F1F]/20 via-[#D8CFC0]/45 to-[#D8CFC0]/70"
+              className="w-[0.8px] bg-gradient-to-b from-[#E50914]/20 via-[#F5F2EF]/45 to-[#F5F2EF]/70"
               style={{ height: `${dimensions.minY + scrollProgress * (dimensions.maxY - dimensions.minY)}px` }}
             />
 
-            {/* Swaying Spider Pendant (Silver) */}
+            {/* Swaying Spider Pendant (Silver Progress Gem -> Red Glowing) */}
             <motion.div
               style={{ 
                 transformOrigin: "50px 27px",
                 rotate: swayRotation,
                 marginTop: "-2px"
               }}
-              className="w-8 h-8 text-[#D8CFC0]/80 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]"
+              className="w-8 h-8 text-[#E50914]/80 filter drop-shadow-[0_0_5px_rgba(229,9,20,0.85)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
             >
               <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
                 <defs>
                   <radialGradient id="silverProgressGem" cx="35%" cy="30%" r="50%">
                     <stop offset="0%" stopColor="#FFFFFF" />
-                    <stop offset="35%" stopColor="#D8CFC0" />
-                    <stop offset="70%" stopColor="#6E6B64" />
-                    <stop offset="100%" stopColor="#2A2927" />
+                    <stop offset="35%" stopColor="#E50914" />
+                    <stop offset="75%" stopColor="#660000" />
+                    <stop offset="100%" stopColor="#070707" />
                   </radialGradient>
                 </defs>
 
                 {/* Silver Link Ring */}
-                <circle cx="50" cy="27" r="4.5" stroke="#D8CFC0" strokeWidth="1.2" fill="none" opacity="0.8" />
-                <path d="M50,31.5 L50,33.5" stroke="#D8CFC0" strokeWidth="1.2" />
+                <circle cx="50" cy="27" r="4.5" stroke="#E50914" strokeWidth="1.2" fill="none" opacity="0.8" />
+                <path d="M50,31.5 L50,33.5" stroke="#E50914" strokeWidth="1.2" />
 
                 {/* Head */}
-                <circle cx="50" cy="36" r="3.8" fill="url(#silverProgressGem)" stroke="#1c1c1c" strokeWidth="0.4" />
+                <circle cx="50" cy="36" r="3.8" fill="url(#silverProgressGem)" stroke="#070707" strokeWidth="0.4" />
 
                 {/* Cephalothorax */}
-                <circle cx="50" cy="45" r="6.5" fill="url(#silverProgressGem)" stroke="#141414" strokeWidth="0.4" />
+                <circle cx="50" cy="45" r="6.5" fill="url(#silverProgressGem)" stroke="#070707" strokeWidth="0.4" />
                 <circle cx="49" cy="43.5" r="0.6" fill="#FFFFFF" opacity="0.8" />
                 <circle cx="51" cy="43.5" r="0.6" fill="#FFFFFF" opacity="0.8" />
 
@@ -751,7 +751,7 @@ export default function Hero() {
                 <path 
                   d="M50,52 C41,61 39,73 50,77 C61,73 59,61 50,52 Z" 
                   fill="url(#silverProgressGem)" 
-                  stroke="#121212" 
+                  stroke="#070707" 
                   strokeWidth="0.6"
                 />
                 <path 
@@ -759,7 +759,7 @@ export default function Hero() {
                   fill="none" 
                   stroke="#FFFFFF" 
                   strokeWidth="0.5" 
-                  opacity="0.7"
+                  opacity="0.75"
                 />
                 <path 
                   d="M48.5,55.5 C46,59.5 46,62.5 48,65 C46.8,62.5 46.2,59.5 48.5,55.5 Z" 
@@ -768,7 +768,7 @@ export default function Hero() {
                 />
 
                 {/* Legs Group */}
-                <g stroke="#2B2A27" strokeWidth="2.0" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <g stroke="#330000" strokeWidth="2.0" fill="none" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M 45,43 C 33,35 30,22 36,15" />
                   <path d="M 44,45 C 28,42 22,50 24,56" />
                   <path d="M 44,48 C 26,52 24,65 29,72" />
@@ -779,7 +779,7 @@ export default function Hero() {
                   <path d="M 54,51 C 68,62 66,76 61,80" />
                 </g>
 
-                <g stroke="#FFFFFF" strokeWidth="0.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.8">
+                <g stroke="#E50914" strokeWidth="0.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.8">
                   <path d="M 44.5,42.5 C 33.5,35.5 30.5,22.5 35.5,15.5" />
                   <path d="M 43.5,44.5 C 28.5,41.5 22.5,49.5 24.5,55.5" />
                   <path d="M 43.5,47.5 C 26.5,51.5 24.5,64.5 28.5,71.5" />

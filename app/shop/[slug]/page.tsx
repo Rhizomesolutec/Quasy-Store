@@ -87,13 +87,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       {/* Reviews */}
       <section className="w-full px-4 md:px-12 lg:px-24 max-w-4xl pb-24 border-t border-white/[0.06] pt-16">
         <Eyebrow className="text-center mb-3">Customer Reviews</Eyebrow>
-        <ProductReviews reviews={product.reviews} rating={product.rating} count={product.reviewCount} />
+        <ProductReviews reviews={product.reviews} rating={product.rating} count={product.reviewCount} productSlug={product.slug} productName={product.name} />
       </section>
 
       {/* Related products */}
       {related.length > 0 && (
         <section className="w-full px-4 md:px-12 lg:px-24 max-w-7xl pb-24 border-t border-white/[0.06] pt-16">
-          <h2 className="font-heading text-3xl text-[#D8CFC0] text-center mb-12">You May Also Like</h2>
+          <h2 className="font-heading text-3xl text-[#F5F2EF] text-center mb-12">You May Also Like</h2>
           <ProductGrid products={related} />
         </section>
       )}

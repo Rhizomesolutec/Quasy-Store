@@ -16,12 +16,12 @@ export function LimitedEditionBanner() {
           sizes="100vw"
           className="object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/80 to-transparent" />
         <div
           className="absolute inset-0 opacity-[0.07] pointer-events-none"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 70% 40%, #8E1F1F 0%, transparent 50%)",
+              "radial-gradient(circle at 70% 40%, #E50914 0%, transparent 50%)",
           }}
         />
 
@@ -33,18 +33,18 @@ export function LimitedEditionBanner() {
           className="relative z-10 px-6 sm:px-10 md:px-16 py-16 max-w-lg"
         >
           <div className="inline-flex items-center gap-2 mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#8E1F1F] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E50914] animate-pulse" />
             <Eyebrow>Limited Edition</Eyebrow>
           </div>
-          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl text-[#D8CFC0] leading-[1.05] mb-5">
+          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl text-[#F5F2EF] leading-[1.05] mb-5">
             The Midnight Glow
           </h2>
           <Divider className="mb-6" />
-          <p className="font-sans text-sm md:text-base text-[#D8CFC0]/65 leading-relaxed mb-4">
+          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/65 leading-relaxed mb-4">
             A unique luminescent inlay catches and holds ambient light, releasing a slow crimson glow after dark.
             Only a handful remain in this casting run.
           </p>
-          <p className="font-sans text-[10px] uppercase tracking-[0.25em] text-[#8E1F1F] mb-8">
+          <p className="font-sans text-[10px] uppercase tracking-[0.25em] text-[#E50914] mb-8">
             6 pieces remaining · Serialized
           </p>
           <LinkButton href="/shop/midnight-glow-necklace" variant="filled" size="lg">

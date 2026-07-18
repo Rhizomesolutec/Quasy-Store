@@ -85,22 +85,22 @@ export function SearchClient({ initialQuery }: { initialQuery: string }) {
           value={query}
           onChange={(e) => runSearch(e.target.value)}
           placeholder="Search for spiders, silver, gold..."
-          className="w-full bg-transparent border-b-2 border-[#D8CFC0]/20 focus:border-[#8E1F1F] outline-none font-heading text-2xl md:text-4xl text-[#D8CFC0] placeholder-[#D8CFC0]/25 py-4 transition-colors"
+          className="w-full bg-transparent border-b-2 border-[#F5F2EF]/20 focus:border-[#E50914] outline-none font-heading text-2xl md:text-4xl text-[#F5F2EF] placeholder-[#F5F2EF]/25 py-4 transition-colors"
         />
-        <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 text-[#D8CFC0]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 text-[#F5F2EF]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
 
         {/* Suggestions dropdown */}
         {query.trim() && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 w-full bg-[#151515] border border-white/[0.08] shadow-xl z-10 mt-1">
+          <div className="absolute top-full left-0 w-full bg-[#170909] border border-white/[0.08] shadow-xl z-10 mt-1">
             {suggestions.map((s) => (
               <button
                 key={s.id}
                 onClick={() => runSearch(s.name)}
-                className="w-full text-left px-5 py-3 text-sm text-[#D8CFC0]/70 hover:text-[#D8CFC0] hover:bg-white/[0.03] transition-colors font-sans"
+                className="w-full text-left px-5 py-3 text-sm text-[#F5F2EF]/70 hover:text-[#F5F2EF] hover:bg-white/[0.03] transition-colors font-sans"
               >
-                {s.name} <span className="text-[#D8CFC0]/30 text-xs">— {s.category}</span>
+                {s.name} <span className="text-[#F5F2EF]/30 text-xs">— {s.category}</span>
               </button>
             ))}
           </div>
@@ -111,13 +111,13 @@ export function SearchClient({ initialQuery }: { initialQuery: string }) {
         <div className="max-w-2xl mx-auto mt-16 space-y-10">
           {recent.length > 0 && (
             <div>
-              <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mb-3">Recent Searches</p>
+              <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-3">Recent Searches</p>
               <div className="flex flex-wrap gap-2">
                 {recent.map((r) => (
                   <button
                     key={r}
                     onClick={() => runSearch(r)}
-                    className="px-4 py-2 text-xs border border-white/[0.1] text-[#D8CFC0]/70 hover:border-[#8E1F1F] hover:text-[#D8CFC0] transition-colors"
+                    className="px-4 py-2 text-xs border border-white/[0.1] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors"
                   >
                     {r}
                   </button>
@@ -126,13 +126,13 @@ export function SearchClient({ initialQuery }: { initialQuery: string }) {
             </div>
           )}
           <div>
-            <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mb-3">Popular Searches</p>
+            <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-3">Popular Searches</p>
             <div className="flex flex-wrap gap-2">
               {POPULAR_SEARCHES.map((s) => (
                 <button
                   key={s}
                   onClick={() => runSearch(s)}
-                  className="px-4 py-2 text-xs border border-[#8E1F1F]/30 text-[#D8CFC0]/70 hover:border-[#8E1F1F] hover:text-[#D8CFC0] transition-colors"
+                  className="px-4 py-2 text-xs border border-[#E50914]/30 text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors"
                 >
                   {s}
                 </button>
@@ -152,7 +152,7 @@ export function SearchClient({ initialQuery }: { initialQuery: string }) {
         />
       ) : (
         <div className="mt-16">
-          <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/40 mb-8 text-center">
+          <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/40 mb-8 text-center">
             {results.length} result{results.length === 1 ? "" : "s"} for &ldquo;{query}&rdquo;
           </p>
           <ProductGrid products={results} />

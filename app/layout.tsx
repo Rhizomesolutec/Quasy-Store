@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Cutive_Mono, Fraunces } from "next/font/google";
+import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 
-const cutiveMono = Cutive_Mono({
-  weight: "400",
-  variable: "--font-cutive-mono",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const dmSerifDisplay = DM_Serif_Display({
+  weight: "400",
+  variable: "--font-dm-serif",
   subsets: ["latin"],
 });
 
@@ -33,9 +33,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cutiveMono.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${dmSerifDisplay.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#111111] text-[#D8CFC0] font-sans selection:bg-[#8E1F1F] selection:text-[#D8CFC0]">
+      <body className="min-h-full flex flex-col bg-[#070707] text-[#F5F2EF] font-sans selection:bg-[#E50914] selection:text-[#F5F2EF]">
         <CartProvider>
           <WishlistProvider>
             <CustomCursor />

@@ -61,13 +61,13 @@ export function WhyShopWithUs() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.65, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -6 }}
-              className="group border border-white/[0.08] bg-white/[0.015] p-7 md:p-8 transition-colors duration-500 hover:border-[#8E1F1F]/40 hover:bg-[#8E1F1F]/[0.04]"
+              className="group border border-white/[0.08] bg-white/[0.015] p-7 md:p-8 transition-colors duration-500 hover:border-[#E50914]/40 hover:bg-[#E50914]/[0.04]"
             >
-              <div className="w-12 h-12 rounded-full border border-[#8E1F1F]/30 bg-[#8E1F1F]/[0.08] flex items-center justify-center text-[#8E1F1F] mb-6 transition-all duration-500 group-hover:border-[#8E1F1F]/60 group-hover:shadow-[0_0_24px_rgba(142,31,31,0.25)]">
+              <div className="w-12 h-12 rounded-full border border-[#E50914]/30 bg-[#E50914]/[0.08] flex items-center justify-center text-[#E50914] mb-6 transition-all duration-500 group-hover:border-[#E50914]/60 group-hover:shadow-[0_0_24px_rgba(229, 9, 20,0.25)]">
                 {item.icon}
               </div>
-              <h3 className="font-heading text-xl text-[#D8CFC0] mb-3">{item.title}</h3>
-              <p className="font-sans text-xs md:text-sm text-[#D8CFC0]/55 leading-relaxed">{item.body}</p>
+              <h3 className="font-heading text-xl text-[#F5F2EF] mb-3">{item.title}</h3>
+              <p className="font-sans text-xs md:text-sm text-[#F5F2EF]/55 leading-relaxed">{item.body}</p>
             </motion.div>
           ))}
         </div>

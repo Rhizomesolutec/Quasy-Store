@@ -101,8 +101,8 @@ const SPIDER = {
 };
 
 const SILVER: Product["colors"][number] = { name: "Aged Sterling Silver", hex: "#B9B4AA" };
-const CRIMSON: Product["colors"][number] = { name: "Crimson Bronze", hex: "#8E1F1F" };
-const OBSIDIAN: Product["colors"][number] = { name: "Obsidian Black", hex: "#1a1a1a" };
+const CRIMSON: Product["colors"][number] = { name: "Crimson Bronze", hex: "#E50914" };
+const OBSIDIAN: Product["colors"][number] = { name: "Obsidian Black", hex: "#1A0A0A" };
 const GOLD: Product["colors"][number] = { name: "Antique Gold", hex: "#a08a52" };
 
 function reviewsFor(seedName: string): Review[] {

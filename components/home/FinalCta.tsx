@@ -17,19 +17,19 @@ export function FinalCta() {
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(90vw,520px)] h-[min(90vw,520px)] rounded-full pointer-events-none opacity-[0.12]"
           style={{
-            background: "radial-gradient(circle, #8E1F1F 0%, transparent 70%)",
+            background: "radial-gradient(circle, #E50914 0%, transparent 70%)",
           }}
         />
 
         <div className="relative z-10">
           <Eyebrow className="mb-5">Begin the Ritual</Eyebrow>
-          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#D8CFC0] leading-[1.05] mb-6">
+          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#F5F2EF] leading-[1.05] mb-6">
             Find the Relic
             <br />
             That Finds You
           </h2>
           <Divider className="mx-auto mb-8" />
-          <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed max-w-lg mx-auto mb-12">
+          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/60 leading-relaxed max-w-lg mx-auto mb-12">
             Browse the full catalog of gothic fine jewelry — cast slowly, finished by hand, and built to deepen with age.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">

@@ -98,26 +98,26 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
 
         {/* Main Content */}
         <div className="flex-1 min-w-0">
-          {title && <h2 className="font-heading text-2xl text-[#D8CFC0] mb-6">{title}</h2>}
+          {title && <h2 className="font-heading text-2xl text-[#F5F2EF] mb-6">{title}</h2>}
 
           {/* Toolbar */}
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
             <button
               onClick={() => setIsMobileFiltersOpen(true)}
-              className="md:hidden flex items-center gap-2 text-xs uppercase tracking-widest text-[#D8CFC0]/70 hover:text-[#D8CFC0] border border-white/[0.1] px-4 py-2"
+              className="md:hidden flex items-center gap-2 text-xs uppercase tracking-widest text-[#F5F2EF]/70 hover:text-[#F5F2EF] border border-white/[0.1] px-4 py-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M7 12h10M10 18h4" />
               </svg>
               Filters
             </button>
-            <p className="hidden md:block font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/40">
+            <p className="hidden md:block font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/40">
               Showing {visibleProducts.length} of {filtered.length}
             </p>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-[#1a1a1a] border border-white/[0.08] text-xs text-[#D8CFC0] px-3 py-2 outline-none focus:border-[#8E1F1F]/40 uppercase tracking-widest"
+              className="bg-[#1A0A0A] border border-white/[0.08] text-xs text-[#F5F2EF] px-3 py-2 outline-none focus:border-[#E50914]/40 uppercase tracking-widest"
             >
               {SORT_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -130,8 +130,8 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
           {/* Grid */}
           {visibleProducts.length === 0 ? (
             <div className="py-24 text-center">
-              <p className="font-heading text-xl text-[#D8CFC0] mb-2">No pieces match these filters</p>
-              <p className="font-sans text-sm text-[#D8CFC0]/50">Try widening your price range or clearing a filter.</p>
+              <p className="font-heading text-xl text-[#F5F2EF] mb-2">No pieces match these filters</p>
+              <p className="font-sans text-sm text-[#F5F2EF]/50">Try widening your price range or clearing a filter.</p>
             </div>
           ) : (
             <motion.div layout className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
@@ -156,7 +156,7 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
             <div className="flex justify-center mt-16">
               <button
                 onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-                className="border border-[#8E1F1F] px-8 py-3 text-xs tracking-widest uppercase text-[#D8CFC0] hover:bg-[#8E1F1F] transition-all duration-300"
+                className="border border-[#E50914] px-8 py-3 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#E50914] transition-all duration-300"
               >
                 Load More
               </button>
@@ -166,7 +166,7 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
           {/* Recently Viewed */}
           {recentlyViewed.length > 0 && (
             <div className="mt-24 pt-12 border-t border-white/[0.06]">
-              <h3 className="font-heading text-xl text-[#D8CFC0] mb-8">Recently Viewed</h3>
+              <h3 className="font-heading text-xl text-[#F5F2EF] mb-8">Recently Viewed</h3>
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                 {recentlyViewed.slice(0, 4).map((product) => (
                   <ProductCard key={product.id} product={product} onQuickView={setQuickViewProduct} />
@@ -193,11 +193,11 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed left-0 top-0 h-screen w-[85vw] max-w-sm bg-[#151515] border-r border-white/[0.08] shadow-2xl z-50 p-6 overflow-y-auto"
+              className="fixed left-0 top-0 h-screen w-[85vw] max-w-sm bg-[#170909] border-r border-white/[0.08] shadow-2xl z-50 p-6 overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <span className="font-heading text-sm uppercase tracking-widest text-[#D8CFC0]">Filter & Sort</span>
-                <button onClick={() => setIsMobileFiltersOpen(false)} className="text-[#D8CFC0] hover:text-[#8E1F1F] p-1">
+                <span className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">Filter & Sort</span>
+                <button onClick={() => setIsMobileFiltersOpen(false)} className="text-[#F5F2EF] hover:text-[#E50914] p-1">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                   </svg>

@@ -141,32 +141,32 @@ export default function PaymentPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              className="border border-[#8E1F1F]/20 bg-[#161616]/60 p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6"
+              className="border border-[#E50914]/20 bg-[#170909]/60 p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6"
             >
-              <span className="text-4xl text-[#8E1F1F]">✦</span>
-              <h2 className="font-heading text-3xl text-[#D8CFC0]">Order Placed Successfully</h2>
-              <p className="font-sans text-sm text-[#D8CFC0]/70 max-w-md mx-auto leading-relaxed">
+              <span className="text-4xl text-[#E50914]">✦</span>
+              <h2 className="font-heading text-3xl text-[#F5F2EF]">Order Placed Successfully</h2>
+              <p className="font-sans text-sm text-[#F5F2EF]/70 max-w-md mx-auto leading-relaxed">
                 The order has been forged. Your confirmation receipt is registered under ID: 
-                <span className="font-mono block text-lg font-semibold text-[#8E1F1F] mt-2 tracking-widest">
+                <span className="font-mono block text-lg font-semibold text-[#E50914] mt-2 tracking-widest">
                   {generatedOrderId}
                 </span>
               </p>
               <div className="border-t border-white/[0.06] pt-6 max-w-xs mx-auto">
-                <p className="font-sans text-xs text-[#D8CFC0]/40 uppercase tracking-widest">
+                <p className="font-sans text-xs text-[#F5F2EF]/40 uppercase tracking-widest">
                   Shipping updates will be sent to
                 </p>
-                <p className="font-mono text-xs text-[#D8CFC0]/70 mt-1">{email}</p>
+                <p className="font-mono text-xs text-[#F5F2EF]/70 mt-1">{email}</p>
               </div>
               <div className="pt-4 flex justify-center gap-4">
                 <Link
                   href="/shop"
-                  className="border border-white/[0.08] hover:border-[#8E1F1F] hover:text-[#8E1F1F] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300"
+                  className="border border-white/[0.08] hover:border-[#E50914] hover:text-[#E50914] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300"
                 >
                   Continue Shopping
                 </Link>
                 <Link
                   href="/account"
-                  className="border border-[#8E1F1F] bg-[#8E1F1F]/15 hover:bg-[#8E1F1F] text-[#D8CFC0] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300"
+                  className="border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300"
                 >
                   View My Vault
                 </Link>
@@ -179,12 +179,12 @@ export default function PaymentPage() {
               <form onSubmit={handlePaymentSubmit} className="space-y-10">
                 {/* Shipping Details */}
                 <div className="space-y-5">
-                  <h3 className="font-heading text-lg text-[#D8CFC0] border-b border-white/[0.06] pb-2">
+                  <h3 className="font-heading text-lg text-[#F5F2EF] border-b border-white/[0.06] pb-2">
                     1. Shipping Destination
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2">
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Full Name
                       </label>
                       <input
@@ -193,12 +193,12 @@ export default function PaymentPage() {
                         required
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans"
                         placeholder="Alex Sterling"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Email Address
                       </label>
                       <input
@@ -207,12 +207,12 @@ export default function PaymentPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans"
                         placeholder="alex@example.com"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Street Address
                       </label>
                       <input
@@ -221,12 +221,12 @@ export default function PaymentPage() {
                         required
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans"
                         placeholder="14 Cathedral Row, Suite 3"
                       />
                     </div>
                     <div>
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         City
                       </label>
                       <input
@@ -235,12 +235,12 @@ export default function PaymentPage() {
                         required
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans"
                         placeholder="New Haven Quarter"
                       />
                     </div>
                     <div>
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Postal Code
                       </label>
                       <input
@@ -249,19 +249,19 @@ export default function PaymentPage() {
                         required
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all font-sans font-mono"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-sans font-mono"
                         placeholder="NH 06510"
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1.5">
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Shipping Zone
                       </label>
                       <select
                         id="checkout-shipping-zone"
                         value={shippingZone}
                         onChange={(e) => setShippingZone(e.target.value as any)}
-                        className="w-full bg-[#1a1a1a] border border-white/[0.08] px-3.5 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/50 transition-all"
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all"
                       >
                         <option value="domestic">Domestic Shipping — {formatPrice(8)} (2–4 days)</option>
                         <option value="international">International Shipping — {formatPrice(24)} (5–9 days)</option>
@@ -272,7 +272,7 @@ export default function PaymentPage() {
 
                 {/* Payment Methods */}
                 <div className="space-y-5">
-                  <h3 className="font-heading text-lg text-[#D8CFC0] border-b border-white/[0.06] pb-2">
+                  <h3 className="font-heading text-lg text-[#F5F2EF] border-b border-white/[0.06] pb-2">
                     2. Payment Portal
                   </h3>
 
@@ -285,8 +285,8 @@ export default function PaymentPage() {
                         onClick={() => setPaymentMethod(method)}
                         className={`py-2.5 text-[10px] uppercase tracking-widest transition-all duration-200 border-b cursor-pointer text-center ${
                           paymentMethod === method
-                            ? "text-[#8E1F1F] border-[#8E1F1F]"
-                            : "text-[#D8CFC0]/40 hover:text-[#D8CFC0] border-transparent"
+                            ? "text-[#E50914] border-[#E50914]"
+                            : "text-[#F5F2EF]/40 hover:text-[#F5F2EF] border-transparent"
                         }`}
                       >
                         {method === "card" ? "Credit Card" : method === "upi" ? "UPI ID" : "Net Banking"}
@@ -299,7 +299,7 @@ export default function PaymentPage() {
                     {paymentMethod === "card" && (
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="sm:col-span-2">
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                             Card Number
                           </label>
                           <input
@@ -307,12 +307,12 @@ export default function PaymentPage() {
                             required={paymentMethod === "card"}
                             value={cardNumber}
                             onChange={(e) => setCardNumber(e.target.value.replace(/\s?/g, "").replace(/(\d{4})/g, "$1 ").trim().slice(0, 19))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40 font-mono"
+                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
                             placeholder="4000 1234 5678 9010"
                           />
                         </div>
                         <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                             Expiration Date
                           </label>
                           <input
@@ -320,12 +320,12 @@ export default function PaymentPage() {
                             required={paymentMethod === "card"}
                             value={cardExpiry}
                             onChange={(e) => setCardExpiry(e.target.value.replace(/\//g, "").replace(/(\d{2})/, "$1/").trim().slice(0, 5))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40 font-mono"
+                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
                             placeholder="MM/YY"
                           />
                         </div>
                         <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                             CVV / CVC
                           </label>
                           <input
@@ -333,12 +333,12 @@ export default function PaymentPage() {
                             required={paymentMethod === "card"}
                             value={cardCvv}
                             onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40 font-mono"
+                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
                             placeholder="•••"
                           />
                         </div>
                         <div className="sm:col-span-2">
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                             Cardholder Name
                           </label>
                           <input
@@ -346,7 +346,7 @@ export default function PaymentPage() {
                             required={paymentMethod === "card"}
                             value={cardName}
                             onChange={(e) => setCardName(e.target.value)}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40"
+                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40"
                             placeholder="Alex Sterling"
                           />
                         </div>
@@ -367,7 +367,7 @@ export default function PaymentPage() {
                                   <path d="M5.5 8c0 .6.1 1.1.4 1.6l3.6 2.8c1.3-1.4 2.3-2.8 2.3-4.4 0-1.6-1-3-2.3-4.4L5.9 6.4c-.3.5-.4 1-.4 1.6z" fill="#34A853"/>
                                   <path d="M8 0C4.4 0 1.4 2.3.4 5.6l3.6 2.8C4.7 6 6.2 4.5 8 4.5c2 0 3.7 1.5 4.3 3.5l3.6-2.8C14.6 2.3 11.6 0 8 0z" fill="#4285F4"/>
                                   <path d="M8 16c3.6 0 6.6-2.3 7.6-5.6l-3.6-2.8c-.6 2-2.3 3.5-4.3 3.5-1.8 0-3.3-1.5-4-3.5l-3.6 2.8C1.4 13.7 4.4 16 8 16z" fill="#FBBC05"/>
-                                  <text x="18" y="12" fill="#D8CFC0" fontFamily="sans-serif" fontSize="10" fontWeight="bold">Pay</text>
+                                  <text x="18" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="10" fontWeight="bold">Pay</text>
                                 </svg>
                               )
                             },
@@ -378,7 +378,7 @@ export default function PaymentPage() {
                                 <svg viewBox="0 0 54 16" fill="none" className="h-3.5 w-auto">
                                   <rect width="14" height="14" rx="3" fill="#5F259F" y="1" />
                                   <path d="M7 11c1.5 0 2.5-1 2.5-2.5S8.5 6 7 6H5v5h2zm-1-4h1c.8 0 1.3.4 1.3 1.2S7.8 9.5 7 9.5H6V7z" fill="white" />
-                                  <text x="17" y="12" fill="#D8CFC0" fontFamily="sans-serif" fontSize="8" fontWeight="bold">PhonePe</text>
+                                  <text x="17" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="8" fontWeight="bold">PhonePe</text>
                                 </svg>
                               )
                             },
@@ -399,7 +399,7 @@ export default function PaymentPage() {
                                 <svg viewBox="0 0 35 16" fill="none" className="h-3.5 w-auto">
                                   <path d="M2 14L8 2h3l-6 12H2z" fill="#097939" />
                                   <path d="M7 14l6-12h3l-6 12H7z" fill="#ED7D31" />
-                                  <text x="17" y="12" fill="#D8CFC0" fontFamily="sans-serif" fontSize="9" fontWeight="bold">UPI</text>
+                                  <text x="17" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="9" fontWeight="bold">UPI</text>
                                 </svg>
                               )
                             }
@@ -410,8 +410,8 @@ export default function PaymentPage() {
                               onClick={() => setSelectedUpiApp(app.id as any)}
                               className={`py-2.5 px-1 flex flex-col items-center justify-center gap-1.5 border transition-all duration-200 cursor-pointer rounded-sm ${
                                 selectedUpiApp === app.id
-                                  ? "border-[#8E1F1F] bg-[#8E1F1F]/10 text-white"
-                                  : "border-white/[0.06] bg-[#1a1a1a] text-[#D8CFC0]/50 hover:border-white/20"
+                                  ? "border-[#E50914] bg-[#E50914]/10 text-white"
+                                  : "border-white/[0.06] bg-[#1A0A0A] text-[#F5F2EF]/50 hover:border-white/20"
                               }`}
                             >
                               {app.logo}
@@ -420,7 +420,7 @@ export default function PaymentPage() {
                         </div>
 
                         <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                             UPI ID
                           </label>
                           <input
@@ -428,7 +428,7 @@ export default function PaymentPage() {
                             required={paymentMethod === "upi"}
                             value={upiId}
                             onChange={(e) => setUpiId(e.target.value)}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40 font-mono"
+                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
                             placeholder={
                               selectedUpiApp === "gpay"
                                 ? "username@oksbi"
@@ -445,10 +445,10 @@ export default function PaymentPage() {
 
                     {paymentMethod === "netbanking" && (
                       <div className="space-y-3">
-                        <label className="block font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/40 mb-1">
+                        <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
                           Select Bank
                         </label>
-                        <select className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/40">
+                        <select className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40">
                           <option>State Bank of India</option>
                           <option>HDFC Bank</option>
                           <option>ICICI Bank</option>
@@ -465,11 +465,11 @@ export default function PaymentPage() {
                   id="checkout-complete-order-btn"
                   type="submit"
                   disabled={processing}
-                  className="w-full border border-[#8E1F1F] bg-[#8E1F1F]/15 hover:bg-[#8E1F1F] text-[#D8CFC0] py-4 px-6 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] py-4 px-6 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {processing ? (
                     <>
-                      <span className="w-4 h-4 border-2 border-[#D8CFC0] border-t-transparent rounded-full animate-spin" />
+                      <span className="w-4 h-4 border-2 border-[#F5F2EF] border-t-transparent rounded-full animate-spin" />
                       <span>Forging Receipt...</span>
                     </>
                   ) : (
@@ -479,8 +479,8 @@ export default function PaymentPage() {
               </form>
 
               {/* Order Summary Sidebar */}
-              <aside className="border border-white/[0.08] bg-[#161616]/40 p-6 space-y-6 lg:sticky lg:top-24">
-                <h3 className="font-heading text-sm uppercase tracking-widest text-[#D8CFC0] border-b border-white/[0.06] pb-2">
+              <aside className="border border-white/[0.08] bg-[#170909]/40 p-6 space-y-6 lg:sticky lg:top-24">
+                <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF] border-b border-white/[0.06] pb-2">
                   Order Details
                 </h3>
 
@@ -492,29 +492,29 @@ export default function PaymentPage() {
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div>
-                          <p className="font-sans text-xs text-[#D8CFC0] truncate">{item.name}</p>
-                          <p className="font-sans text-[9px] text-[#D8CFC0]/40 uppercase tracking-widest mt-0.5">
+                          <p className="font-sans text-xs text-[#F5F2EF] truncate">{item.name}</p>
+                          <p className="font-sans text-[9px] text-[#F5F2EF]/40 uppercase tracking-widest mt-0.5">
                             Qty: {item.quantity} · {item.variant}
                           </p>
                         </div>
-                        <p className="font-mono text-xs text-[#8E1F1F]">{formatPrice(item.price * item.quantity)}</p>
+                        <p className="font-mono text-xs text-[#E50914]">{formatPrice(item.price * item.quantity)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="border-t border-white/[0.08] pt-4 space-y-2.5 font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/60">
+                <div className="border-t border-white/[0.08] pt-4 space-y-2.5 font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="font-mono text-[#D8CFC0]">{formatPrice(subtotal)}</span>
+                    <span className="font-mono text-[#F5F2EF]">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="font-mono text-[#D8CFC0]">{formatPrice(shipping)}</span>
+                    <span className="font-mono text-[#F5F2EF]">{formatPrice(shipping)}</span>
                   </div>
                   <div className="flex justify-between items-baseline pt-4 border-t border-white/[0.08]">
-                    <span className="text-[#D8CFC0]/80 font-semibold">Total</span>
-                    <span className="font-mono text-xl text-[#8E1F1F] font-semibold">{formatPrice(total)}</span>
+                    <span className="text-[#F5F2EF]/80 font-semibold">Total</span>
+                    <span className="font-mono text-xl text-[#E50914] font-semibold">{formatPrice(total)}</span>
                   </div>
                 </div>
               </aside>

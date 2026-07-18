@@ -55,23 +55,23 @@ export default function CustomCursor() {
         left: cursorX,
         top: cursorY,
       }}
-      className="fixed w-6 h-6 z-[9999] pointer-events-none select-none filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.65)]"
+      className="fixed w-6 h-6 z-[9999] pointer-events-none select-none filter drop-shadow-[0_0_5px_rgba(229,9,20,0.85)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
     >
-      <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full text-[#D8CFC0]/85">
+      <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full text-[#E50914]/85">
         <defs>
           <radialGradient id="cursorMetal" cx="35%" cy="30%" r="50%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="35%" stopColor="#D8CFC0" />
-            <stop offset="75%" stopColor="#55534E" />
-            <stop offset="100%" stopColor="#1C1B1A" />
+            <stop offset="35%" stopColor="#E50914" />
+            <stop offset="75%" stopColor="#660000" />
+            <stop offset="100%" stopColor="#070707" />
           </radialGradient>
         </defs>
 
         {/* Head */}
-        <circle cx="50" cy="38" r="4.5" fill="url(#cursorMetal)" stroke="#111111" strokeWidth="0.5" />
+        <circle cx="50" cy="38" r="4.5" fill="url(#cursorMetal)" stroke="#070707" strokeWidth="0.5" />
 
         {/* Cephalothorax */}
-        <circle cx="50" cy="48" r="8" fill="url(#cursorMetal)" stroke="#111111" strokeWidth="0.5" />
+        <circle cx="50" cy="48" r="8" fill="url(#cursorMetal)" stroke="#070707" strokeWidth="0.5" />
         <circle cx="48.2" cy="46.2" r="0.8" fill="#FFFFFF" opacity="0.8" />
         <circle cx="51.8" cy="46.2" r="0.8" fill="#FFFFFF" opacity="0.8" />
 
@@ -79,7 +79,7 @@ export default function CustomCursor() {
         <path 
           d="M 50,56 C 40,66 38,80 50,85 C 62,80 60,66 50,56 Z" 
           fill="url(#cursorMetal)" 
-          stroke="#111111" 
+          stroke="#070707" 
           strokeWidth="0.8"
         />
         <path 
@@ -91,7 +91,7 @@ export default function CustomCursor() {
         />
 
         {/* Legs Group */}
-        <g stroke="#222222" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <g stroke="#330000" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
           {/* Left Legs */}
           <path d="M 45,45 C 30,36 28,22 34,14" />
           <path d="M 43,48 C 24,44 18,52 20,59" />
@@ -105,7 +105,7 @@ export default function CustomCursor() {
         </g>
 
         {/* Leg highlights */}
-        <g stroke="#FFFFFF" strokeWidth="0.6" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.75">
+        <g stroke="#E50914" strokeWidth="0.6" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.75">
           {/* Left Legs */}
           <path d="M 44.5,44.5 C 30.5,36.5 28.5,22.5 33.5,14.5" />
           <path d="M 42.5,47.5 C 24.5,43.5 18.5,51.5 20.5,58.5" />

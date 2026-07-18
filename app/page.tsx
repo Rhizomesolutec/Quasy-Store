@@ -26,7 +26,7 @@ export default function Home() {
       {/* Refined transition spacer */}
       <div className="w-full h-[2vh] md:h-[12vh] flex items-center justify-center" aria-hidden>
         <div className="flex flex-col items-center gap-1.5">
-          <div className="w-[1px] h-4 md:h-16 bg-gradient-to-b from-transparent via-[#8E1F1F]/40 to-transparent" />
+          <div className="w-[1px] h-4 md:h-16 bg-gradient-to-b from-transparent via-[#E50914]/40 to-transparent" />
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export default function Home() {
 
       {/* Closing mark — preserved brand footer line */}
       <div className="w-full flex flex-col items-center justify-end pb-14 pt-8 border-t border-white/[0.04]">
-        <p className="font-sans text-xs tracking-widest text-[#D8CFC0]/40 uppercase">
+        <p className="font-sans text-xs tracking-widest text-[#F5F2EF]/40 uppercase">
           © 1924 The Arachnid Requiem
         </p>
       </div>

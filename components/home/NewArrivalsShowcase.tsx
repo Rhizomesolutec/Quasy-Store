@@ -30,7 +30,7 @@ export function NewArrivalsShowcase() {
             <button
               onClick={() => scrollBy(-1)}
               aria-label="Scroll left"
-              className="w-10 h-10 border border-white/[0.12] text-[#D8CFC0]/70 hover:border-[#8E1F1F] hover:text-[#D8CFC0] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
@@ -39,7 +39,7 @@ export function NewArrivalsShowcase() {
             <button
               onClick={() => scrollBy(1)}
               aria-label="Scroll right"
-              className="w-10 h-10 border border-white/[0.12] text-[#D8CFC0]/70 hover:border-[#8E1F1F] hover:text-[#D8CFC0] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
@@ -71,7 +71,7 @@ export function NewArrivalsShowcase() {
       <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 mt-10 flex justify-center">
         <Link
           href="/new-arrivals"
-          className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0] border-b border-[#8E1F1F] pb-1.5 hover:text-[#8E1F1F] transition-colors"
+          className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1.5 hover:text-[#E50914] transition-colors"
         >
           View All New Arrivals →
         </Link>

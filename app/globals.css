@@ -1,34 +1,119 @@
 @import "tailwindcss";
 
 @theme {
-  --color-vintage-bg: #111111;
-  --color-vintage-text: #D8CFC0;
-  --color-vintage-accent: #8E1F1F;
+  --color-vintage-bg: #050505;
+  --color-vintage-text: #F5F2EF;
+  --color-vintage-accent: #E50914;
   
-  --font-sans: var(--font-cutive-mono);
-  --font-heading: var(--font-fraunces);
+  --font-sans: var(--font-dm-sans);
+  --font-heading: var(--font-dm-serif);
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-vintage-bg);
+  background-color: #050505;
+  background-image: radial-gradient(circle at center, #111111 0%, #050505 100%);
   color: var(--color-vintage-text);
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Custom Scrollbar for a vintage feel */
+/* Subtle CRT Monitor Scanline texture overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.12) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.25;
+}
+
+/* Subtle cinematic ambient lighting */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% 25%, rgba(229, 9, 20, 0.045) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Heading Styling: Large, Bold, Uppercase, Wide letter spacing, Deep red color, Soft outer glow, Subtle shadow */
+h1.font-heading,
+h2.font-heading,
+h3.font-heading,
+h4.font-heading,
+.font-heading {
+  text-transform: uppercase;
+  letter-spacing: 0.18em !important;
+  color: #E50914 !important;
+  text-shadow: 0 0 10px rgba(229, 9, 20, 0.45), 0 0 2px rgba(0, 0, 0, 0.95);
+  font-weight: 700;
+}
+
+/* Custom Scrollbar - Retro 90s CRT style */
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #1A1A1A; 
+  background: #050505; 
+  border-left: 1px solid rgba(229, 9, 20, 0.15);
 }
 ::-webkit-scrollbar-thumb {
-  background: #333333; 
+  background: #E50914; 
+  border: 2px solid #050505;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #8E1F1F; 
+  background: #FF2A45; 
+}
+
+/* Global Forms Override - Retro Sharp Borders */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+textarea,
+select {
+  background-color: #171717 !important;
+  border: 1px solid #E50914 !important;
+  color: #F5F2EF !important;
+  outline: none !important;
+  border-radius: 0px !important;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #FF2A45 !important;
+  box-shadow: 0 0 10px rgba(255, 42, 69, 0.35), inset 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8E8782 !important;
 }
 
 /* Noise overlay utility */
@@ -40,6 +125,19 @@ body {
   height: 100vh;
   pointer-events: none;
   z-index: 50;
-  opacity: 0.04;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
+
+/* Category Title outline red style */
+h3.font-heading.text-outline-red {
+  color: transparent !important;
+  -webkit-text-stroke: 1.2px #8A0303;
+  text-shadow: 0 0 5px rgba(138, 3, 3, 0.25) !important;
+}
+
+.group:hover h3.font-heading.text-outline-red {
+  -webkit-text-stroke: 1.2px #B30000;
+  text-shadow: 0 0 8px rgba(179, 0, 0, 0.45) !important;
+}
+

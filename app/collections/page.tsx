@@ -45,11 +45,11 @@ export default function CollectionsPage() {
                 <Eyebrow className="mb-4">
                   Collection {String(idx + 1).padStart(2, "0")} · {count} {count === 1 ? "piece" : "pieces"}
                 </Eyebrow>
-                <h2 className="font-heading text-4xl md:text-5xl text-[#D8CFC0] mb-6 leading-tight">{collection.name}</h2>
-                <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed max-w-md mb-8">
+                <h2 className="font-heading text-4xl md:text-5xl text-[#F5F2EF] mb-6 leading-tight">{collection.name}</h2>
+                <p className="font-sans text-sm md:text-base text-[#F5F2EF]/60 leading-relaxed max-w-md mb-8">
                   {collection.description}
                 </p>
-                <span className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0] border-b border-[#8E1F1F] pb-1.5 group-hover:text-[#8E1F1F] transition-colors">
+                <span className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1.5 group-hover:text-[#E50914] transition-colors">
                   View Collection →
                 </span>
               </div>

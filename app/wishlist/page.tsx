@@ -52,11 +52,11 @@ export default function WishlistPage() {
                 <Link href={`/shop/${item.slug}`} className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden mb-4">
                   <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </Link>
-                <Link href={`/shop/${item.slug}`} className="font-heading text-lg text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors mb-1">
+                <Link href={`/shop/${item.slug}`} className="font-heading text-lg text-[#F5F2EF] hover:text-[#E50914] transition-colors mb-1">
                   {item.name}
                 </Link>
-                <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mb-3">{item.variant}</p>
-                <p className="font-sans text-sm text-[#8E1F1F] mb-4">{formatPrice(item.price)}</p>
+                <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-3">{item.variant}</p>
+                <p className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)] mb-4">{formatPrice(item.price)}</p>
                 <div className="mt-auto flex gap-2">
                   <Button
                     variant="filled"
@@ -79,7 +79,7 @@ export default function WishlistPage() {
                   <button
                     onClick={() => removeItem(item.productId)}
                     aria-label="Remove from wishlist"
-                    className="w-10 flex items-center justify-center border border-white/[0.1] text-[#D8CFC0]/50 hover:text-[#8E1F1F] hover:border-[#8E1F1F]/50 transition-colors"
+                    className="w-10 flex items-center justify-center border border-white/[0.1] text-[#F5F2EF]/50 hover:text-[#E50914] hover:border-[#E50914]/50 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

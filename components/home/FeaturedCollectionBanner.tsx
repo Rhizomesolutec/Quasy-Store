@@ -26,8 +26,8 @@ export function FeaturedCollectionBanner() {
           priority={false}
         />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/75 to-[#111111]/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-[#111111]/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/75 to-[#070707]/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/50" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-12 lg:px-24 py-24">
         <motion.div
@@ -38,11 +38,11 @@ export function FeaturedCollectionBanner() {
           className="max-w-xl"
         >
           <Eyebrow className="mb-5">Featured Collection</Eyebrow>
-          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl text-[#D8CFC0] leading-[1.05] mb-6">
+          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl text-[#F5F2EF] leading-[1.05] mb-6">
             {collection.name}
           </h2>
           <Divider className="mb-6" />
-          <p className="font-sans text-sm md:text-base text-[#D8CFC0]/65 leading-relaxed mb-10 max-w-md">
+          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/65 leading-relaxed mb-10 max-w-md">
             {collection.description}
           </p>
           <div className="flex flex-wrap gap-4">
@@ -51,7 +51,7 @@ export function FeaturedCollectionBanner() {
             </LinkButton>
             <Link
               href="/collections"
-              className="inline-flex items-center font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 hover:text-[#8E1F1F] transition-colors border-b border-transparent hover:border-[#8E1F1F] pb-0.5"
+              className="inline-flex items-center font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 hover:text-[#E50914] transition-colors border-b border-transparent hover:border-[#E50914] pb-0.5"
             >
               All Collections →
             </Link>

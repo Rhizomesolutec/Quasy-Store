@@ -29,22 +29,22 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="font-heading text-sm uppercase tracking-widest text-[#D8CFC0]">Filters</h3>
+        <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">Filters</h3>
         <button
           onClick={() =>
             setFilters(() => ({ categories: [], colors: [], sizes: [], availability: "all", maxPrice: PRICE_CEILING }))
           }
-          className="font-sans text-[10px] uppercase tracking-widest text-[#8E1F1F] hover:text-[#a32727] transition-colors"
+          className="font-sans text-[10px] uppercase tracking-widest text-[#E50914] hover:text-[#660000] transition-colors"
         >
           Reset
         </button>
       </div>
 
-      <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40">{resultCount} results</p>
+      <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40">{resultCount} results</p>
 
       {/* Category */}
       <div>
-        <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 mb-3">Category</p>
+        <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Category</p>
         <div className="space-y-2.5">
           {CATEGORIES.map((cat) => (
             <label key={cat} className="flex items-center gap-2.5 cursor-pointer group">
@@ -52,9 +52,9 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
                 type="checkbox"
                 checked={filters.categories.includes(cat)}
                 onChange={() => setFilters((prev) => ({ ...prev, categories: toggleValue(prev.categories, cat) }))}
-                className="w-3.5 h-3.5 accent-[#8E1F1F] bg-transparent border border-white/20"
+                className="w-3.5 h-3.5 accent-[#E50914] bg-transparent border border-white/20"
               />
-              <span className="font-sans text-xs text-[#D8CFC0]/70 group-hover:text-[#D8CFC0] transition-colors">{cat}</span>
+              <span className="font-sans text-xs text-[#F5F2EF]/70 group-hover:text-[#F5F2EF] transition-colors">{cat}</span>
             </label>
           ))}
         </div>
@@ -62,7 +62,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
 
       {/* Price */}
       <div>
-        <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 mb-3">
+        <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">
           Price — Up to {formatPrice(filters.maxPrice)}
         </p>
         <input
@@ -72,13 +72,13 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
           step={5}
           value={filters.maxPrice}
           onChange={(e) => setFilters((prev) => ({ ...prev, maxPrice: Number(e.target.value) }))}
-          className="w-full accent-[#8E1F1F]"
+          className="w-full accent-[#E50914]"
         />
       </div>
 
       {/* Color */}
       <div>
-        <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 mb-3">Finish</p>
+        <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Finish</p>
         <div className="flex flex-wrap gap-2.5">
           {availableColors.map((color) => {
             const active = filters.colors.includes(color.name);
@@ -88,7 +88,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
                 onClick={() => setFilters((prev) => ({ ...prev, colors: toggleValue(prev.colors, color.name) }))}
                 aria-label={color.name}
                 title={color.name}
-                className={`w-7 h-7 rounded-full border-2 transition-all ${active ? "border-[#8E1F1F] scale-110" : "border-white/15"}`}
+                className={`w-7 h-7 rounded-full border-2 transition-all ${active ? "border-[#E50914] scale-110" : "border-white/15"}`}
                 style={{ backgroundColor: color.hex }}
               />
             );
@@ -99,7 +99,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
       {/* Size */}
       {availableSizes.length > 0 && (
         <div>
-          <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 mb-3">Size</p>
+          <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Size</p>
           <div className="flex flex-wrap gap-2">
             {availableSizes.map((size) => {
               const active = filters.sizes.includes(size);
@@ -108,7 +108,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
                   key={size}
                   onClick={() => setFilters((prev) => ({ ...prev, sizes: toggleValue(prev.sizes, size) }))}
                   className={`px-3 py-1.5 text-xs border transition-colors ${
-                    active ? "border-[#8E1F1F] bg-[#8E1F1F] text-[#D8CFC0]" : "border-white/[0.12] text-[#D8CFC0]/70 hover:border-[#8E1F1F]/50"
+                    active ? "border-[#E50914] bg-[#E50914] text-[#F5F2EF]" : "border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914]/50"
                   }`}
                 >
                   {size}
@@ -121,7 +121,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
 
       {/* Availability */}
       <div>
-        <p className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/70 mb-3">Availability</p>
+        <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Availability</p>
         <div className="space-y-2.5">
           {(
             [
@@ -136,9 +136,9 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
                 name="availability"
                 checked={filters.availability === value}
                 onChange={() => setFilters((prev) => ({ ...prev, availability: value }))}
-                className="w-3.5 h-3.5 accent-[#8E1F1F] bg-transparent border border-white/20"
+                className="w-3.5 h-3.5 accent-[#E50914] bg-transparent border border-white/20"
               />
-              <span className="font-sans text-xs text-[#D8CFC0]/70 group-hover:text-[#D8CFC0] transition-colors">{label}</span>
+              <span className="font-sans text-xs text-[#F5F2EF]/70 group-hover:text-[#F5F2EF] transition-colors">{label}</span>
             </label>
           ))}
         </div>

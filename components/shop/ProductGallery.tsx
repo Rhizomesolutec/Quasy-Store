@@ -62,7 +62,7 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
                 }}
               />
             )}
-            <span className="absolute bottom-3 right-3 font-sans text-[9px] uppercase tracking-widest text-[#D8CFC0]/50 bg-black/50 px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="absolute bottom-3 right-3 font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/50 bg-black/50 px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
               Hover to zoom
             </span>
           </>
@@ -75,7 +75,7 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
             key={img + idx}
             onClick={() => setActiveIndex(idx)}
             className={`relative w-16 md:w-20 aspect-[4/5] rounded-sm overflow-hidden border transition-colors ${
-              idx === activeIndex ? "border-[#8E1F1F]" : "border-white/[0.08] hover:border-white/20"
+              idx === activeIndex ? "border-[#E50914]" : "border-white/[0.08] hover:border-white/20"
             }`}
           >
             <Image src={img} alt="" fill className="object-cover" />
@@ -85,15 +85,15 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
         {video && (
           <button
             onClick={() => setActiveIndex(images.length)}
-            className={`relative w-16 md:w-20 aspect-[4/5] rounded-sm overflow-hidden border transition-colors flex flex-col items-center justify-center bg-[#151515] ${
-              activeIndex === images.length ? "border-[#8E1F1F]" : "border-white/[0.08] hover:border-white/20"
+            className={`relative w-16 md:w-20 aspect-[4/5] rounded-sm overflow-hidden border transition-colors flex flex-col items-center justify-center bg-[#170909] ${
+              activeIndex === images.length ? "border-[#E50914]" : "border-white/[0.08] hover:border-white/20"
             }`}
           >
-            <svg className="w-6 h-6 text-[#D8CFC0]/70 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-[#F5F2EF]/70 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="font-sans text-[8px] uppercase tracking-widest text-[#D8CFC0]/70">Video</span>
+            <span className="font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/70">Video</span>
           </button>
         )}
       </div>

@@ -78,13 +78,13 @@ export function ShoppingExperience() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: idx * 0.07, ease: [0.16, 1, 0.3, 1] }}
-              className="group bg-[#111111] p-8 md:p-10 hover:bg-[#151515] transition-colors duration-500"
+              className="group bg-[#070707] p-8 md:p-10 hover:bg-[#170909] transition-colors duration-500"
             >
-              <div className="text-[#8E1F1F] mb-5 transition-transform duration-500 group-hover:scale-110 origin-left">
+              <div className="text-[#E50914] mb-5 transition-transform duration-500 group-hover:scale-110 origin-left">
                 {item.icon}
               </div>
-              <h3 className="font-heading text-lg text-[#D8CFC0] mb-2.5">{item.title}</h3>
-              <p className="font-sans text-xs text-[#D8CFC0]/55 leading-relaxed">{item.body}</p>
+              <h3 className="font-heading text-lg text-[#F5F2EF] mb-2.5">{item.title}</h3>
+              <p className="font-sans text-xs text-[#F5F2EF]/55 leading-relaxed">{item.body}</p>
             </motion.div>
           ))}
         </div>

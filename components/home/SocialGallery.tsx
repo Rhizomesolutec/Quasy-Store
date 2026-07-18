@@ -41,8 +41,8 @@ export function SocialGallery() {
                   sizes="(min-width: 768px) 33vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-[#111111]/0 group-hover:bg-[#111111]/45 transition-colors duration-500 flex items-center justify-center">
-                  <span className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 bg-[#070707]/0 group-hover:bg-[#070707]/45 transition-colors duration-500 flex items-center justify-center">
+                  <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     View Post
                   </span>
                 </div>

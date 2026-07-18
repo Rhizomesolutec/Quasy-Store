@@ -32,7 +32,7 @@ export default function BestSellersPage() {
           <div className="flex items-center justify-between mb-10">
             <div>
               <Eyebrow className="mb-2">Top Rated</Eyebrow>
-              <h2 className="font-heading text-3xl text-[#D8CFC0]">Highest Rated by Collectors</h2>
+              <h2 className="font-heading text-3xl text-[#F5F2EF]">Highest Rated by Collectors</h2>
             </div>
           </div>
         </RevealOnScroll>
@@ -40,7 +40,7 @@ export default function BestSellersPage() {
           {topRated.map((product, idx) => (
             <RevealOnScroll key={product.id} delay={idx * 0.1}>
               <div className="relative border border-white/[0.08] p-1">
-                <span className="absolute -top-3 -left-3 w-9 h-9 rounded-full bg-[#8E1F1F] text-[#D8CFC0] font-heading text-sm flex items-center justify-center z-10 shadow-lg">
+                <span className="absolute -top-3 -left-3 w-9 h-9 rounded-full bg-[#E50914] text-[#F5F2EF] font-heading text-sm flex items-center justify-center z-10 shadow-lg">
                   #{idx + 1}
                 </span>
                 <div className="p-4">
@@ -55,7 +55,7 @@ export default function BestSellersPage() {
       {/* Full grid */}
       <section className="w-full px-4 md:px-12 lg:px-24 py-8 pb-24 max-w-7xl border-t border-white/[0.06]">
         <RevealOnScroll className="pt-16 mb-10">
-          <h2 className="font-heading text-2xl text-[#D8CFC0] text-center">All Best Sellers</h2>
+          <h2 className="font-heading text-2xl text-[#F5F2EF] text-center">All Best Sellers</h2>
         </RevealOnScroll>
         <RevealOnScroll delay={0.1}>
           <ProductGrid products={bestSellers} />

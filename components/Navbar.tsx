@@ -70,10 +70,11 @@ export default function Navbar() {
     setSearchValue("");
   };
 
-  // Nav link animations
+    // Nav link animations
   const linkVariants = {
     hover: {
-      color: "#8E1F1F",
+      color: "#FF2A45",
+      textShadow: "0 0 8px rgba(255, 42, 69, 0.7)",
       transition: { duration: 0.2 },
     },
   };
@@ -90,11 +91,10 @@ export default function Navbar() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 font-sans ${
-          isScrolled
-            ? "py-4 bg-[#111111]/85 backdrop-blur-md border-b border-white/[0.05] shadow-lg shadow-black/20"
-            : "py-6 bg-transparent border-b border-transparent"
-        }`}
+        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 font-sans ${isScrolled
+            ? "py-4 bg-[#050505]/90 backdrop-blur-md border-b-[4px] border-double border-[#C70024] shadow-lg shadow-black/45"
+            : "py-6 bg-[#050505]/50 backdrop-blur-xs border-b border-white/[0.04]"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Mobile Hamburguer Toggle */}
@@ -103,12 +103,12 @@ export default function Navbar() {
             className="md:hidden flex flex-col justify-center items-start gap-1.5 w-6 h-6 focus:outline-none group"
             aria-label="Toggle Menu"
           >
-            <span className={`h-[1px] bg-[#D8CFC0] transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-[5px] w-6" : "w-6 group-hover:w-4"}`} />
-            <span className={`h-[1px] bg-[#D8CFC0] transition-all duration-300 ${isMobileMenuOpen ? "opacity-0 w-0" : "w-4 group-hover:w-6"}`} />
+            <span className={`h-[1px] bg-[#F5F2EF] transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-[5px] w-6" : "w-6 group-hover:w-4"}`} />
+            <span className={`h-[1px] bg-[#F5F2EF] transition-all duration-300 ${isMobileMenuOpen ? "opacity-0 w-0" : "w-4 group-hover:w-6"}`} />
           </button>
 
           {/* Nav Links (Desktop Left) */}
-          <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-semibold text-[#D8CFC0]/70">
+          <div className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-semibold text-[#F5F2EF]/70">
             {/* Shop mega-menu trigger */}
             <div
               className="relative"
@@ -126,7 +126,7 @@ export default function Navbar() {
                   variants={borderVariants}
                   initial="initial"
                   animate={isShopMenuOpen ? "hover" : "initial"}
-                  className="absolute bottom-0 left-0 w-full h-[1px] bg-[#8E1F1F] origin-left"
+                  className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#FF2A45] origin-left shadow-[0_0_8px_rgba(255,42,69,0.8)]"
                 />
               </Link>
 
@@ -139,12 +139,12 @@ export default function Navbar() {
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-full left-0 pt-3 w-56"
                   >
-                    <div className="bg-[#111111]/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
+                    <div className="bg-[#050505]/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
                       {SHOP_LINKS.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#D8CFC0]/70 hover:text-[#8E1F1F] hover:bg-white/[0.03] transition-colors"
+                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#F5F2EF]/70 hover:text-[#FF2A45] hover:bg-white/[0.03] transition-colors"
                         >
                           {link.label}
                         </Link>
@@ -156,26 +156,29 @@ export default function Navbar() {
             </div>
 
             {PRIMARY_LINKS.map((link) => (
-              <motion.div key={link.href} className="relative py-1">
-                <Link href={link.href} className="relative cursor-pointer select-none group">
-                  <motion.span variants={linkVariants} whileHover="hover">
-                    {link.label}
-                  </motion.span>
-                  <motion.span
-                    variants={borderVariants}
-                    className="absolute bottom-0 left-0 w-full h-[1px] bg-[#8E1F1F] origin-left"
-                    style={{ scaleX: 0 }}
-                    whileHover={{ scaleX: 1 }}
-                  />
-                </Link>
-              </motion.div>
+              <div key={link.href} className="flex items-center gap-8">
+                <span className="text-[7px] text-[#6A3D9A] select-none opacity-60">■</span>
+                <motion.div className="relative py-1">
+                  <Link href={link.href} className="relative cursor-pointer select-none group">
+                    <motion.span variants={linkVariants} whileHover="hover">
+                      {link.label}
+                    </motion.span>
+                    <motion.span
+                      variants={borderVariants}
+                      className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#FF2A45] origin-left shadow-[0_0_8px_rgba(255,42,69,0.8)]"
+                      style={{ scaleX: 0 }}
+                      whileHover={{ scaleX: 1 }}
+                    />
+                  </Link>
+                </motion.div>
+              </div>
             ))}
           </div>
 
           {/* Branding Logo (Centered) */}
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#D8CFC0] tracking-[0.15em] font-medium hover:text-[#D8CFC0]/90 transition-colors"
+            className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#FF2A45] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(255,42,69,0.5)] hover:text-[#FF5A75] hover:drop-shadow-[0_0_12px_rgba(255,42,69,0.75)] transition-all duration-300"
           >
             QUSAY STORE
           </Link>
@@ -196,7 +199,7 @@ export default function Navbar() {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder="Search relics..."
-                    className="bg-[#1a1a1a]/80 border border-white/[0.08] rounded px-3 py-1 text-xs text-[#D8CFC0] placeholder-[#D8CFC0]/30 outline-none focus:border-[#8E1F1F]/40 mr-2"
+                    className="bg-[#1A0A0A]/80 border border-white/[0.08] rounded px-3 py-1 text-xs text-[#F5F2EF] placeholder-[#F5F2EF]/30 outline-none focus:border-[#E50914]/40 mr-2"
                   />
                 )}
               </AnimatePresence>
@@ -205,11 +208,12 @@ export default function Navbar() {
                 onClick={() => {
                   if (!isSearchOpen) setIsSearchOpen(true);
                 }}
-                className="text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-1"
+                className="text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1 cursor-pointer"
                 aria-label="Search"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="4" y="4" width="10" height="10" strokeWidth="2" />
+                  <line x1="12" y1="12" x2="19" y2="19" strokeWidth="3" />
                 </svg>
               </button>
             </form>
@@ -217,16 +221,17 @@ export default function Navbar() {
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
-              className="hidden sm:block relative text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-1"
+              className="hidden sm:block relative text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1"
               aria-label="Wishlist"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4 6 4c2.2 0 3.7 1.2 4.5 2.4C11.3 5.2 12.8 4 15 4c4 0 5.5 4 4 7.7-2.5 4.7-10 9.3-10 9.3z"
-                />
+              <svg className="w-5 h-5" viewBox="0 0 9 9" fill="currentColor">
+                <rect x="1" y="1" width="2" height="2" />
+                <rect x="6" y="1" width="2" height="2" />
+                <rect x="0" y="3" width="9" height="2" />
+                <rect x="1" y="5" width="7" height="1" />
+                <rect x="2" y="6" width="5" height="1" />
+                <rect x="3" y="7" width="3" height="1" />
+                <rect x="4" y="8" width="1" height="1" />
               </svg>
               <AnimatePresence>
                 {wishlist.length > 0 && (
@@ -234,7 +239,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#8E1F1F] text-[#D8CFC0] rounded-full text-[9px] font-bold flex items-center justify-center"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#C70024] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center font-sans"
                   >
                     {wishlist.length}
                   </motion.span>
@@ -245,22 +250,27 @@ export default function Navbar() {
             {/* Profile Link */}
             <Link
               href="/account"
-              className="hidden sm:block text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-1"
+              className="hidden sm:block text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1"
               aria-label="Account"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <rect x="3" y="4" width="18" height="12" />
+                <rect x="5" y="6" width="14" height="8" />
+                <path d="M8 16l-2 4h12l-2-4" />
+                <line x1="8" y1="10" x2="11" y2="10" strokeWidth="1.5" />
               </svg>
             </Link>
 
             {/* Shopping Cart Button */}
             <button
               onClick={openCart}
-              className="relative text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-1 flex items-center"
+              className="relative text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1 flex items-center cursor-pointer"
               aria-label="Cart"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <path d="M3 3h3l3 12h10l3-8H8" />
+                <circle cx="9" cy="19" r="1.5" fill="currentColor" />
+                <circle cx="17" cy="19" r="1.5" fill="currentColor" />
               </svg>
               {/* Badge */}
               <AnimatePresence>
@@ -269,7 +279,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#8E1F1F] text-[#D8CFC0] rounded-full text-[9px] font-bold flex items-center justify-center"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#C70024] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center font-sans"
                   >
                     {cartTotalItems}
                   </motion.span>
@@ -288,12 +298,12 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 bg-[#111111] z-50 flex flex-col justify-center items-center gap-5 overflow-y-auto py-24"
+            className="fixed inset-0 bg-[#070707] z-50 flex flex-col justify-center items-center gap-5 overflow-y-auto py-24"
           >
             {/* Close Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute top-6 right-6 text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-2"
+              className="absolute top-6 right-6 text-[#F5F2EF] hover:text-[#E50914] transition-colors p-2"
               aria-label="Close menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,7 +322,7 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="font-heading text-xl md:text-2xl tracking-widest text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors"
+                  className="font-heading text-xl md:text-2xl tracking-widest text-[#F5F2EF] hover:text-[#E50914] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -341,14 +351,14 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed right-0 top-0 h-screen w-full sm:w-[420px] bg-[#151515] border-l border-white/[0.08] shadow-2xl z-50 flex flex-col p-6 text-left"
+              className="fixed right-0 top-0 h-screen w-full sm:w-[420px] bg-[#170909] border-l border-white/[0.08] shadow-2xl z-50 flex flex-col p-6 text-left"
             >
               {/* Drawer Header */}
               <div className="flex justify-between items-center pb-6 border-b border-white/[0.05]">
-                <h3 className="font-heading text-lg text-[#D8CFC0] tracking-wider uppercase font-semibold">Shopping Bag</h3>
+                <h3 className="font-heading text-lg text-[#F5F2EF] tracking-wider uppercase font-semibold">Shopping Bag</h3>
                 <button
                   onClick={closeCart}
-                  className="text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors p-2"
+                  className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-2"
                   aria-label="Close cart"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,11 +372,11 @@ export default function Navbar() {
                 <>
                   {cart.length === 0 ? (
                     <div className="flex-1 flex flex-col justify-center items-center text-center p-6 space-y-4">
-                      <p className="font-sans text-xs tracking-widest text-[#D8CFC0]/40 uppercase">Your bag is empty</p>
+                      <p className="font-sans text-xs tracking-widest text-[#F5F2EF]/40 uppercase">Your bag is empty</p>
                       <Link
                         href="/shop"
                         onClick={closeCart}
-                        className="border border-[#8E1F1F] px-6 py-2 text-xs tracking-widest uppercase text-[#D8CFC0] hover:bg-[#8E1F1F] transition-all duration-300"
+                        className="border border-[#E50914] px-6 py-2 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#E50914] transition-all duration-300"
                       >
                         Browse Shop
                       </Link>
@@ -390,8 +400,8 @@ export default function Navbar() {
                             {/* Product Details */}
                             <div className="flex-1 flex flex-col justify-between">
                               <div>
-                                <h4 className="font-heading text-sm text-[#D8CFC0] leading-none mb-1.5">{item.name}</h4>
-                                <p className="font-sans text-[10px] text-[#D8CFC0]/40 uppercase tracking-widest">
+                                <h4 className="font-heading text-sm text-[#F5F2EF] leading-none mb-1.5">{item.name}</h4>
+                                <p className="font-sans text-[10px] text-[#F5F2EF]/40 uppercase tracking-widest">
                                   {item.variant}
                                   {item.size ? ` · ${item.size}` : ""}
                                 </p>
@@ -402,14 +412,14 @@ export default function Navbar() {
                                 <div className="flex items-center border border-white/[0.08] rounded">
                                   <button
                                     onClick={() => updateQuantity(item.productId, item.variant, item.size, -1)}
-                                    className="px-2 py-0.5 text-xs text-[#D8CFC0]/60 hover:text-[#D8CFC0]"
+                                    className="px-2 py-0.5 text-xs text-[#F5F2EF]/60 hover:text-[#F5F2EF]"
                                   >
                                     -
                                   </button>
-                                  <span className="px-2 text-xs text-[#D8CFC0] font-mono">{item.quantity}</span>
+                                  <span className="px-2 text-xs text-[#F5F2EF] font-mono">{item.quantity}</span>
                                   <button
                                     onClick={() => updateQuantity(item.productId, item.variant, item.size, 1)}
-                                    className="px-2 py-0.5 text-xs text-[#D8CFC0]/60 hover:text-[#D8CFC0]"
+                                    className="px-2 py-0.5 text-xs text-[#F5F2EF]/60 hover:text-[#F5F2EF]"
                                   >
                                     +
                                   </button>
@@ -417,7 +427,7 @@ export default function Navbar() {
 
                                 <button
                                   onClick={() => removeItem(item.productId, item.variant, item.size)}
-                                  className="text-[#D8CFC0]/40 hover:text-[#8E1F1F] transition-colors p-1"
+                                  className="text-[#F5F2EF]/40 hover:text-[#E50914] transition-colors p-1"
                                   aria-label="Remove item"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -428,7 +438,7 @@ export default function Navbar() {
                             </div>
 
                             {/* Product Price */}
-                            <div className="font-mono text-sm text-[#D8CFC0]">
+                            <div className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">
                               {formatPrice(item.price * item.quantity)}
                             </div>
                           </div>
@@ -437,25 +447,25 @@ export default function Navbar() {
 
                       {/* Summary and Action */}
                       <div className="pt-6 border-t border-white/[0.05] space-y-4">
-                        <div className="flex justify-between items-center text-xs tracking-wider uppercase text-[#D8CFC0]/60">
+                        <div className="flex justify-between items-center text-xs tracking-wider uppercase text-[#F5F2EF]/60">
                           <span>Subtotal</span>
-                          <span className="font-mono text-[#D8CFC0]">{formatPrice(cartSubtotal)}</span>
+                          <span className="font-heading text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(cartSubtotal)}</span>
                         </div>
-                        <p className="text-[10px] text-[#D8CFC0]/40 italic leading-relaxed">
+                        <p className="text-[10px] text-[#F5F2EF]/40 italic leading-relaxed">
                           Shipping, taxes, and discounts calculated at checkout. Relics are packaged in dark cedar coffrets.
                         </p>
 
                         <Link
                           href="/cart"
                           onClick={closeCart}
-                          className="block w-full text-center border border-[#8E1F1F] text-[#D8CFC0] uppercase tracking-widest text-xs py-3 font-semibold hover:bg-[#8E1F1F] transition-all duration-300"
+                          className="block w-full text-center border border-[#E50914] text-[#F5F2EF] uppercase tracking-widest text-xs py-3 font-semibold hover:bg-[#E50914] transition-all duration-300"
                         >
                           View Full Bag
                         </Link>
                         <Link
                           href="/payment"
                           onClick={closeCart}
-                          className="block w-full text-center bg-[#8E1F1F] text-[#D8CFC0] uppercase tracking-widest text-xs py-3.5 font-semibold hover:bg-[#a32727] transition-all duration-300 shadow-[0_0_20px_rgba(142,31,31,0.2)]"
+                          className="block w-full text-center bg-[#E50914] text-[#F5F2EF] uppercase tracking-widest text-xs py-3.5 font-semibold hover:bg-[#660000] transition-all duration-300 shadow-[0_0_20px_rgba(229, 9, 20,0.2)]"
                         >
                           Proceed to Checkout
                         </Link>
@@ -468,27 +478,27 @@ export default function Navbar() {
               {/* Checkout Progress States */}
               {checkoutStep === "processing" && (
                 <div className="flex-1 flex flex-col justify-center items-center text-center p-6 space-y-4">
-                  <div className="w-8 h-8 border-2 border-[#D8CFC0]/20 border-t-[#8E1F1F] rounded-full animate-spin" />
-                  <p className="font-sans text-xs tracking-widest text-[#D8CFC0]/60 uppercase animate-pulse">Securing Transaction...</p>
+                  <div className="w-8 h-8 border-2 border-[#F5F2EF]/20 border-t-[#E50914] rounded-full animate-spin" />
+                  <p className="font-sans text-xs tracking-widest text-[#F5F2EF]/60 uppercase animate-pulse">Securing Transaction...</p>
                 </div>
               )}
 
               {checkoutStep === "success" && (
                 <div className="flex-1 flex flex-col justify-center items-center text-center p-6 space-y-6">
-                  <div className="w-12 h-12 bg-[#8E1F1F]/20 rounded-full flex items-center justify-center border border-[#8E1F1F]/40 animate-bounce">
-                    <svg className="w-6 h-6 text-[#D8CFC0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-[#E50914]/20 rounded-full flex items-center justify-center border border-[#E50914]/40 animate-bounce">
+                    <svg className="w-6 h-6 text-[#F5F2EF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-heading text-lg text-[#D8CFC0] uppercase tracking-wider">Transaction Complete</h4>
-                    <p className="font-sans text-xs text-[#D8CFC0]/60 leading-relaxed max-w-xs mx-auto">
+                    <h4 className="font-heading text-lg text-[#F5F2EF] uppercase tracking-wider">Transaction Complete</h4>
+                    <p className="font-sans text-xs text-[#F5F2EF]/60 leading-relaxed max-w-xs mx-auto">
                       Your order has been recorded into the vault. A dispatch raven will notify you once shipment commences.
                     </p>
                   </div>
                   <button
                     onClick={resetCheckout}
-                    className="border border-[#8E1F1F] px-8 py-2.5 text-xs tracking-widest uppercase text-[#D8CFC0] hover:bg-[#8E1F1F] transition-all duration-300"
+                    className="border border-[#E50914] px-8 py-2.5 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#E50914] transition-all duration-300"
                   >
                     Done
                   </button>

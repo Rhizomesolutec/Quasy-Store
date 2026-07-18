@@ -8,7 +8,7 @@ export function Rating({ value, count, size = "sm" }: { value: number; count?: n
           return (
             <svg
               key={i}
-              className={`${starSize} ${filled ? "text-[#8E1F1F]" : "text-[#D8CFC0]/20"}`}
+              className={`${starSize} ${filled ? "text-[#E50914]" : "text-[#F5F2EF]/20"}`}
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -18,7 +18,7 @@ export function Rating({ value, count, size = "sm" }: { value: number; count?: n
         })}
       </div>
       {count !== undefined && (
-        <span className="font-sans text-[10px] text-[#D8CFC0]/40 tracking-widest">({count})</span>
+        <span className="font-sans text-[10px] text-[#F5F2EF]/40 tracking-widest">({count})</span>
       )}
     </div>
   );

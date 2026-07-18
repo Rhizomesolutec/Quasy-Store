@@ -39,23 +39,23 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen w-full flex items-center justify-center bg-[#111111] px-4">
+    <main className="relative min-h-screen w-full flex items-center justify-center bg-[#070707] px-4">
       {/* Noise Overlay */}
       <div className="bg-noise" />
 
       {/* Decorative Gothic Shadows/Gradients */}
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#8E1F1F] opacity-10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[350px] h-[350px] bg-[#8E1F1F] opacity-5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#E50914] opacity-10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[350px] h-[350px] bg-[#E50914] opacity-5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="w-full max-w-md border border-white/[0.06] bg-[#161616]/80 backdrop-blur-xl p-8 md:p-10 shadow-2xl relative">
+      <div className="w-full max-w-md border border-white/[0.06] bg-[#170909]/80 backdrop-blur-xl p-8 md:p-10 shadow-2xl relative">
         {/* Accent Top Border */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#8E1F1F] to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E50914] to-transparent" />
 
         <div className="text-center mb-8">
-          <h1 className="font-heading text-3xl uppercase tracking-widest text-[#D8CFC0]">
+          <h1 className="font-heading text-3xl uppercase tracking-widest text-[#F5F2EF]">
             QUSAY
           </h1>
-          <p className="font-sans text-[10px] uppercase tracking-widest text-[#8E1F1F] mt-2">
+          <p className="font-sans text-[10px] uppercase tracking-widest text-[#E50914] mt-2">
             Admin Vault Portal
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
         {error && (
           <div 
             id="login-error-msg"
-            className="border border-[#8E1F1F]/30 bg-[#8E1F1F]/10 px-4 py-3 text-xs text-[#D8CFC0]/90 mb-6 font-sans tracking-wide text-center"
+            className="border border-[#E50914]/30 bg-[#E50914]/10 px-4 py-3 text-xs text-[#F5F2EF]/90 mb-6 font-sans tracking-wide text-center"
           >
             {error}
           </div>
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
           <div>
             <label 
               htmlFor="admin-username-input"
-              className="block font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/50 mb-2"
+              className="block font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/50 mb-2"
             >
               Username
             </label>
@@ -83,7 +83,7 @@ export default function AdminLoginPage() {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-white/[0.08] px-4 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/60 focus:bg-[#202020] transition-all font-sans"
+              className="w-full bg-[#1A0A0A] border border-white/[0.08] px-4 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/60 focus:bg-[#202020] transition-all font-sans"
               placeholder="Enter admin username"
             />
           </div>
@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
           <div>
             <label 
               htmlFor="admin-password-input"
-              className="block font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/50 mb-2"
+              className="block font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/50 mb-2"
             >
               Password
             </label>
@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#1a1a1a] border border-white/[0.08] px-4 py-3 text-sm text-[#D8CFC0] outline-none focus:border-[#8E1F1F]/60 focus:bg-[#202020] transition-all font-sans"
+              className="w-full bg-[#1A0A0A] border border-white/[0.08] px-4 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/60 focus:bg-[#202020] transition-all font-sans"
               placeholder="••••••••"
             />
           </div>
@@ -110,10 +110,10 @@ export default function AdminLoginPage() {
             id="admin-login-submit"
             type="submit"
             disabled={loading}
-            className="w-full border border-[#8E1F1F] bg-[#8E1F1F]/10 hover:bg-[#8E1F1F] text-[#D8CFC0] py-3.5 px-4 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] py-3.5 px-4 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
-              <span className="w-4 h-4 border-2 border-[#D8CFC0] border-t-transparent rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-[#F5F2EF] border-t-transparent rounded-full animate-spin" />
             ) : (
               "Unlock Vault"
             )}

@@ -18,8 +18,18 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const onSale = !!product.compareAtPrice && product.compareAtPrice > product.price;
 
   return (
-    <div className="group relative flex flex-col">
-      <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden border border-white/[0.05]">
+    <div className="group relative flex flex-col h-full bg-[#171717] border border-[#E50914]/25 p-4 shadow-[0_0_8px_rgba(229,9,20,0.12)] hover:shadow-[0_0_15px_rgba(229,9,20,0.25)] transition-all duration-300 rounded-none relative">
+      {/* Retro L-corners */}
+      <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[#FF2A45] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-[#FF2A45] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b border-l border-[#FF2A45] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-[#FF2A45] pointer-events-none" />
+
+      {/* Tiny cyan & purple decorative pixels */}
+      <div className="absolute top-1 left-1 w-1 h-1 bg-[#47D8FF]" />
+      <div className="absolute bottom-1 right-1 w-1 h-1 bg-[#6A3D9A]" />
+
+      <div className="relative aspect-[4/5] bg-black rounded-none overflow-hidden border border-white/[0.05]">
         <Link href={`/shop/${product.slug}`} className="block absolute inset-0 z-10" aria-label={product.name} />
 
         <Image
@@ -44,17 +54,17 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
           {onSale && (
-            <span className="bg-[#8E1F1F] text-[#D8CFC0] text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
+            <span className="bg-[#E50914] text-[#F5F2EF] text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
               Sale
             </span>
           )}
           {product.isNew && (
-            <span className="bg-[#D8CFC0]/10 border border-[#D8CFC0]/30 text-[#D8CFC0] text-[9px] uppercase tracking-widest font-semibold px-2 py-1 backdrop-blur-sm">
+            <span className="bg-[#F5F2EF]/10 border border-[#F5F2EF]/30 text-[#F5F2EF] text-[9px] uppercase tracking-widest font-semibold px-2 py-1 backdrop-blur-sm">
               New
             </span>
           )}
           {!product.inStock && (
-            <span className="bg-black/70 border border-white/[0.1] text-[#D8CFC0]/70 text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
+            <span className="bg-black/70 border border-white/[0.1] text-[#F5F2EF]/70 text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
               Sold Out
             </span>
           )}
@@ -74,9 +84,9 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             });
           }}
           aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-3 right-3 z-20 p-1.5 text-[#D8CFC0] hover:text-[#8E1F1F] transition-colors"
+          className="absolute top-3 right-3 z-20 p-1.5 text-[#F5F2EF] hover:text-[#E50914] transition-colors"
         >
-          <svg className="w-5 h-5" fill={wished ? "#8E1F1F" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill={wished ? "#E50914" : "none"} stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -93,24 +103,26 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
               e.preventDefault();
               onQuickView(product);
             }}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 bg-[#111111]/90 border border-white/[0.1] text-[#D8CFC0] text-[10px] uppercase tracking-widest px-4 py-2 hover:border-[#8E1F1F] whitespace-nowrap"
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 bg-[#070707]/90 border border-white/[0.1] text-[#F5F2EF] text-[10px] uppercase tracking-widest px-4 py-2 hover:border-[#E50914] whitespace-nowrap"
           >
             Quick View
           </button>
         )}
       </div>
 
-      <div className="mt-4 flex flex-col gap-1.5">
-        <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#D8CFC0]/40">{product.category}</span>
-        <Link href={`/shop/${product.slug}`} className="font-heading text-lg text-[#D8CFC0] leading-tight hover:text-[#8E1F1F] transition-colors">
+      <div className="mt-4 flex flex-col gap-1.5 flex-1">
+        <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40">{product.category}</span>
+        <Link href={`/shop/${product.slug}`} className="font-heading text-lg text-[#F5F2EF] leading-tight hover:text-[#E50914] transition-colors">
           {product.name}
         </Link>
-        <Rating value={product.rating} count={product.reviewCount} />
-        <div className="flex items-center gap-2 pt-0.5">
-          <span className="font-sans text-sm text-[#D8CFC0]">{formatPrice(product.price)}</span>
-          {onSale && (
-            <span className="font-sans text-xs text-[#D8CFC0]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
-          )}
+        <div className="mt-auto pt-2 flex flex-col gap-1.5">
+          <Rating value={product.rating} count={product.reviewCount} />
+          <div className="flex items-center gap-2 pt-0.5">
+            <span className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.4)]">{formatPrice(product.price)}</span>
+            {onSale && (
+              <span className="font-heading text-xs text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
+            )}
+          </div>
         </div>
       </div>
     </div>

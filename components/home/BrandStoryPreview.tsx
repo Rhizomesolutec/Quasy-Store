@@ -15,7 +15,7 @@ export function BrandStoryPreview() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden shadow-2xl shadow-[#8E1F1F]/10"
+          className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden shadow-2xl shadow-[#E50914]/10"
         >
           <Image
             src="/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"
@@ -24,7 +24,7 @@ export function BrandStoryPreview() {
             sizes="(min-width: 768px) 40vw, 100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070707]/50 to-transparent" />
         </motion.div>
 
         <motion.div
@@ -34,17 +34,17 @@ export function BrandStoryPreview() {
           transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
           <Eyebrow className="mb-4">Since 1924</Eyebrow>
-          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-[#D8CFC0] leading-[1.1] mb-6">
+          <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl text-[#F5F2EF] leading-[1.1] mb-6">
             We didn&apos;t design this collection.
             <br />
-            <span className="text-[#D8CFC0]/70">We excavated it.</span>
+            <span className="text-[#F5F2EF]/70">We excavated it.</span>
           </h2>
           <Divider className="mb-6" />
-          <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed mb-4">
+          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/60 leading-relaxed mb-4">
             When the original moulds resurfaced in 2019, most were unusable. What survived was enough: sketches of a
             spider motif meant to symbolize patience, and a heart-shaped cavity built to hold a hidden inlay.
           </p>
-          <p className="font-sans text-sm md:text-base text-[#D8CFC0]/60 leading-relaxed mb-10">
+          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/60 leading-relaxed mb-10">
             Qusay Store exists to finish what that first workshop started — slowly, and without cutting corners.
           </p>
           <LinkButton href="/about" variant="outline" size="lg">

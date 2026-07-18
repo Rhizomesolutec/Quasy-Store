@@ -48,30 +48,30 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
   return (
     <>
       <div className="flex flex-col">
-        <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#D8CFC0]/40 mb-2">
+        <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40 mb-2">
           {product.category} · {product.collection.replace("-", " ")}
         </span>
-        <h1 className="font-heading text-3xl md:text-4xl text-[#D8CFC0] mb-3 leading-tight">{product.name}</h1>
+        <h1 className="font-heading text-3xl md:text-4xl text-[#F5F2EF] mb-3 leading-tight">{product.name}</h1>
         <Rating value={product.rating} count={product.reviewCount} size="md" />
 
         <div className="flex items-center gap-3 mt-4 mb-1">
-          <span className="font-sans text-2xl text-[#8E1F1F] tracking-wide">{formatPrice(product.price)}</span>
-          {onSale && <span className="font-sans text-base text-[#D8CFC0]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>}
+          <span className="font-heading text-2xl text-[#FF2A45] drop-shadow-[0_0_6px_rgba(255,42,69,0.4)] tracking-wide">{formatPrice(product.price)}</span>
+          {onSale && <span className="font-heading text-base text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>}
           {onSale && (
-            <span className="bg-[#8E1F1F]/15 border border-[#8E1F1F]/40 text-[#8E1F1F] text-[10px] uppercase tracking-widest font-semibold px-2 py-1">
+            <span className="bg-[#E50914]/15 border border-[#E50914]/40 text-[#FF2A45] text-[10px] uppercase tracking-widest font-semibold px-2 py-1">
               Save {formatPrice(product.compareAtPrice! - product.price)}
             </span>
           )}
         </div>
 
-        <p className="font-sans text-sm text-[#D8CFC0]/60 leading-relaxed mt-5 border-b border-[#D8CFC0]/10 pb-6">
+        <p className="font-sans text-sm text-[#F5F2EF]/60 leading-relaxed mt-5 border-b border-[#F5F2EF]/10 pb-6">
           {product.tagline}
         </p>
 
         {/* Stock indicator */}
         <div className="flex items-center gap-2 mt-5">
-          <span className={`w-2 h-2 rounded-full ${product.inStock ? "bg-green-600" : "bg-[#8E1F1F]"}`} />
-          <span className="font-sans text-xs uppercase tracking-widest text-[#D8CFC0]/60">
+          <span className={`w-2 h-2 rounded-full ${product.inStock ? "bg-green-600" : "bg-[#E50914]"}`} />
+          <span className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">
             {product.inStock
               ? product.stockCount <= 10
                 ? `Only ${product.stockCount} left in stock`
@@ -82,7 +82,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
 
         {/* Color selector */}
         <div className="mt-6">
-          <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mb-2.5">
+          <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-2.5">
             Finish — {product.colors[color]?.name}
           </p>
           <div className="flex gap-2.5">
@@ -93,7 +93,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
                 aria-label={c.name}
                 title={c.name}
                 className={`w-8 h-8 rounded-full border-2 transition-all ${
-                  idx === color ? "border-[#8E1F1F] scale-110" : "border-white/[0.15] hover:border-white/30"
+                  idx === color ? "border-[#E50914] scale-110" : "border-white/[0.15] hover:border-white/30"
                 }`}
                 style={{ backgroundColor: c.hex }}
               />
@@ -104,14 +104,14 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         {/* Size selector */}
         {product.sizes.length > 0 && (
           <div className="mt-6">
-            <p className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0]/40 mb-2.5">Size — {size}</p>
+            <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-2.5">Size — {size}</p>
             <div className="flex flex-wrap gap-2">
               {product.sizes.map((s) => (
                 <button
                   key={s}
                   onClick={() => setSize(s)}
                   className={`px-4 py-2 text-xs border transition-colors ${
-                    size === s ? "border-[#8E1F1F] bg-[#8E1F1F] text-[#D8CFC0]" : "border-white/[0.12] text-[#D8CFC0]/70 hover:border-[#8E1F1F]/50"
+                    size === s ? "border-[#E50914] bg-[#E50914] text-[#F5F2EF]" : "border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914]/50"
                   }`}
                 >
                   {s}
@@ -126,14 +126,14 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
           <div className="flex items-center border border-white/[0.12]">
             <button
               onClick={() => setQuantity((q) => clamp(q - 1, 1, 99))}
-              className="px-3.5 h-full text-[#D8CFC0]/60 hover:text-[#D8CFC0] transition-colors"
+              className="px-3.5 h-full text-[#F5F2EF]/60 hover:text-[#F5F2EF] transition-colors"
             >
               −
             </button>
-            <span className="px-4 font-mono text-sm text-[#D8CFC0] min-w-[2.5rem] text-center">{quantity}</span>
+            <span className="px-4 font-mono text-sm text-[#F5F2EF] min-w-[2.5rem] text-center">{quantity}</span>
             <button
               onClick={() => setQuantity((q) => clamp(q + 1, 1, 99))}
-              className="px-3.5 h-full text-[#D8CFC0]/60 hover:text-[#D8CFC0] transition-colors"
+              className="px-3.5 h-full text-[#F5F2EF]/60 hover:text-[#F5F2EF] transition-colors"
             >
               +
             </button>
@@ -153,9 +153,9 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
               })
             }
             aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-            className="w-12 flex items-center justify-center border border-white/[0.12] text-[#D8CFC0] hover:border-[#8E1F1F] transition-colors"
+            className="w-12 flex items-center justify-center border border-white/[0.12] text-[#F5F2EF] hover:border-[#E50914] transition-colors"
           >
-            <svg className="w-5 h-5" fill={wished ? "#8E1F1F" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill={wished ? "#E50914" : "none"} stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -166,19 +166,19 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
           </button>
         </div>
 
-        <p className="font-sans text-[10px] text-[#D8CFC0]/40 italic leading-relaxed mt-4">{product.shippingInfo}</p>
+        <p className="font-sans text-[10px] text-[#F5F2EF]/40 italic leading-relaxed mt-4">{product.shippingInfo}</p>
       </div>
 
       {/* Sticky Add to Cart Bar */}
       <div
-        className={`fixed bottom-0 left-0 w-full z-30 bg-[#151515]/95 backdrop-blur-md border-t border-white/[0.08] transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 w-full z-30 bg-[#170909]/95 backdrop-blur-md border-t border-white/[0.08] transition-transform duration-300 ${
           isStickyBarVisible ? "translate-y-0" : "translate-y-full"
         }`}
       >
         <div className="max-w-6xl mx-auto px-4 md:px-12 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <span className="font-heading text-sm text-[#D8CFC0] truncate">{product.name}</span>
-            <span className="font-sans text-sm text-[#8E1F1F] flex-shrink-0">{formatPrice(product.price)}</span>
+            <span className="font-heading text-sm text-[#F5F2EF] truncate">{product.name}</span>
+            <span className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.35)] flex-shrink-0">{formatPrice(product.price)}</span>
           </div>
           <Button variant="filled" size="sm" disabled={!product.inStock} onClick={handleAddToCart} className="flex-shrink-0">
             {product.inStock ? "Add to Bag" : "Sold Out"}

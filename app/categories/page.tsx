@@ -62,18 +62,18 @@ export default function CategoriesPage() {
                   fill
                   className="object-cover opacity-60 grayscale-[0.2] transition-all duration-700 group-hover:opacity-80 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-8">
-                  <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#8E1F1F] mb-2">
+                  <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#E50914] mb-2">
                     {count} {count === 1 ? "piece" : "pieces"}
                   </span>
-                  <h2 className="font-heading text-3xl md:text-4xl text-[#D8CFC0] mb-2 group-hover:text-[#D8CFC0] transition-colors">
+                  <h2 className="font-heading text-3xl md:text-4xl text-[#F5F2EF] mb-2 group-hover:text-[#F5F2EF] transition-colors">
                     {category}
                   </h2>
-                  <p className="font-sans text-xs text-[#D8CFC0]/60 max-w-xs leading-relaxed mb-4">
+                  <p className="font-sans text-xs text-[#F5F2EF]/60 max-w-xs leading-relaxed mb-4">
                     {tagline}
                   </p>
-                  <span className="font-sans text-[10px] uppercase tracking-widest text-[#D8CFC0] border-b border-[#8E1F1F] pb-1 group-hover:text-[#8E1F1F] transition-colors">
+                  <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1 group-hover:text-[#E50914] transition-colors">
                     Explore {category} →
                   </span>
                 </div>
