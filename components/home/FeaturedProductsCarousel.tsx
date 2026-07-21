@@ -28,7 +28,7 @@ export function FeaturedProductsCarousel() {
             align="left"
             className="mb-0"
           />
-          <div className="flex items-center gap-3 self-start md:self-end md:mb-16">
+          <div className="flex items-center gap-3 self-start md:self-end mb-6 md:mb-16">
             <button
               onClick={() => scrollBy(-1)}
               aria-label="Previous"

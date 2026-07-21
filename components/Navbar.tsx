@@ -96,7 +96,7 @@ export default function Navbar() {
           : "py-6 bg-transparent border-b border-transparent"
           }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 flex items-center justify-between">
           {/* Mobile Hamburguer Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -175,20 +175,22 @@ export default function Navbar() {
           {/* Branding Logo (Centered) */}
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#E50914] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(229,9,20,0.5)] hover:text-[#FF3B5C] hover:drop-shadow-[0_0_12px_rgba(229,9,20,0.75)] transition-all duration-300"
+            className={`absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#E50914] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(229,9,20,0.5)] hover:text-[#FF3B5C] hover:drop-shadow-[0_0_12px_rgba(229,9,20,0.75)] transition-all duration-300 ${
+              isSearchOpen ? "hidden md:block" : "block"
+            }`}
           >
             QUSAY STORE
           </Link>
 
           {/* Action Utilities (Right) */}
-          <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
             {/* Slide-Open Search Bar */}
             <form onSubmit={handleSearchSubmit} className="relative flex items-center">
               <AnimatePresence>
                 {isSearchOpen && (
                   <motion.input
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: 160, opacity: 1 }}
+                    animate={{ width: 140, opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     type="text"
@@ -196,7 +198,7 @@ export default function Navbar() {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder="Search relics..."
-                    className="bg-[#1A0A0A]/80 border border-white/[0.08] rounded px-3 py-1 text-xs text-[#F5F2EF] placeholder-[#F5F2EF]/30 outline-none focus:border-[#E50914]/40 mr-2"
+                    className="bg-[#1A0A0A]/90 border border-white/[0.12] rounded px-3 py-1 text-xs text-[#F5F2EF] placeholder-[#F5F2EF]/40 outline-none focus:border-[#E50914]/60 mr-1.5 max-xs:w-28"
                   />
                 )}
               </AnimatePresence>
@@ -205,28 +207,40 @@ export default function Navbar() {
                 onClick={() => {
                   if (!isSearchOpen) setIsSearchOpen(true);
                 }}
-                className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
+                className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center justify-center cursor-pointer select-none"
                 aria-label="Search"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="4" y="4" width="10" height="10" strokeWidth="2" />
+                  <line x1="12" y1="12" x2="19" y2="19" strokeWidth="3" />
                 </svg>
               </button>
+              {isSearchOpen && (
+                <button
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="text-[#F5F2EF]/50 hover:text-[#E50914] text-xs p-1 ml-0.5"
+                  aria-label="Close search"
+                >
+                  ✕
+                </button>
+              )}
             </form>
 
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
-              className="hidden sm:block relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
+              className="hidden sm:block relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 select-none"
               aria-label="Wishlist"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4 6 4c2.2 0 3.7 1.2 4.5 2.4C11.3 5.2 12.8 4 15 4c4 0 5.5 4 4 7.7-2.5 4.7-10 9.3-10 9.3z"
-                />
+              <svg className="w-5 h-5" viewBox="0 0 9 9" fill="currentColor">
+                <rect x="1" y="1" width="2" height="2" />
+                <rect x="6" y="1" width="2" height="2" />
+                <rect x="0" y="3" width="9" height="2" />
+                <rect x="1" y="5" width="7" height="1" />
+                <rect x="2" y="6" width="5" height="1" />
+                <rect x="3" y="7" width="3" height="1" />
+                <rect x="4" y="8" width="1" height="1" />
               </svg>
               <AnimatePresence>
                 {wishlist.length > 0 && (
@@ -234,7 +248,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
                   >
                     {wishlist.length}
                   </motion.span>
@@ -245,22 +259,27 @@ export default function Navbar() {
             {/* Profile Link */}
             <Link
               href="/account"
-              className="hidden sm:block text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
+              className="hidden sm:block text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 select-none"
               aria-label="Account"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <rect x="3" y="4" width="18" height="12" />
+                <rect x="5" y="6" width="14" height="8" />
+                <path d="M8 16l-2 4h12l-2-4" />
+                <line x1="8" y1="10" x2="11" y2="10" strokeWidth="1.5" />
               </svg>
             </Link>
 
             {/* Shopping Cart Button */}
             <button
               onClick={openCart}
-              className="relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center"
+              className="relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center select-none cursor-pointer"
               aria-label="Cart"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <path d="M3 3h3l3 12h10l3-8H8" />
+                <circle cx="9" cy="19" r="1.5" fill="currentColor" />
+                <circle cx="17" cy="19" r="1.5" fill="currentColor" />
               </svg>
               {/* Badge */}
               <AnimatePresence>
@@ -269,7 +288,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center"
+                    className="absolute -top-1 right-0 sm:-right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
                   >
                     {cartTotalItems}
                   </motion.span>
