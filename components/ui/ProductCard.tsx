@@ -112,15 +112,15 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
       <div className="mt-4 flex flex-col gap-1.5 flex-1">
         <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40">{product.category}</span>
-        <Link href={`/shop/${product.slug}`} className="font-heading text-lg text-[#F5F2EF] leading-tight hover:text-[#E50914] transition-colors">
+        <Link href={`/shop/${product.slug}`} className="font-heading product-card-title text-lg leading-tight transition-colors">
           {product.name}
         </Link>
         <div className="mt-auto pt-2 flex flex-col gap-1.5">
           <Rating value={product.rating} count={product.reviewCount} />
           <div className="flex items-center gap-2 pt-0.5">
-            <span className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.4)]">{formatPrice(product.price)}</span>
+            <span className="font-pixel text-xs text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.4)]">{formatPrice(product.price)}</span>
             {onSale && (
-              <span className="font-heading text-xs text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
+              <span className="font-pixel text-[10px] text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
             )}
           </div>
         </div>

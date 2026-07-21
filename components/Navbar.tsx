@@ -70,11 +70,11 @@ export default function Navbar() {
     setSearchValue("");
   };
 
-    // Nav link animations
+  // Nav link animations
   const linkVariants = {
     hover: {
-      color: "#FF2A45",
-      textShadow: "0 0 8px rgba(255, 42, 69, 0.7)",
+      color: "#E50914",
+      textShadow: "0 0 8px rgba(229, 9, 20, 0.6)",
       transition: { duration: 0.2 },
     },
   };
@@ -92,8 +92,8 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 font-sans ${isScrolled
-            ? "py-4 bg-[#050505]/90 backdrop-blur-md border-b-[4px] border-double border-[#C70024] shadow-lg shadow-black/45"
-            : "py-6 bg-[#050505]/50 backdrop-blur-xs border-b border-white/[0.04]"
+          ? "py-4 bg-[#0b0b0b]/85 backdrop-blur-md border-b border-[#E50914]/20 shadow-lg shadow-black/35"
+          : "py-6 bg-transparent border-b border-transparent"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -126,7 +126,7 @@ export default function Navbar() {
                   variants={borderVariants}
                   initial="initial"
                   animate={isShopMenuOpen ? "hover" : "initial"}
-                  className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#FF2A45] origin-left shadow-[0_0_8px_rgba(255,42,69,0.8)]"
+                  className="absolute bottom-0 left-0 w-full h-[1px] bg-[#E50914] origin-left"
                 />
               </Link>
 
@@ -139,12 +139,12 @@ export default function Navbar() {
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-full left-0 pt-3 w-56"
                   >
-                    <div className="bg-[#050505]/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
+                    <div className="bg-[#070707]/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
                       {SHOP_LINKS.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#F5F2EF]/70 hover:text-[#FF2A45] hover:bg-white/[0.03] transition-colors"
+                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#F5F2EF]/70 hover:text-[#E50914] hover:bg-white/[0.03] transition-colors"
                         >
                           {link.label}
                         </Link>
@@ -156,29 +156,26 @@ export default function Navbar() {
             </div>
 
             {PRIMARY_LINKS.map((link) => (
-              <div key={link.href} className="flex items-center gap-8">
-                <span className="text-[7px] text-[#6A3D9A] select-none opacity-60">■</span>
-                <motion.div className="relative py-1">
-                  <Link href={link.href} className="relative cursor-pointer select-none group">
-                    <motion.span variants={linkVariants} whileHover="hover">
-                      {link.label}
-                    </motion.span>
-                    <motion.span
-                      variants={borderVariants}
-                      className="absolute bottom-0 left-0 w-full h-[1.5px] bg-[#FF2A45] origin-left shadow-[0_0_8px_rgba(255,42,69,0.8)]"
-                      style={{ scaleX: 0 }}
-                      whileHover={{ scaleX: 1 }}
-                    />
-                  </Link>
-                </motion.div>
-              </div>
+              <motion.div key={link.href} className="relative py-1">
+                <Link href={link.href} className="relative cursor-pointer select-none group">
+                  <motion.span variants={linkVariants} whileHover="hover">
+                    {link.label}
+                  </motion.span>
+                  <motion.span
+                    variants={borderVariants}
+                    className="absolute bottom-0 left-0 w-full h-[1px] bg-[#E50914] origin-left"
+                    style={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                  />
+                </Link>
+              </motion.div>
             ))}
           </div>
 
           {/* Branding Logo (Centered) */}
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#FF2A45] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(255,42,69,0.5)] hover:text-[#FF5A75] hover:drop-shadow-[0_0_12px_rgba(255,42,69,0.75)] transition-all duration-300"
+            className="absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#E50914] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(229,9,20,0.5)] hover:text-[#FF3B5C] hover:drop-shadow-[0_0_12px_rgba(229,9,20,0.75)] transition-all duration-300"
           >
             QUSAY STORE
           </Link>
@@ -208,12 +205,11 @@ export default function Navbar() {
                 onClick={() => {
                   if (!isSearchOpen) setIsSearchOpen(true);
                 }}
-                className="text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1 cursor-pointer"
+                className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
                 aria-label="Search"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="4" y="4" width="10" height="10" strokeWidth="2" />
-                  <line x1="12" y1="12" x2="19" y2="19" strokeWidth="3" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
             </form>
@@ -221,17 +217,16 @@ export default function Navbar() {
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
-              className="hidden sm:block relative text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1"
+              className="hidden sm:block relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
               aria-label="Wishlist"
             >
-              <svg className="w-5 h-5" viewBox="0 0 9 9" fill="currentColor">
-                <rect x="1" y="1" width="2" height="2" />
-                <rect x="6" y="1" width="2" height="2" />
-                <rect x="0" y="3" width="9" height="2" />
-                <rect x="1" y="5" width="7" height="1" />
-                <rect x="2" y="6" width="5" height="1" />
-                <rect x="3" y="7" width="3" height="1" />
-                <rect x="4" y="8" width="1" height="1" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 21s-7.5-4.6-10-9.3C.5 8 2 4 6 4c2.2 0 3.7 1.2 4.5 2.4C11.3 5.2 12.8 4 15 4c4 0 5.5 4 4 7.7-2.5 4.7-10 9.3-10 9.3z"
+                />
               </svg>
               <AnimatePresence>
                 {wishlist.length > 0 && (
@@ -239,7 +234,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#C70024] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center font-sans"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center"
                   >
                     {wishlist.length}
                   </motion.span>
@@ -250,27 +245,22 @@ export default function Navbar() {
             {/* Profile Link */}
             <Link
               href="/account"
-              className="hidden sm:block text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1"
+              className="hidden sm:block text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1"
               aria-label="Account"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-                <rect x="3" y="4" width="18" height="12" />
-                <rect x="5" y="6" width="14" height="8" />
-                <path d="M8 16l-2 4h12l-2-4" />
-                <line x1="8" y1="10" x2="11" y2="10" strokeWidth="1.5" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </Link>
 
             {/* Shopping Cart Button */}
             <button
               onClick={openCart}
-              className="relative text-[#CFC6C1] hover:text-[#FF2A45] transition-colors p-1 flex items-center cursor-pointer"
+              className="relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center"
               aria-label="Cart"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-                <path d="M3 3h3l3 12h10l3-8H8" />
-                <circle cx="9" cy="19" r="1.5" fill="currentColor" />
-                <circle cx="17" cy="19" r="1.5" fill="currentColor" />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {/* Badge */}
               <AnimatePresence>
@@ -279,7 +269,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#C70024] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center font-sans"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[9px] font-bold flex items-center justify-center"
                   >
                     {cartTotalItems}
                   </motion.span>
@@ -438,7 +428,7 @@ export default function Navbar() {
                             </div>
 
                             {/* Product Price */}
-                            <div className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">
+                            <div className="font-mono text-sm text-[#F5F2EF]">
                               {formatPrice(item.price * item.quantity)}
                             </div>
                           </div>
@@ -449,7 +439,7 @@ export default function Navbar() {
                       <div className="pt-6 border-t border-white/[0.05] space-y-4">
                         <div className="flex justify-between items-center text-xs tracking-wider uppercase text-[#F5F2EF]/60">
                           <span>Subtotal</span>
-                          <span className="font-heading text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)]">{formatPrice(cartSubtotal)}</span>
+                          <span className="font-mono text-[#F5F2EF]">{formatPrice(cartSubtotal)}</span>
                         </div>
                         <p className="text-[10px] text-[#F5F2EF]/40 italic leading-relaxed">
                           Shipping, taxes, and discounts calculated at checkout. Relics are packaged in dark cedar coffrets.

@@ -1,40 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-vintage-bg: #050505;
+  --color-vintage-bg: #070707;
   --color-vintage-text: #F5F2EF;
   --color-vintage-accent: #E50914;
   
-  --font-sans: var(--font-dm-sans);
+  --font-sans: var(--font-fraunces);
   --font-heading: var(--font-dm-serif);
+}
+
+.font-pixel {
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+.font-vt323 {
+  font-family: 'VT323', monospace !important;
+}
+
+/* Stranger Things Red Hollow Outline Text Effect (100% Transparent Inside + Subtle Crimson Red Border Outline) */
+.stranger-things-title,
+.hollow-red-text {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 1.4px #B3121D !important;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 4px rgba(179, 18, 29, 0.4));
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #050505;
-  background-image: radial-gradient(circle at center, #111111 0%, #050505 100%);
+  background-color: #070707;
+  background-image: radial-gradient(circle at center, #0B0B0B 0%, #070707 100%);
   color: var(--color-vintage-text);
   overflow-x: hidden;
   position: relative;
-}
-
-/* Subtle CRT Monitor Scanline texture overlay */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.12) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.25;
 }
 
 /* Subtle cinematic ambient lighting */
@@ -45,7 +46,7 @@ body::before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(circle at 50% 25%, rgba(229, 9, 20, 0.045) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 25%, rgba(229, 9, 20, 0.055) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -57,31 +58,37 @@ h3.font-heading,
 h4.font-heading,
 .font-heading {
   text-transform: uppercase;
-  letter-spacing: 0.18em !important;
+  letter-spacing: 0.16em !important;
   color: #E50914 !important;
   text-shadow: 0 0 10px rgba(229, 9, 20, 0.45), 0 0 2px rgba(0, 0, 0, 0.95);
   font-weight: 700;
 }
 
-/* Custom Scrollbar - Retro 90s CRT style */
+/* Product Card Title - Ash Grey Override */
+.product-card-title {
+  color: #B5B0A8 !important;
+  text-shadow: none !important;
+}
+.product-card-title:hover {
+  color: #E50914 !important;
+}
+
+/* Custom Scrollbar - Retro 80s */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #050505; 
-  border-left: 1px solid rgba(229, 9, 20, 0.15);
+  background: #070707; 
 }
 ::-webkit-scrollbar-thumb {
-  background: #E50914; 
-  border: 2px solid #050505;
+  background: #660000; 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF2A45; 
+  background: #E50914; 
 }
 
-/* Global Forms Override - Retro Sharp Borders */
+/* Global Forms Override */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -90,12 +97,10 @@ input[type="number"],
 input[type="search"],
 textarea,
 select {
-  background-color: #171717 !important;
-  border: 1px solid #E50914 !important;
+  background-color: #1A0A0A !important;
+  border: 1px solid #660000 !important;
   color: #F5F2EF !important;
   outline: none !important;
-  border-radius: 0px !important;
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
   transition: all 0.3s ease !important;
 }
 
@@ -107,8 +112,8 @@ input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus,
 select:focus {
-  border-color: #FF2A45 !important;
-  box-shadow: 0 0 10px rgba(255, 42, 69, 0.35), inset 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+  border-color: #E50914 !important;
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4) !important;
 }
 
 input::placeholder,
@@ -125,19 +130,85 @@ textarea::placeholder {
   height: 100vh;
   pointer-events: none;
   z-index: 50;
-  opacity: 0.035;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* Category Title outline red style */
 h3.font-heading.text-outline-red {
   color: transparent !important;
-  -webkit-text-stroke: 1.2px #8A0303;
-  text-shadow: 0 0 5px rgba(138, 3, 3, 0.25) !important;
+  -webkit-text-stroke: 1.2px #C50813;
+  text-shadow: 0 0 5px rgba(197, 8, 19, 0.3) !important;
 }
 
 .group:hover h3.font-heading.text-outline-red {
-  -webkit-text-stroke: 1.2px #B30000;
-  text-shadow: 0 0 8px rgba(179, 0, 0, 0.45) !important;
+  -webkit-text-stroke: 1.2px #E50914;
+  text-shadow: 0 0 8px rgba(229, 9, 20, 0.5) !important;
 }
+
+/* 90s Retro Web CRT & Scanline Effects */
+.crt-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.35) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.04),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.04)
+  );
+  background-size: 100% 3px, 6px 100%;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.97; }
+  50% { opacity: 1; }
+  52% { opacity: 0.94; }
+  54% { opacity: 1; }
+  80% { opacity: 0.98; }
+  100% { opacity: 0.97; }
+}
+
+.animate-crt-flicker {
+  animation: crtFlicker 0.15s infinite;
+}
+
+@keyframes retroMarquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-retro-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: retroMarquee 15s linear infinite;
+}
+
+/* 90s Retro Bevel & Pixel Card Styles */
+.retro-bevel {
+  border-top: 2px solid rgba(255, 255, 255, 0.35);
+  border-left: 2px solid rgba(255, 255, 255, 0.35);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.8);
+  border-right: 2px solid rgba(0, 0, 0, 0.8);
+}
+
+.retro-bevel-inset {
+  border-top: 2px solid rgba(0, 0, 0, 0.8);
+  border-left: 2px solid rgba(0, 0, 0, 0.8);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+  border-right: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+.retro-box-shadow {
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.retro-box-shadow-neon {
+  box-shadow: 4px 4px 0px #00FF66;
+}
+
+.retro-box-shadow-pink {
+  box-shadow: 4px 4px 0px #FF0055;
+}
+
 

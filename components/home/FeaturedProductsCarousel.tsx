@@ -32,20 +32,16 @@ export function FeaturedProductsCarousel() {
             <button
               onClick={() => scrollBy(-1)}
               aria-label="Previous"
-              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border-2 border-white/60 text-white hover:border-[#FF0055] hover:text-[#FF0055] transition-colors flex items-center justify-center font-pixel text-xs font-bold retro-box-shadow"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-              </svg>
+              ◄
             </button>
             <button
               onClick={() => scrollBy(1)}
               aria-label="Next"
-              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border-2 border-white/60 text-white hover:border-[#FF0055] hover:text-[#FF0055] transition-colors flex items-center justify-center font-pixel text-xs font-bold retro-box-shadow"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-              </svg>
+              ►
             </button>
           </div>
         </div>
@@ -71,7 +67,7 @@ export function FeaturedProductsCarousel() {
             className="flex-shrink-0 w-[75vw] sm:w-[45vw] md:w-[340px] snap-start"
           >
             <Link href={`/shop/${product.slug}`} className="group block">
-              <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden border border-white/[0.05] mb-4 shadow-lg shadow-black/20">
+              <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden border-2 border-[#E50914]/40 mb-4 retro-box-shadow group-hover:border-[#E50914] transition-colors">
                 <Image
                   src={product.images[0]}
                   alt={product.name}
@@ -81,17 +77,18 @@ export function FeaturedProductsCarousel() {
                   className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070707]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="absolute bottom-4 left-4 right-4 font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                  View Details →
+                <span className="absolute bottom-4 left-4 right-4 font-mono text-[10px] uppercase font-bold tracking-widest text-[#E50914] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-1">
+                  <span>View Details</span>
+                  <span>►</span>
                 </span>
               </div>
-              <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40 mb-1">
+              <p className="font-pixel text-[9px] font-bold uppercase tracking-widest text-[#E50914] mb-1">
                 {product.category}
               </p>
-              <h3 className="font-heading text-lg text-[#F5F2EF] group-hover:text-[#E50914] transition-colors">
+              <h3 className="font-heading product-card-title text-lg transition-colors">
                 {product.name}
               </h3>
-              <p className="font-heading text-sm text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)] mt-1">{formatPrice(product.price)}</p>
+              <p className="font-pixel text-xs text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.3)] mt-1">{formatPrice(product.price)}</p>
             </Link>
           </motion.div>
         ))}

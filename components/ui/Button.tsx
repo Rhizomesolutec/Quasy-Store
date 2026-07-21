@@ -9,18 +9,21 @@ type CommonProps = {
 };
 
 const base =
-  "inline-flex items-center justify-center gap-2 uppercase tracking-widest font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap rounded-none";
+  "inline-flex items-center justify-center gap-1.5 uppercase tracking-wider font-pixel transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap rounded-none border-2 retro-box-shadow";
 
 const sizes: Record<NonNullable<CommonProps["size"]>, string> = {
-  sm: "text-[10px] px-4 py-2",
-  md: "text-xs px-6 py-3",
-  lg: "text-xs px-8 py-3.5",
+  sm: "text-[8px] px-3 py-1.5",
+  md: "text-[9px] sm:text-[10px] px-4 py-2.5",
+  lg: "text-[10px] sm:text-xs px-6 py-3",
 };
 
 const variants: Record<NonNullable<CommonProps["variant"]>, string> = {
-  filled: "bg-[#171717] text-[#CFC6C1] border border-[#C70024] shadow-[inset_-2px_-2px_0px_#660000,inset_2px_2px_0px_rgba(255,255,255,0.08)] hover:bg-[#C70024] hover:text-[#F5F2EF] hover:shadow-[0_0_15px_rgba(229,9,20,0.4)]",
-  outline: "border border-[#C70024] text-[#CFC6C1] bg-transparent hover:bg-[#C70024] hover:text-[#F5F2EF] hover:shadow-[0_0_15px_rgba(229,9,20,0.4)]",
-  ghost: "text-[#CFC6C1] hover:text-[#F5F2EF] border border-[#C70024]/20 hover:border-[#C70024] hover:shadow-[0_0_12px_rgba(229,9,20,0.25)] bg-transparent",
+  filled:
+    "bg-black text-[#00FF66] border-white/60 hover:border-[#FF0055] hover:text-white shadow-sm active:scale-95",
+  outline:
+    "bg-black text-white border-white/60 hover:border-[#FF0055] hover:text-[#00FF66] shadow-sm active:scale-95",
+  ghost:
+    "bg-transparent text-white border border-white/40 hover:border-[#00FF66] hover:text-[#00FF66]",
 };
 
 export function Button({

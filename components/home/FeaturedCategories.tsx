@@ -14,22 +14,30 @@ const HOME_FEATURED_CATEGORIES = [
   "Denim Sling Bag",
 ] as const;
 
-const CATEGORY_META: Record<string, { image: string; tagline: string }> = {
+const CATEGORY_META: Record<string, { image: string; tagline: string; color: string; badge: string }> = {
   Necklaces: {
     image: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"),
     tagline: "Chain-drawn pendants built around the house spider motif.",
+    color: "#FF0055",
+    badge: "SITCOMS",
   },
   "Glow Dark Necklace": {
     image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 11/vol 11.jpg"),
     tagline: "Photoluminescent crystal pieces that charge by day and glow after dark.",
+    color: "#00FF66",
+    badge: "KIDS",
   },
   Bracelets: {
     image: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.jpg"),
     tagline: "Cuffs and chains that translate cathedral scrollwork to the wrist.",
+    color: "#00F0FF",
+    badge: "MOVIES",
   },
   "Denim Sling Bag": {
     image: encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.jpg"),
     tagline: "Hand-stitched denim carriers finished with industrial metal rings.",
+    color: "#FFE600",
+    badge: "SLING BAGS",
   },
 };
 
@@ -60,8 +68,15 @@ export function FeaturedCategories() {
               >
                 <Link
                   href={`/categories/${categoryToSlug(category)}`}
-                  className="group relative block aspect-[5/4] overflow-hidden rounded-sm bg-black border border-white/[0.06]"
+                  className="group relative block aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#E50914]/50 retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
                 >
+                  {/* Top Retro Red Badge */}
+                  <div
+                    className="absolute top-3 left-3 z-20 px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]"
+                  >
+                    {meta.badge}
+                  </div>
+
                   <Image
                     src={meta.image}
                     alt={category}
@@ -71,17 +86,26 @@ export function FeaturedCategories() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/30 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-8">
-                    <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#E50914] mb-2">
+                    <span className="font-pixel text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
-                    <h3 className="font-heading text-3xl md:text-4xl text-outline-red mb-2 transition-all duration-300">
+                    <h3
+                      className="font-heading hollow-red-text text-3xl md:text-4xl mb-2 tracking-wider transition-all duration-300 group-hover:translate-x-1"
+                      style={{
+                        color: "transparent",
+                        WebkitTextFillColor: "transparent",
+                        WebkitTextStroke: "1.4px #B3121D",
+                        filter: "drop-shadow(0 0 4px rgba(179, 18, 29, 0.4))",
+                      }}
+                    >
                       {category}
                     </h3>
-                    <p className="font-sans text-xs text-[#F5F2EF]/55 max-w-xs leading-relaxed mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                    <p className="font-sans text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">
                       {meta.tagline}
                     </p>
-                    <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1 transition-colors duration-300 group-hover:text-[#E50914]">
-                      Explore {category} →
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914]/40 pb-1 transition-colors duration-300 flex items-center gap-1 font-bold">
+                      <span>Explore {category}</span>
+                      <span className="text-[#E50914]">►</span>
                     </span>
                   </div>
                 </Link>

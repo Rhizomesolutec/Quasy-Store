@@ -30,20 +30,16 @@ export function NewArrivalsShowcase() {
             <button
               onClick={() => scrollBy(-1)}
               aria-label="Scroll left"
-              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border-2 border-white/60 text-white hover:border-[#FF0055] hover:text-[#FF0055] transition-colors flex items-center justify-center font-pixel text-xs font-bold retro-box-shadow"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-              </svg>
+              ◄
             </button>
             <button
               onClick={() => scrollBy(1)}
               aria-label="Scroll right"
-              className="w-10 h-10 border border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914] hover:text-[#F5F2EF] transition-colors flex items-center justify-center"
+              className="w-10 h-10 border-2 border-white/60 text-white hover:border-[#FF0055] hover:text-[#FF0055] transition-colors flex items-center justify-center font-pixel text-xs font-bold retro-box-shadow"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
-              </svg>
+              ►
             </button>
           </div>
         </div>
@@ -71,9 +67,9 @@ export function NewArrivalsShowcase() {
       <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 mt-10 flex justify-center">
         <Link
           href="/new-arrivals"
-          className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1.5 hover:text-[#E50914] transition-colors"
+          className="font-pixel text-[10px] uppercase font-bold tracking-widest text-[#E50914] border-b border-[#E50914]/50 pb-1.5 hover:text-white transition-colors"
         >
-          View All New Arrivals →
+          View All New Arrivals ►
         </Link>
       </div>
     </section>

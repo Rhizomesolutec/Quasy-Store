@@ -23,12 +23,12 @@ export function NewsletterSubscription() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-3xl mx-auto text-center border border-white/[0.08] bg-gradient-to-b from-[#170909] to-[#070707] px-6 sm:px-12 py-14 md:py-16 relative overflow-hidden"
+        className="max-w-3xl mx-auto text-center border-2 border-[#333] bg-[#0a0a0c] px-6 sm:px-12 py-14 md:py-16 relative overflow-hidden retro-box-shadow"
       >
         <div
-          className="absolute inset-0 opacity-[0.06] pointer-events-none"
+          className="absolute inset-0 opacity-[0.12] pointer-events-none"
           style={{
-            backgroundImage: "radial-gradient(circle at 50% 0%, #E50914 0%, transparent 55%)",
+            backgroundImage: "radial-gradient(circle at 50% 0%, #00FF66 0%, transparent 60%)",
           }}
         />
 
@@ -38,7 +38,7 @@ export function NewsletterSubscription() {
             Join the Inner Circle
           </h2>
           <Divider className="mx-auto mb-6" />
-          <p className="font-sans text-sm text-[#F5F2EF]/60 leading-relaxed max-w-md mx-auto mb-10">
+          <p className="font-mono text-xs text-[#F5F2EF]/70 leading-relaxed max-w-md mx-auto mb-10">
             Restock alerts, early access to limited castings, and quiet notes from the workshop — never spam.
           </p>
 
@@ -46,10 +46,10 @@ export function NewsletterSubscription() {
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="py-4"
+              className="py-4 border-2 border-[#00FF66] bg-black p-4 inline-block"
             >
-              <p className="font-heading text-xl text-[#F5F2EF] mb-2">You&apos;re on the list</p>
-              <p className="font-sans text-xs text-[#F5F2EF]/50 uppercase tracking-widest">
+              <p className="font-heading text-xl text-[#00FF66] mb-2 font-mono">YOU&apos;RE ON THE LIST! ⚡</p>
+              <p className="font-mono text-xs text-[#FFE600] uppercase tracking-widest font-bold">
                 A raven will find you soon.
               </p>
             </motion.div>
@@ -61,11 +61,15 @@ export function NewsletterSubscription() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="flex-1 bg-[#1A0A0A] border border-white/[0.08] px-4 py-3.5 text-sm text-[#F5F2EF] placeholder-[#F5F2EF]/30 outline-none focus:border-[#E50914]/50 transition-colors"
+                className="flex-1 bg-[#14141c] border-2 border-[#333] px-4 py-3.5 text-xs font-mono text-[#F5F2EF] placeholder-[#F5F2EF]/40 outline-none focus:border-[#00FF66] transition-colors"
               />
-              <Button type="submit" variant="filled" size="lg" disabled={status === "submitting"}>
-                {status === "submitting" ? "Joining..." : "Subscribe"}
-              </Button>
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="bg-[#00FF66] hover:bg-[#39FF14] text-black font-black text-xs px-6 py-3.5 uppercase tracking-wider font-mono border-2 border-black retro-box-shadow transition-transform active:scale-95"
+              >
+                {status === "submitting" ? "JOINING..." : "SUBSCRIBE ►"}
+              </button>
             </form>
           )}
         </div>

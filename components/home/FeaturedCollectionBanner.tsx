@@ -37,23 +37,26 @@ export function FeaturedCollectionBanner() {
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-xl"
         >
-          <Eyebrow className="mb-5">Featured Collection</Eyebrow>
+          <span className="text-[10px] font-pixel font-bold text-[#E50914] tracking-widest uppercase mb-2 block">
+            ● 1990s REQUIEM SERIES
+          </span>
+          <Eyebrow className="mb-4">Featured Collection</Eyebrow>
           <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl text-[#F5F2EF] leading-[1.05] mb-6">
             {collection.name}
           </h2>
           <Divider className="mb-6" />
-          <p className="font-sans text-sm md:text-base text-[#F5F2EF]/65 leading-relaxed mb-10 max-w-md">
+          <p className="font-mono text-xs md:text-sm text-[#F5F2EF]/70 leading-relaxed mb-10 max-w-md">
             {collection.description}
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 items-center">
             <LinkButton href={`/collections/${collection.slug}`} variant="filled" size="lg">
-              Explore Collection
+              Explore Collection ►
             </LinkButton>
             <Link
               href="/collections"
-              className="inline-flex items-center font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 hover:text-[#E50914] transition-colors border-b border-transparent hover:border-[#E50914] pb-0.5"
+              className="inline-flex items-center font-pixel text-[10px] uppercase font-bold tracking-widest text-[#E50914] hover:text-white transition-colors border-b border-[#E50914]/40 hover:border-[#E50914] pb-0.5"
             >
-              All Collections →
+              All Collections ►
             </Link>
           </div>
         </motion.div>

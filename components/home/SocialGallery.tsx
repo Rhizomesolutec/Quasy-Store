@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
 
 const GALLERY = [
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg"), tall: true },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.jpg"), tall: false },
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.jpg"), tall: false },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.jpg"), tall: true },
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.jpg"), tall: false },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg"), tall: true },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg"), tall: true, color: "#FF0055" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.jpg"), tall: false, color: "#00FF66" },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.jpg"), tall: false, color: "#00F0FF" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.jpg"), tall: true, color: "#FFE600" },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.jpg"), tall: false, color: "#A855F7" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg"), tall: true, color: "#39FF14" },
 ];
 
 export function SocialGallery() {
@@ -31,7 +31,7 @@ export function SocialGallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-30px" }}
               transition={{ duration: 0.55, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              className="group relative break-inside-avoid overflow-hidden rounded-sm border border-white/[0.06] bg-black"
+              className="group relative break-inside-avoid overflow-hidden rounded-sm border-2 border-[#E50914]/50 bg-black transition-all duration-500 hover:border-[#E50914] retro-box-shadow"
             >
               <div className={`relative w-full ${item.tall ? "aspect-[3/4]" : "aspect-square"}`}>
                 <Image
@@ -41,9 +41,9 @@ export function SocialGallery() {
                   sizes="(min-width: 768px) 33vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-[#070707]/0 group-hover:bg-[#070707]/45 transition-colors duration-500 flex items-center justify-center">
-                  <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    View Post
+                <div className="absolute inset-0 bg-[#070707]/0 group-hover:bg-[#070707]/60 transition-colors duration-500 flex flex-col items-center justify-center gap-2">
+                  <span className="font-mono text-[10px] uppercase font-black tracking-widest px-3 py-1 text-white border border-black bg-[#E50914]">
+                    VIEW POST ►
                   </span>
                 </div>
               </div>
