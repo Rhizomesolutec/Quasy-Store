@@ -70,58 +70,68 @@ const SHOWS_GRID = [
     image: "/images/Nacklace/Bracelet/Bracelet 11/Bracelet 11.jpg",
     slug: "coven-chain-bracelet",
   },
+  {
+    id: "7",
+    channelNo: "07",
+    name: "Obsidian Pendant",
+    price: 165,
+    badgeColor: "#E50914",
+    headerLabel: "MIDNIGHT SPECIAL",
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 4/vol 4.jpg"),
+    slug: "obsidian-pendant-necklace",
+  },
+  {
+    id: "8",
+    channelNo: "08",
+    name: "Relic Locket",
+    price: 195,
+    badgeColor: "#E50914",
+    headerLabel: "ARCHIVAL SELECTION",
+    image: "/images/spider-1.jpg",
+    slug: "relic-locket-necklace",
+  },
+  {
+    id: "9",
+    channelNo: "09",
+    name: "Glow Dark Crystal VI",
+    price: 205,
+    badgeColor: "#E50914",
+    headerLabel: "SAVED BY THE COVEN",
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 6/vol 6.jpg"),
+    slug: "glow-dark-crystal-vol6",
+  },
+  {
+    id: "10",
+    channelNo: "10",
+    name: "Spider Bead Relic IV",
+    price: 180,
+    badgeColor: "#E50914",
+    headerLabel: "GOTHIC DOUG II",
+    image: encodeURI("/images/Nacklace/Spider Collection/vol 4/var 4.jpg"),
+    slug: "spider-collection-vol4",
+  },
+  {
+    id: "11",
+    channelNo: "11",
+    name: "Gothic Pant Hook",
+    price: 165,
+    badgeColor: "#E50914",
+    headerLabel: "DENIM RAMPAGE",
+    image: encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.jpg"),
+    slug: "pant-hook-chain",
+  },
+  {
+    id: "12",
+    channelNo: "12",
+    name: "Gothic Jacket Pin",
+    price: 145,
+    badgeColor: "#E50914",
+    headerLabel: "PINHEAD SHADOWS",
+    image: encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.jpg"),
+    slug: "gothic-jacket-pin",
+  },
 ];
 
-const CATEGORIES_GRID = [
-  {
-    name: "NECKLACES",
-    icon: "📺",
-    bg: "bg-[#8E284F]",
-    textColor: "text-black",
-    strokeColor: "#000000",
-    slug: "necklaces",
-  },
-  {
-    name: "GLOW DARK",
-    icon: "💥",
-    bg: "bg-[#251040]",
-    textColor: "text-white",
-    strokeColor: "#FFFFFF",
-    slug: "glow-dark-necklace",
-  },
-  {
-    name: "BRACELETS",
-    icon: "🎬",
-    bg: "bg-[#0E5B68]",
-    textColor: "text-black",
-    strokeColor: "#000000",
-    slug: "bracelets",
-  },
-  {
-    name: "PANT CHAINS",
-    icon: "📻",
-    bg: "bg-[#423206]",
-    textColor: "text-white",
-    strokeColor: "#FFFFFF",
-    slug: "pant-chains",
-  },
-  {
-    name: "SLING BAGS",
-    icon: "🏈",
-    bg: "bg-[#96760E]",
-    textColor: "text-black",
-    strokeColor: "#000000",
-    slug: "denim-sling-bag",
-  },
-  {
-    name: "CHARMS & PINS",
-    icon: "🕹️",
-    bg: "bg-[#3D1022]",
-    textColor: "text-white",
-    strokeColor: "#FFFFFF",
-    slug: "jacket-pin",
-  },
-];
 
 export default function DetailsPricing() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -210,13 +220,15 @@ export default function DetailsPricing() {
             </Link>
           </div>
 
-          {/* 6 Grid Cards with Badges, Title, Price & Channel Number (All 8-bit Pixel Font) */}
+          {/* 6 Grid Cards on Mobile, 12 on Desktop (All 8-bit Pixel Font) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {SHOWS_GRID.map((ch) => (
+            {SHOWS_GRID.map((ch, idx) => (
               <Link
                 key={ch.id}
                 href={`/shop/${ch.slug}`}
-                className="group cursor-pointer bg-[#0a0a0c] border-2 border-[#333] hover:border-[#00FF66] overflow-hidden retro-box-shadow flex flex-col justify-between transition-all duration-300 hover:-translate-y-1"
+                className={`group cursor-pointer bg-[#0a0a0c] border-2 border-[#333] hover:border-[#00FF66] overflow-hidden retro-box-shadow flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+                  idx >= 6 ? "hidden lg:flex" : ""
+                }`}
               >
                 {/* Card Image */}
                 <div className="relative aspect-square w-full bg-black overflow-hidden">
@@ -246,65 +258,6 @@ export default function DetailsPricing() {
 
         </div>
 
-        {/* -------------------------------------------------------------
-            2. BROWSE BY CATEGORY NEON GRID WITH RETRO 90S DOODLE MARKINGS
-        ------------------------------------------------------------- */}
-        <div ref={addToRefs} className="w-full flex flex-col gap-3">
-          <h3 className="text-sm sm:text-base font-black text-[#00F0FF] tracking-widest uppercase font-pixel flex items-center gap-2">
-            BROWSE BY CATEGORY
-          </h3>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {CATEGORIES_GRID.map((cat, i) => (
-              <Link
-                key={i}
-                href={`/categories/${cat.slug}`}
-                className={`relative p-3.5 sm:p-4 aspect-[1/0.92] border-2 border-black ${cat.bg} retro-box-shadow flex flex-col items-center justify-between text-center cursor-pointer overflow-hidden group hover:scale-[1.02] transition-all duration-300`}
-              >
-                {/* 90s Retro Minimalist Markings Pattern Overlay in Every Corner */}
-                <svg
-                  className="absolute inset-0 w-full h-full opacity-30 pointer-events-none fill-none"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  style={{ stroke: cat.strokeColor }}
-                >
-                  {/* Top-Left Corner */}
-                  <path d="M6 10 L14 10 M10 6 L10 14" strokeWidth="1.2" strokeLinecap="round" />
-                  <circle cx="16" cy="16" r="1.2" fill={cat.strokeColor} stroke="none" />
-
-                  {/* Top-Right Corner */}
-                  <path d="M86 10 L94 10 M90 6 L90 14" strokeWidth="1.2" strokeLinecap="round" />
-                  <circle cx="84" cy="16" r="1.2" fill={cat.strokeColor} stroke="none" />
-
-                  {/* Bottom-Left Corner */}
-                  <path d="M6 90 L14 90 M10 86 L10 94" strokeWidth="1.2" strokeLinecap="round" />
-                  <circle cx="16" cy="84" r="1.2" fill={cat.strokeColor} stroke="none" />
-
-                  {/* Bottom-Right Corner */}
-                  <path d="M86 90 L94 90 M90 86 L90 94" strokeWidth="1.2" strokeLinecap="round" />
-                  <circle cx="84" cy="84" r="1.2" fill={cat.strokeColor} stroke="none" />
-                </svg>
-
-                {/* Top Empty Spacer */}
-                <div className="h-0.5" />
-
-                {/* Center Retro Icon (Increased Size) */}
-                <div className="relative z-10 flex flex-col items-center">
-                  <span className="text-5xl sm:text-6xl mb-1 group-hover:scale-110 transition-transform duration-300 drop-shadow-md select-none">
-                    {cat.icon}
-                  </span>
-                </div>
-
-                {/* Bottom Retro 8-bit Pixel Label (Category Name Only in Single Line) */}
-                <div className="relative z-10 flex flex-col items-center w-full px-1 overflow-hidden">
-                  <span className={`text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wider font-pixel whitespace-nowrap ${cat.textColor}`}>
-                    {cat.name}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
 
         {/* -------------------------------------------------------------
             3. THE ARACHNID REQUIEM SHOWCASE (UNDER FEATURED SHOWS & BROWSE BY CATEGORY)

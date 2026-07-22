@@ -95,7 +95,7 @@ export function FeaturedCategories() {
                         color: "transparent",
                         WebkitTextFillColor: "transparent",
                         WebkitTextStroke: "1.4px #B3121D",
-                        filter: "drop-shadow(0 0 4px rgba(179, 18, 29, 0.4))",
+                        filter: "none",
                       }}
                     >
                       {category}
