@@ -1,5 +1,8 @@
+import fs from "fs";
+import path from "path";
 import Hero from "@/components/Hero";
 import DetailsPricing from "@/components/DetailsPricing";
+import HangingSpider from "@/components/HangingSpider";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { NewArrivalsShowcase } from "@/components/home/NewArrivalsShowcase";
 import { BestSellersGrid } from "@/components/home/BestSellersGrid";
@@ -16,18 +19,17 @@ import { FaqPreview } from "@/components/home/FaqPreview";
 import { FinalCta } from "@/components/home/FinalCta";
 
 export default function Home() {
+  const mobileSequencePath = path.join(process.cwd(), "public", "images", "hero-mobile");
+  const isMobileSequenceAvailable = fs.existsSync(mobileSequencePath);
+
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
+      <HangingSpider />
 
-      {/* Existing hero — unchanged */}
-      <Hero />
-
-      {/* Refined transition spacer */}
-      <div className="w-full h-[2vh] md:h-[12vh] flex items-center justify-center" aria-hidden>
-        <div className="flex flex-col items-center gap-1.5">
-          <div className="w-[1px] h-4 md:h-16 bg-gradient-to-b from-transparent via-[#E50914]/40 to-transparent" />
-        </div>
+      {/* Wrapper to isolate flex layout from GSAP pin spacer */}
+      <div className="w-full block">
+        <Hero isMobileSequenceAvailable={isMobileSequenceAvailable} />
       </div>
 
       {/* Existing product showcase — unchanged */}

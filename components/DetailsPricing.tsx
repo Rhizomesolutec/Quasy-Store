@@ -132,7 +132,6 @@ const SHOWS_GRID = [
   },
 ];
 
-
 export default function DetailsPricing() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement[]>([]);
@@ -152,10 +151,9 @@ export default function DetailsPricing() {
 
     gsap.fromTo(
       itemsRef.current,
-      { opacity: 0, y: 50 },
+      { opacity: 0 },
       {
         opacity: 1,
-        y: 0,
         duration: 1.2,
         stagger: 0.3,
         ease: "power3.out",
@@ -226,7 +224,7 @@ export default function DetailsPricing() {
               <Link
                 key={ch.id}
                 href={`/shop/${ch.slug}`}
-                className={`group cursor-pointer bg-[#0a0a0c] border-2 border-[#333] hover:border-[#00FF66] overflow-hidden retro-box-shadow flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+                className={`group cursor-pointer bg-[#0a0a0c] border-2 border-[#333] hover:border-[#00FF66] overflow-hidden retro-box-shadow flex flex-col justify-between transition-all duration-300 ${
                   idx >= 6 ? "hidden lg:flex" : ""
                 }`}
               >

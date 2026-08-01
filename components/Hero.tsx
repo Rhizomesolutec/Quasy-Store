@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import SequenceCanvas from "./SequenceCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,107 +20,61 @@ interface WebNode {
   radius: number;
 }
 
-export default function Hero() {
+interface HeroProps {
+  isMobileSequenceAvailable?: boolean;
+}
+
+export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const webCanvasRef = useRef<HTMLCanvasElement>(null);
-  const centerpieceWrapperRef = useRef<HTMLDivElement>(null);
   const titleContainerRef = useRef<HTMLDivElement>(null);
   const descRef = useRef<HTMLDivElement>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [spiderRecoil, setSpiderRecoil] = useState(false);
-  
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [swayRotation, setSwayRotation] = useState(0);
-  const [dimensions, setDimensions] = useState({ minY: 90, maxY: 500 });
 
-  // Mouse coordinate refs
-  const mouseRef = useRef({ x: -9999, y: -9999, active: false });
-  const centerOffsetRef = useRef({ x: 0, y: 0 });
+  // PNG Sequence Background state
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [sequenceProgress, setSequenceProgress] = useState(0);
+  const [preloadProgress, setPreloadProgress] = useState({ loaded: 0, total: 300 });
+
+  // Interactive preloader spider web refs
+  const loadingWebCanvasRef = useRef<HTMLCanvasElement>(null);
+  const loadingMouseRef = useRef({ x: -9999, y: -9999, active: false });
+  const loadingCenterNodeRef = useRef<WebNode | null>(null);
+  const loadingNodesRef = useRef<WebNode[]>([]);
 
   // Web nodes list
-  const nodesRef = useRef<WebNode[]>([]);
-  const centerNodeRef = useRef<WebNode | null>(null);
+  // loading web nodes are defined above
 
-  // Set loaded state on mount to kick off intro animations
+  // Handle prefers-reduced-motion
   useEffect(() => {
-    setIsLoaded(true);
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  // Update scrollProgress
+
+
+  // Elastic Loading Spider Web Canvas Physics
   useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = window.scrollY / totalHeight;
-        setScrollProgress(progress);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Update dynamic dimensions for screen height
-  useEffect(() => {
-    const updateDimensions = () => {
-      setDimensions({
-        minY: 90,
-        maxY: window.innerHeight - 110
-      });
-    };
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
-  // Calculate real-time scroll velocity and apply physical sway dampening
-  useEffect(() => {
-    let lastY = window.scrollY;
-    let lastTime = Date.now();
-    let active = true;
-
-    const checkScrollVelocity = () => {
-      if (!active) return;
-      const currentY = window.scrollY;
-      const currentTime = Date.now();
-      const dy = currentY - lastY;
-      const dt = currentTime - lastTime;
-
-      if (dt > 0) {
-        const velocity = dy / dt; // pixels per ms
-        // Map velocity to rotation angle (max 18 degrees)
-        const targetRotation = Math.max(-15, Math.min(15, velocity * 4.5));
-        // Dampen the sway angle smoothly towards the target velocity tilt
-        setSwayRotation(prev => prev + (targetRotation - prev) * 0.1);
-      }
-
-      lastY = currentY;
-      lastTime = currentTime;
-      requestAnimationFrame(checkScrollVelocity);
-    };
-
-    requestAnimationFrame(checkScrollVelocity);
-    return () => { active = false; };
-  }, []);
-
-  // 1. Elastic Background Web Canvas Physics
-  useEffect(() => {
-    const canvas = webCanvasRef.current;
+    if (isLoaded) return;
+    const canvas = loadingWebCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationFrameId: number;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-    const radialStrands = 10;
-    const rings = 6;
+    const radialStrands = 12;
+    const rings = 8;
     const springFactor = 0.035;
     const friction = 0.9;
-    const mouseRadius = 150;
-    const mousePushForce = 35;
+    const mouseRadius = 180;
+    const mousePushForce = 40;
 
     const generateWeb = () => {
       const centerX = width / 2;
@@ -136,9 +91,9 @@ export default function Hero() {
         angle: 0,
         radius: 0,
       };
-      centerNodeRef.current = centerNode;
+      loadingCenterNodeRef.current = centerNode;
 
-      const maxDist = Math.min(width, height) * 0.48;
+      const maxDist = Math.max(width, height) * 0.52;
 
       for (let r = 1; r <= rings; r++) {
         const ringRadius = (r / rings) * maxDist;
@@ -159,38 +114,28 @@ export default function Hero() {
           });
         }
       }
-      nodesRef.current = nodes;
+      loadingNodesRef.current = nodes;
     };
 
     generateWeb();
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
       generateWeb();
     };
     window.addEventListener("resize", handleResize);
 
-    // Physics Update Loop
     const animate = () => {
-      // Fallback: If dimensions were 0 on mount, re-initialize once layout calculates size
-      if (width === 0 || height === 0) {
-        width = canvas.width = canvas.offsetWidth;
-        height = canvas.height = canvas.offsetHeight;
-        if (width > 0 && height > 0) {
-          generateWeb();
-        }
-      }
-
       ctx.clearRect(0, 0, width, height);
 
       const centerX = width / 2;
       const centerY = height / 2;
-      const m = mouseRef.current;
-      const centerNode = centerNodeRef.current;
+      const m = loadingMouseRef.current;
+      const centerNode = loadingCenterNodeRef.current;
 
-      // Update Center Node Physics
+      // Update Center Node
       if (centerNode) {
         if (m.active) {
           const dx = m.x - centerNode.x;
@@ -208,19 +153,10 @@ export default function Hero() {
         centerNode.vy *= friction;
         centerNode.x += centerNode.vx;
         centerNode.y += centerNode.vy;
-
-        const ox = centerNode.x - centerX;
-        const oy = centerNode.y - centerY;
-        centerOffsetRef.current = { x: ox, y: oy };
-
-        // Physically translate the centerpiece along the web mesh!
-        if (centerpieceWrapperRef.current) {
-          centerpieceWrapperRef.current.style.transform = `translate3d(${ox * 0.8}px, ${oy * 0.8}px, 0)`;
-        }
       }
 
       // Update remaining nodes
-      nodesRef.current.forEach((node) => {
+      loadingNodesRef.current.forEach((node) => {
         if (m.active) {
           const dx = m.x - node.x;
           const dy = m.y - node.y;
@@ -231,7 +167,6 @@ export default function Hero() {
             node.vy -= (dy / dist) * force * mousePushForce * 0.6;
           }
         }
-
         node.vx += (node.baseX - node.x) * springFactor;
         node.vy += (node.baseY - node.y) * springFactor;
         node.vx *= friction;
@@ -240,37 +175,52 @@ export default function Hero() {
         node.y += node.vy;
       });
 
-      // Draw Web Rings (Concentric Polygons)
+      // Draw Web Rings (Concentric Polygons with sagging organic curves)
       for (let r = 0; r < rings; r++) {
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(216, 207, 192, ${0.05 + (r / rings) * 0.08})`;
+        // Silver-white stroke matching the hero section web with clear visibility
+        ctx.strokeStyle = `rgba(216, 207, 192, ${0.08 + (r / rings) * 0.15})`;
         ctx.lineWidth = 0.8;
-        for (let s = 0; s < radialStrands; s++) {
-          const idx = r * radialStrands + s;
-          const node = nodesRef.current[idx];
-          if (node) {
-            if (s === 0) ctx.moveTo(node.x, node.y);
-            else ctx.lineTo(node.x, node.y);
+
+        const firstIdx = r * radialStrands;
+        const firstNode = loadingNodesRef.current[firstIdx];
+
+        if (firstNode) {
+          ctx.moveTo(firstNode.x, firstNode.y);
+
+          for (let s = 0; s < radialStrands; s++) {
+            const nextS = (s + 1) % radialStrands;
+            const node1 = loadingNodesRef.current[r * radialStrands + s];
+            const node2 = loadingNodesRef.current[r * radialStrands + nextS];
+
+            if (node1 && node2) {
+              const midX = (node1.x + node2.x) / 2;
+              const midY = (node1.y + node2.y) / 2;
+
+              // Sag control point slightly towards the center (by 12%) to create natural spider web curvature
+              const dx = midX - centerX;
+              const dy = midY - centerY;
+              const controlX = centerX + dx * 0.88;
+              const controlY = centerY + dy * 0.88;
+
+              ctx.quadraticCurveTo(controlX, controlY, node2.x, node2.y);
+            }
           }
         }
-        // Close Ring
-        const firstIdx = r * radialStrands;
-        const firstNode = nodesRef.current[firstIdx];
-        if (firstNode) ctx.lineTo(firstNode.x, firstNode.y);
         ctx.stroke();
       }
 
       // Draw Web Radial Lines
       for (let s = 0; s < radialStrands; s++) {
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(216, 207, 192, 0.09)";
+        ctx.strokeStyle = "rgba(216, 207, 192, 0.14)";
         ctx.lineWidth = 1;
         if (centerNode) ctx.moveTo(centerNode.x, centerNode.y);
         else ctx.moveTo(centerX, centerY);
 
         for (let r = 0; r < rings; r++) {
           const idx = r * radialStrands + s;
-          const node = nodesRef.current[idx];
+          const node = loadingNodesRef.current[idx];
           if (node) ctx.lineTo(node.x, node.y);
         }
         ctx.stroke();
@@ -285,88 +235,55 @@ export default function Hero() {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isLoaded]);
 
-  // 2. GSAP Scroll Trigger for split screen parallax and fades
+  // 2. GSAP Scroll Trigger to pin the Hero section and track frame progress
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || prefersReducedMotion) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: 0.5,
+    const trigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top top",
+      end: "+=220%", // Pinned scroll height (increased scroll length for smooth playback)
+      pin: true,
+      pinSpacing: true, // Explicitly enable pinSpacing to isolate sections
+      scrub: true,
+      onUpdate: (self) => {
+        setSequenceProgress(self.progress);
       },
     });
 
-    // Translate left column text block leftwards & fade out
-    tl.to(
-      titleContainerRef.current,
-      {
-        x: -80,
-        opacity: 0,
-        ease: "power1.out",
-      },
-      0
-    );
-
-    // Zoom out web canvas in the right column
-    tl.to(
-      webCanvasRef.current,
-      {
-        scale: 1.35,
-        opacity: 0,
-        ease: "power1.inOut",
-      },
-      0
-    );
-
-    // Fade out and translate centerpiece video down on scroll
-    if (centerpieceWrapperRef.current) {
-      tl.to(
-        centerpieceWrapperRef.current,
-        {
-          scale: 0.65,
-          opacity: 0,
-          y: 100,
-          ease: "power1.inOut",
-        },
-        0
-      );
-    }
-
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      trigger.kill();
     };
-  }, []);
-
-  // Mouse move handlers for elastic web deformation
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const canvas = webCanvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    mouseRef.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      active: true,
-    };
-  };
-
-  const handleMouseLeave = () => {
-    mouseRef.current.active = false;
-  };
-
+  }, [prefersReducedMotion]);
   // Letter array for dropping animation
   const titleLetters = ["Q", "U", "S", "A", "Y"];
+
+  const preloadPercent = Math.min(
+    100,
+    Math.round((preloadProgress.loaded / preloadProgress.total) * 100)
+  );
 
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       className="relative w-full min-h-[100vh] bg-[#0b0b0b] overflow-hidden flex flex-col justify-center items-center py-16 px-6 lg:px-16 z-0 select-none"
     >
+      {/* PNG Sequence Background Canvas Wrapper (fades out completely when animation finishes) */}
+      <div
+        className="absolute inset-0 w-full h-full pointer-events-none z-0 transition-opacity duration-300"
+        style={{ opacity: sequenceProgress >= 0.995 ? 0 : 1 }}
+      >
+        <SequenceCanvas
+          scrollProgress={sequenceProgress}
+          onProgress={(loaded, total) => setPreloadProgress({ loaded, total })}
+          onLoaded={() => setIsLoaded(true)}
+          prefersReducedMotion={prefersReducedMotion}
+          isMobileSequenceAvailable={isMobileSequenceAvailable}
+        />
+      </div>
+
       {/* Background Parallax Texture */}
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none opacity-[0.025] mix-blend-color-dodge z-0 scale-105"
@@ -397,20 +314,20 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Main Grid: Left Column Content / Right Column Interactive Showcase */}
-      <div className="relative w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center justify-center z-30 select-none px-4 md:px-8">
-        
-        {/* Left Column: Typography, Descriptions, and Action Buttons */}
-        <div 
-          ref={titleContainerRef} 
-          className="flex flex-col items-center lg:items-start text-center lg:text-left overflow-visible"
+      {/* Main Container: Centered Content */}
+      <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center justify-center z-30 select-none px-4 md:px-8">
+
+        {/* Column: Typography, Descriptions, and Action Buttons */}
+        <div
+          ref={titleContainerRef}
+          className="flex flex-col items-center text-center overflow-visible w-full"
         >
           {/* Estd label */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : -10 }}
             transition={{ duration: 0.9, delay: 0.3 }}
-            className="flex items-center gap-3 mb-2"
+            className="flex items-center gap-3 mb-2 justify-center"
           >
             <div className="h-[1px] w-6 bg-[#F5F2EF]/20" />
             <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-[#F5F2EF]/55">ESTD 2026</span>
@@ -418,7 +335,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Bouncing Silk Letters of "QUSAY" */}
-          <div className="relative flex items-center justify-center lg:justify-start gap-2 sm:gap-4 md:gap-6 h-[105px] sm:h-[130px] md:h-[150px] w-full overflow-visible">
+          <div className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-6 h-[105px] sm:h-[130px] md:h-[150px] w-full overflow-visible">
             {titleLetters.map((letter, i) => (
               <div key={i} className="relative flex flex-col items-center h-full overflow-visible">
                 {/* Interactive Silk Line Thread */}
@@ -437,10 +354,10 @@ export default function Hero() {
                 {/* Hanging swaying Letter */}
                 <motion.div
                   initial={{ opacity: 0, y: -100 }}
-                  animate={{ 
-                    opacity: isLoaded ? 1 : 0, 
+                  animate={{
+                    opacity: isLoaded ? 1 : 0,
                     y: isLoaded ? 0 : -100,
-                    rotate: isLoaded ? [-1.8, 1.8, -1.8] : 0 
+                    rotate: isLoaded ? [-1.8, 1.8, -1.8] : 0
                   }}
                   transition={{
                     y: { type: "spring", stiffness: 70, damping: 11, delay: i * 0.12 + 0.6 },
@@ -465,8 +382,8 @@ export default function Hero() {
 
                   {/* If letter is S, draw the draped necklace chain and spider pendant */}
                   {letter === "S" && (
-                    <svg 
-                      viewBox="0 0 100 100" 
+                    <svg
+                      viewBox="0 0 100 100"
                       className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] overflow-visible pointer-events-none z-10"
                     >
                       <defs>
@@ -496,13 +413,13 @@ export default function Hero() {
                       <circle cx="50" cy="49" r="2.4" stroke="#F5F2EF" strokeWidth="0.8" fill="none" />
 
                       {/* Hanging Spider Pendant (All Sterling Silver) */}
-                      <motion.g 
+                      <motion.g
                         animate={{
                           y: spiderRecoil ? [-5, -15, 0] : [0, 2, 0],
                           rotate: spiderRecoil ? [0, -10, 8, 0] : [-1, 1, -1]
                         }}
                         transition={{
-                          y: spiderRecoil 
+                          y: spiderRecoil
                             ? { duration: 0.8, ease: "easeInOut" }
                             : { repeat: Infinity, duration: 4.5, ease: "easeInOut" },
                           rotate: spiderRecoil
@@ -524,24 +441,24 @@ export default function Hero() {
                         <circle cx="51" cy="59.5" r="0.6" fill="#FFFFFF" opacity="0.8" />
 
                         {/* Teardrop Silver Abdomen */}
-                        <path 
-                          d="M 50,65 C 45,71 44,79 50,81.5 C 56,79 55,71 50,65 Z" 
-                          fill="url(#silverMetalS)" 
-                          stroke="#121212" 
+                        <path
+                          d="M 50,65 C 45,71 44,79 50,81.5 C 56,79 55,71 50,65 Z"
+                          fill="url(#silverMetalS)"
+                          stroke="#121212"
                           strokeWidth="0.6"
                         />
-                        <path 
-                          d="M 50,65 C 45,71 44,79 50,81.5 C 56,79 55,71 50,65 Z" 
-                          fill="none" 
-                          stroke="#FFFFFF" 
-                          strokeWidth="0.5" 
+                        <path
+                          d="M 50,65 C 45,71 44,79 50,81.5 C 56,79 55,71 50,65 Z"
+                          fill="none"
+                          stroke="#FFFFFF"
+                          strokeWidth="0.5"
                           opacity="0.7"
                         />
                         {/* Sparkle highlight */}
-                        <path 
-                          d="M 48.5,68.5 C 46,72.5 46,75.5 48,78 C 46.8,75.5 46.2,72.5 48.5,68.5 Z" 
-                          fill="#FFFFFF" 
-                          opacity="0.45" 
+                        <path
+                          d="M 48.5,68.5 C 46,72.5 46,75.5 48,78 C 46.8,75.5 46.2,72.5 48.5,68.5 Z"
+                          fill="#FFFFFF"
+                          opacity="0.45"
                         />
 
                         {/* Legs Group */}
@@ -595,7 +512,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
             transition={{ duration: 0.9, delay: 1.3 }}
-            className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#F5F2EF]/55 max-w-md mt-5 mb-8 text-center lg:text-left"
+            className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#F5F2EF]/55 max-w-lg mt-5 mb-8 text-center mx-auto"
           >
             A dark synthesis of raw gothic lore and sterling silver artistry. Discover our limited-edition wearable relics, forged in darkness and designed for those who walk between the shadows.
           </motion.p>
@@ -605,7 +522,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
             transition={{ duration: 0.9, delay: 1.5 }}
-            className="flex flex-row gap-4 items-center justify-center lg:justify-start w-full"
+            className="flex flex-row gap-4 items-center justify-center w-full"
           >
             <Link href="/shop" className="relative group overflow-hidden border border-[#F5F2EF]/30 px-6 py-3 rounded-sm bg-transparent transition-all duration-300 hover:border-[#E50914]/80">
               <div className="absolute inset-0 w-0 bg-[#E50914]/10 group-hover:w-full transition-all duration-500 ease-out" />
@@ -620,56 +537,6 @@ export default function Hero() {
             </Link>
           </motion.div>
         </div>
-
-        {/* Right Column: Interactive Web and Levitating Amulet Video Showcase */}
-        <div 
-          className="relative w-full aspect-square max-w-[420px] max-h-[420px] mx-auto flex items-center justify-center overflow-visible"
-        >
-          {/* Elastic Canvas Web Background (Fitted inside parent container) */}
-          <canvas
-            ref={webCanvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-10 transition-opacity duration-700"
-            style={{ opacity: isLoaded ? 1 : 0 }}
-          />
-
-          {/* Showcase: Amulet container */}
-          <div
-            ref={centerpieceWrapperRef}
-            className="relative w-[65vw] h-[65vw] md:w-[26vw] md:h-[26vw] max-w-[260px] max-h-[260px] aspect-square flex items-center justify-center select-none pointer-events-none overflow-visible z-20"
-          >
-            {/* Subtle Ambient Pulsing Glow Rings behind amulet */}
-            <div className="absolute w-[60%] h-[60%] rounded-full bg-[#E50914]/22 blur-[30px] animate-pulse pointer-events-none" />
-            <div className="absolute w-[45%] h-[45%] rounded-full bg-[#00ff88]/4 blur-[20px] animate-pulse pointer-events-none" style={{ animationDuration: "5s" }} />
-
-            {/* Ornate Double-Ring Gothic Silver Frame */}
-            <div className="absolute inset-0 rounded-full border-2 border-double border-[#F5F2EF]/30 shadow-[0_0_40px_rgba(0,0,0,0.92)] flex items-center justify-center pointer-events-none z-20">
-              {/* Subtle notch detail ring */}
-              <div className="absolute inset-[3px] rounded-full border border-dashed border-[#F5F2EF]/12" />
-            </div>
-            
-            {/* Inner bezel ring */}
-            <div className="absolute inset-[8px] rounded-full border border-[#F5F2EF]/18 pointer-events-none z-20 shadow-[inset_0_0_12px_rgba(0,0,0,0.85)]" />
-
-            {/* Video Container with Radial Transparency Mask */}
-            <div 
-              className="absolute inset-[10px] rounded-full overflow-hidden bg-[#070707]/35 backdrop-blur-[2px]"
-              style={{
-                maskImage: "radial-gradient(circle, black 52%, transparent 72%)",
-                WebkitMaskImage: "radial-gradient(circle, black 52%, transparent 72%)"
-              }}
-            >
-              <video
-                src="/images/Nacklace/Glow dark nacklace/vol 2/vol 2 vido.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover scale-[1.08] filter contrast-[1.26] brightness-[1.04] saturate-[1.12]"
-              />
-            </div>
-          </div>
-        </div>
-
       </div>
 
       {/* Floating Scroll Down Indicator at the bottom */}
@@ -700,97 +567,45 @@ export default function Hero() {
         </motion.svg>
       </motion.div>
 
-      {/* Global Scroll-Progress Hanging Spider (Silver) */}
+
+
+      {/* Premium Preloader */}
       <AnimatePresence>
-        {scrollProgress > 0.02 && (
+        {!isLoaded && (
           <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="fixed left-2 sm:left-6 md:left-10 top-0 bottom-0 w-8 z-50 pointer-events-none flex flex-col items-center"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            onMouseMove={(e) => {
+              const canvas = loadingWebCanvasRef.current;
+              if (!canvas) return;
+              const rect = canvas.getBoundingClientRect();
+              loadingMouseRef.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                active: true,
+              };
+            }}
+            onMouseLeave={() => {
+              loadingMouseRef.current.active = false;
+            }}
+            className="fixed inset-0 bg-[#070707] z-[9999] flex flex-col items-center justify-center font-sans select-none overflow-hidden"
           >
-            {/* The Silk Thread stretching from viewport top */}
-            <div 
-              className="w-[0.8px] bg-gradient-to-b from-[#E50914]/20 via-[#F5F2EF]/45 to-[#F5F2EF]/70"
-              style={{ height: `${dimensions.minY + scrollProgress * (dimensions.maxY - dimensions.minY)}px` }}
+            {/* Loading Spider Web Canvas background */}
+            <canvas
+              ref={loadingWebCanvasRef}
+              className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-55"
             />
 
-            {/* Swaying Spider Pendant (Silver Progress Gem -> Red Glowing) */}
-            <motion.div
-              style={{ 
-                transformOrigin: "50px 27px",
-                rotate: swayRotation,
-                marginTop: "-2px"
-              }}
-              className="w-8 h-8 text-[#E50914]/80 filter drop-shadow-[0_0_5px_rgba(229,9,20,0.85)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
-            >
-              <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
-                <defs>
-                  <radialGradient id="silverProgressGem" cx="35%" cy="30%" r="50%">
-                    <stop offset="0%" stopColor="#FFFFFF" />
-                    <stop offset="35%" stopColor="#E50914" />
-                    <stop offset="75%" stopColor="#660000" />
-                    <stop offset="100%" stopColor="#070707" />
-                  </radialGradient>
-                </defs>
-
-                {/* Silver Link Ring */}
-                <circle cx="50" cy="27" r="4.5" stroke="#E50914" strokeWidth="1.2" fill="none" opacity="0.8" />
-                <path d="M50,31.5 L50,33.5" stroke="#E50914" strokeWidth="1.2" />
-
-                {/* Head */}
-                <circle cx="50" cy="36" r="3.8" fill="url(#silverProgressGem)" stroke="#070707" strokeWidth="0.4" />
-
-                {/* Cephalothorax */}
-                <circle cx="50" cy="45" r="6.5" fill="url(#silverProgressGem)" stroke="#070707" strokeWidth="0.4" />
-                <circle cx="49" cy="43.5" r="0.6" fill="#FFFFFF" opacity="0.8" />
-                <circle cx="51" cy="43.5" r="0.6" fill="#FFFFFF" opacity="0.8" />
-
-                {/* Teardrop Silver Abdomen */}
-                <path 
-                  d="M50,52 C41,61 39,73 50,77 C61,73 59,61 50,52 Z" 
-                  fill="url(#silverProgressGem)" 
-                  stroke="#070707" 
-                  strokeWidth="0.6"
-                />
-                <path 
-                  d="M50,52 C41,61 39,73 50,77 C61,73 59,61 50,52 Z" 
-                  fill="none" 
-                  stroke="#FFFFFF" 
-                  strokeWidth="0.5" 
-                  opacity="0.75"
-                />
-                <path 
-                  d="M48.5,55.5 C46,59.5 46,62.5 48,65 C46.8,62.5 46.2,59.5 48.5,55.5 Z" 
-                  fill="#FFFFFF" 
-                  opacity="0.45" 
-                />
-
-                {/* Legs Group */}
-                <g stroke="#330000" strokeWidth="2.0" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M 45,43 C 33,35 30,22 36,15" />
-                  <path d="M 44,45 C 28,42 22,50 24,56" />
-                  <path d="M 44,48 C 26,52 24,65 29,72" />
-                  <path d="M 46,51 C 32,62 34,76 39,80" />
-                  <path d="M 55,43 C 67,35 70,22 64,15" />
-                  <path d="M 56,45 C 72,42 78,50 76,56" />
-                  <path d="M 56,48 C 74,52 76,65 71,72" />
-                  <path d="M 54,51 C 68,62 66,76 61,80" />
-                </g>
-
-                <g stroke="#E50914" strokeWidth="0.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.8">
-                  <path d="M 44.5,42.5 C 33.5,35.5 30.5,22.5 35.5,15.5" />
-                  <path d="M 43.5,44.5 C 28.5,41.5 22.5,49.5 24.5,55.5" />
-                  <path d="M 43.5,47.5 C 26.5,51.5 24.5,64.5 28.5,71.5" />
-                  <path d="M 45.5,50.5 C 32.5,61.5 34.5,75.5 38.5,79.5" />
-                  <path d="M 55.5,42.5 C 66.5,35.5 69.5,22.5 64.5,15.5" />
-                  <path d="M 56.5,44.5 C 71.5,41.5 77.5,49.5 75.5,55.5" />
-                  <path d="M 56.5,47.5 C 73.5,51.5 75.5,64.5 71.5,71.5" />
-                  <path d="M 54.5,50.5 C 67.5,61.5 65.5,75.5 60.5,79.5" />
-                </g>
-              </svg>
-            </motion.div>
+            <div className="relative z-10 flex flex-col items-center gap-4">
+              <div className="w-10 h-10 border-2 border-[#E50914]/20 border-t-[#E50914] rounded-full animate-spin" />
+              <span className="font-pixel text-[9px] tracking-[0.2em] text-[#F5F2EF]/60 uppercase">
+                LOADING ARTIFACTS
+              </span>
+              <span className="font-heading text-3xl md:text-4xl text-[#E50914] font-bold tracking-wider">
+                {preloadPercent}%
+              </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
