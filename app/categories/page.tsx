@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { PageHero } from "@/components/ui/PageHero";
-import { CATEGORIES, categoryToSlug, getProductsByCategory } from "@/lib/products";
-import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
+import {
+  filterByCategory,
+  getCatalogCategories,
+  getCatalogProducts,
+} from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Categories",
   description: "Browse Qusay Store jewelry by category — necklaces, glow dark, and bracelets.",
 };
+
+export const dynamic = "force-dynamic";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   Necklaces: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"),
@@ -21,18 +26,12 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "Metal Hook Bookmark": encodeURI("/images/Nacklace/Metal hook bookmark/Metal hook bookmark 1/Metal hook bookmark 1.jpg"),
 };
 
-const CATEGORY_TAGLINES: Record<string, string> = {
-  Necklaces: "Chain-drawn pendants built around the house spider motif.",
-  "Glow Dark Necklace": "Photoluminescent crystal pieces that charge by day and glow after dark.",
-  Bracelets: "Cuffs and chains that translate the cathedral scrollwork to the wrist.",
-  "Pant Hook Chain": "Gothic belt-loop and pocket chains crafted with heavy hardware.",
-  "Denim Sling Bag": "Tough, custom-washed denim utility bags.",
-  "Key Chain": "Miniature talismans and gothic clasps to secure your daily gear.",
-  "Jacket Pin": "Gothic pins and brooches to accessorize heavy denim, leather, or blazers.",
-  "Metal Hook Bookmark": "Intricately detailed metal hook bookmarks for your grimoires and journals.",
-};
+export default async function CategoriesPage() {
+  const [{ products }, { categories }] = await Promise.all([
+    getCatalogProducts(),
+    getCatalogCategories(),
+  ]);
 
-export default function CategoriesPage() {
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
@@ -46,19 +45,20 @@ export default function CategoriesPage() {
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-6xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {CATEGORIES.map((category) => {
-            const count = getProductsByCategory(category).length;
-            const image = CATEGORY_IMAGES[category] || "/images/spider-1.jpg";
-            const tagline = CATEGORY_TAGLINES[category] || "Original handcrafted gothic relic.";
+          {categories.map((category) => {
+            const count = filterByCategory(products, category.name).length;
+            const image = CATEGORY_IMAGES[category.name] || "/images/spider-1.jpg";
+            const tagline =
+              category.description || "Original handcrafted gothic relic.";
             return (
               <Link
-                key={category}
-                href={`/categories/${categoryToSlug(category)}`}
+                key={category.name}
+                href={`/categories/${category.slug}`}
                 className="group relative aspect-[5/4] overflow-hidden rounded-sm bg-black border border-white/[0.06]"
               >
                 <Image
                   src={image}
-                  alt={category}
+                  alt={category.name}
                   fill
                   className="object-cover opacity-60 grayscale-[0.2] transition-all duration-700 group-hover:opacity-80 group-hover:scale-110"
                 />
@@ -68,13 +68,13 @@ export default function CategoriesPage() {
                     {count} {count === 1 ? "piece" : "pieces"}
                   </span>
                   <h2 className="font-heading text-3xl md:text-4xl text-[#F5F2EF] mb-2 group-hover:text-[#F5F2EF] transition-colors">
-                    {category}
+                    {category.name}
                   </h2>
                   <p className="font-sans text-xs text-[#F5F2EF]/60 max-w-xs leading-relaxed mb-4">
                     {tagline}
                   </p>
                   <span className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914] pb-1 group-hover:text-[#E50914] transition-colors">
-                    Explore {category} →
+                    Explore {category.name} →
                   </span>
                 </div>
               </Link>

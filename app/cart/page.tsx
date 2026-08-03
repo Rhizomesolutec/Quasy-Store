@@ -10,7 +10,7 @@ import { LinkButton, Button } from "@/components/ui/Button";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
-import { getBestSellers } from "@/lib/products";
+import { useCatalogProducts } from "@/lib/useCatalogProducts";
 
 const VALID_COUPONS: Record<string, number> = {
   QUSAY10: 0.1,
@@ -24,6 +24,7 @@ const SHIPPING_RATES: Record<string, number> = {
 
 export default function CartPage() {
   const { cart, updateQuantity, removeItem, subtotal } = useCart();
+  const { products } = useCatalogProducts();
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; rate: number } | null>(null);
   const [couponError, setCouponError] = useState("");
@@ -35,8 +36,10 @@ export default function CartPage() {
 
   const recommended = useMemo(() => {
     const cartIds = new Set(cart.map((c) => c.productId));
-    return getBestSellers().filter((p) => !cartIds.has(p.id)).slice(0, 4);
-  }, [cart]);
+    return products
+      .filter((p) => p.isBestSeller && !cartIds.has(p.id))
+      .slice(0, 4);
+  }, [cart, products]);
 
   const handleApplyCoupon = () => {
     const code = couponInput.trim().toUpperCase();

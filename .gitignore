@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# admin uploaded product images (local fallback)
+/public/uploads/
+
+# local admin product store fallback
+/data/admin-products.json

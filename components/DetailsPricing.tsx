@@ -135,7 +135,6 @@ const SHOWS_GRID = [
 export default function DetailsPricing() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement[]>([]);
-  itemsRef.current = [];
   const { addItem } = useCart();
   const [addedToast, setAddedToast] = useState<string | null>(null);
 

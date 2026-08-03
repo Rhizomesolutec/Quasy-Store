@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Eyebrow, Divider } from "@/components/ui/Eyebrow";
 import { LinkButton } from "@/components/ui/Button";
-import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
 
 export function BrandStoryPreview() {
   return (

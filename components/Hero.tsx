@@ -308,20 +308,6 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
         />
       </div>
 
-      {/* Background Parallax Texture */}
-      <div
-        className="absolute inset-0 w-full h-full bg-cover bg-center pointer-events-none opacity-[0.025] mix-blend-color-dodge z-0 scale-105"
-        style={{ backgroundImage: "url('/images/spider-1.jpg')" }}
-      />
-
-      {/* Pulsing Crimson and Silver Backdrops */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        {/* Central glowing red shadow */}
-        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[75vw] max-w-[550px] max-h-[550px] rounded-full bg-[#E50914]/12 blur-[120px] animate-pulse" style={{ animationDuration: "12s" }} />
-        {/* Cold silver glow */}
-        <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full bg-[#F5F2EF]/3 blur-[140px]" />
-      </div>
-
       {/* Ornate Filigree Corner Borders */}
       <div className="absolute inset-0 pointer-events-none z-20 border border-[#F5F2EF]/5 m-3 md:m-6 select-none">
         <svg className="absolute top-2 left-2 w-8 h-8 text-[#F5F2EF]/15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">

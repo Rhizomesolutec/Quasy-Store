@@ -3,14 +3,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { PageHero } from "@/components/ui/PageHero";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { COLLECTIONS, getProductsByCollection } from "@/lib/products";
+import { COLLECTIONS } from "@/lib/products";
+import { filterByCollection, getCatalogProducts } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Collections",
   description: "Explore the Qusay Store collections — Arachnid Requiem, Midnight Coven, and Gilded Relics.",
 };
 
-export default function CollectionsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CollectionsPage() {
+  const { products } = await getCatalogProducts();
+
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
@@ -24,7 +29,7 @@ export default function CollectionsPage() {
 
       <section className="w-full flex flex-col">
         {COLLECTIONS.map((collection, idx) => {
-          const count = getProductsByCollection(collection.slug).length;
+          const count = filterByCollection(products, collection.slug).length;
           const reverse = idx % 2 === 1;
           return (
             <Link

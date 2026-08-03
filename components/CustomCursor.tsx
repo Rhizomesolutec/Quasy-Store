@@ -17,10 +17,8 @@ export default function CustomCursor() {
 
   useEffect(() => {
     // Disable custom cursor on touch devices to preserve mobile performance
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
-
-    setIsVisible(true);
 
     // Apply global stylesheet style to hide default cursor on all elements
     const style = document.createElement("style");
@@ -32,6 +30,7 @@ export default function CustomCursor() {
     document.head.appendChild(style);
 
     const moveCursor = (e: MouseEvent) => {
+      setIsVisible(true);
       // Offset by half the spider size (12px) to align its center to mouse tip
       mouseX.set(e.clientX - 12);
       mouseY.set(e.clientY - 12);

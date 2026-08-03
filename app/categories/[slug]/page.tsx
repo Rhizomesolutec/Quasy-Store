@@ -3,21 +3,31 @@ import { notFound } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { ShopExplorer } from "@/components/shop/ShopExplorer";
 import {
-  CATEGORIES,
-  categoryToSlug,
-  getProductsByCategory,
-  resolveCategoryFromSlug,
-} from "@/lib/products";
+  filterByCategory,
+  getCatalogCategories,
+  getCatalogProducts,
+  resolveCatalogCategoryFromSlug,
+} from "@/lib/catalog";
 
-export function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ slug: categoryToSlug(c) }));
+export const dynamic = "force-dynamic";
+
+export async function generateStaticParams() {
+  const { categories } = await getCatalogCategories();
+  return categories.map((c) => ({ slug: c.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
-  const category = resolveCategoryFromSlug(slug);
+  const category = await resolveCatalogCategoryFromSlug(slug);
   if (!category) return { title: "Category Not Found" };
-  return { title: category, description: `Shop ${category} at Qusay Store.` };
+  return {
+    title: category.name,
+    description: category.description || `Shop ${category.name} at Qusay Store.`,
+  };
 }
 
 function getCategoryBgImage(category: string): string {
@@ -37,24 +47,40 @@ function getCategoryBgImage(category: string): string {
   }
 }
 
-export default async function CategoryDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CategoryDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
-  const category = resolveCategoryFromSlug(slug);
+  const category = await resolveCatalogCategoryFromSlug(slug);
   if (!category) notFound();
 
-  const products = getProductsByCategory(category);
+  const [{ products: all }, { categories }] = await Promise.all([
+    getCatalogProducts(),
+    getCatalogCategories(),
+  ]);
+  const products = filterByCategory(all, category.name);
+  const categoryNames = categories.map((c) => c.name);
 
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
       <PageHero
         eyebrow="Category"
-        title={category}
-        description={`Every ${category.toLowerCase()} piece currently available in the vault.`}
-        breadcrumbs={[{ label: "Home", href: "/" }, { label: "Categories", href: "/categories" }, { label: category }]}
-        bgImage={encodeURI(getCategoryBgImage(category))}
+        title={category.name}
+        description={
+          category.description ||
+          `Every ${category.name.toLowerCase()} piece currently available in the vault.`
+        }
+        breadcrumbs={[
+          { label: "Home", href: "/" },
+          { label: "Categories", href: "/categories" },
+          { label: category.name },
+        ]}
+        bgImage={encodeURI(getCategoryBgImage(category.name))}
       />
-      <ShopExplorer products={products} />
+      <ShopExplorer products={products} categories={categoryNames} />
     </main>
   );
 }

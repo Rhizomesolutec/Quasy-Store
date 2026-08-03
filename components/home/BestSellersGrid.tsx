@@ -3,10 +3,9 @@
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { getBestSellers } from "@/lib/products";
+import type { Product } from "@/lib/types";
 
-export function BestSellersGrid() {
-  const products = getBestSellers(4);
+export function BestSellersGrid({ products }: { products: Product[] }) {
 
   return (
     <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32 border-t border-white/[0.05]">

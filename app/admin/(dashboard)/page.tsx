@@ -20,6 +20,7 @@ interface AdminReview {
   title: string;
   body: string;
   verified?: boolean;
+  productId?: string;
   productSlug: string;
   productName: string;
 }
@@ -54,11 +55,19 @@ interface DBCategory {
   description?: string | null;
 }
 
+interface DBOrderItem {
+  productId?: string;
+  name?: string;
+  price?: number;
+  quantity?: number;
+  variant?: string;
+}
+
 interface DBOrder {
   id: string;
   customerName: string;
   customerEmail: string;
-  items: any[];
+  items: DBOrderItem[];
   total: number;
   status: string;
   date: string;
@@ -88,7 +97,6 @@ export default function AdminDashboard() {
 
   // Search & Modals State
   const [productSearch, setProductSearch] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState<DBProduct | null>(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isNewProduct, setIsNewProduct] = useState(false);
 
@@ -124,83 +132,90 @@ export default function AdminDashboard() {
   const [tempColorName, setTempColorName] = useState("");
   const [tempColorHex, setTempColorHex] = useState("#000000");
 
-  useEffect(() => {
-    fetchData();
-    loadReviewsFromStorage();
-  }, []);
-
-  const loadReviewsFromStorage = () => {
+  const loadAdminReviews = async () => {
     try {
-      const allReviews: AdminReview[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith("quasy_reviews_")) {
-          const raw = localStorage.getItem(key);
-          if (raw) {
-            const parsed: AdminReview[] = JSON.parse(raw);
-            allReviews.push(...parsed);
-          }
-        }
+      const res = await fetch("/api/admin/reviews", { cache: "no-store" });
+      if (!res.ok) {
+        setAdminReviews([]);
+        return;
       }
-      // Sort newest first by id (timestamp-based)
-      allReviews.sort((a, b) => b.id.localeCompare(a.id));
-      setAdminReviews(allReviews);
+      const json = await res.json();
+      setAdminReviews((json.reviews as AdminReview[]) || []);
     } catch {
-      // ignore
+      setAdminReviews([]);
     }
   };
 
-  const handleDeleteReview = (reviewId: string, productSlug: string) => {
+  const handleDeleteReview = async (reviewId: string) => {
+    const confirmed = window.confirm("Delete this review permanently?");
+    if (!confirmed) return;
+
     try {
-      const key = `quasy_reviews_${productSlug}`;
-      const raw = localStorage.getItem(key);
-      if (raw) {
-        const parsed: AdminReview[] = JSON.parse(raw);
-        const updated = parsed.filter((r) => r.id !== reviewId);
-        localStorage.setItem(key, JSON.stringify(updated));
+      const res = await fetch(`/api/admin/reviews?id=${encodeURIComponent(reviewId)}`, {
+        method: "DELETE",
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert("Failed to delete review: " + (result?.error || "Unknown error"));
+        return;
       }
       setAdminReviews((prev) => prev.filter((r) => r.id !== reviewId));
-    } catch {
-      // ignore
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete review.");
     }
   };
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (opts?: { quiet?: boolean }) => {
+    const quiet = !!opts?.quiet;
+    if (!quiet) setLoading(true);
     try {
-      // 1. Fetch Products
-      const { data: pData } = await supabase
-        .from("products")
-        .select("*")
-        .order("createdAt", { ascending: false });
-      setProducts((pData as DBProduct[]) || []);
+      // Do not call Supabase from the browser — it is unreachable and can hang/break the dashboard.
+      const productsRes = await fetch("/api/admin/products", { cache: "no-store" });
+      if (productsRes.ok) {
+        const productsJson = await productsRes.json();
+        setProducts((productsJson.products as DBProduct[]) || []);
+      } else {
+        setProducts([]);
+      }
 
-      // 2. Fetch Categories
-      const { data: cData } = await supabase
-        .from("categories")
-        .select("*")
-        .order("name", { ascending: true });
-      setCategories((cData as DBCategory[]) || []);
+      const categoriesRes = await fetch("/api/admin/categories", { cache: "no-store" });
+      if (categoriesRes.ok) {
+        const categoriesJson = await categoriesRes.json();
+        setCategories(
+          ((categoriesJson.categories as DBCategory[]) || []).map((c) => ({
+            name: c.name,
+            description: c.description || `Premium ${c.name} pieces`,
+          }))
+        );
+      } else {
+        setCategories(CATEGORIES.map((name) => ({ name, description: `Premium ${name} pieces` })));
+      }
 
-      // 3. Fetch Orders
-      const { data: oData } = await supabase
-        .from("orders")
-        .select("*")
-        .order("createdAt", { ascending: false });
-      setOrders((oData as DBOrder[]) || []);
+      const ordersRes = await fetch("/api/admin/orders", { cache: "no-store" });
+      if (ordersRes.ok) {
+        const ordersJson = await ordersRes.json();
+        setOrders((ordersJson.orders as DBOrder[]) || []);
+      } else {
+        setOrders([]);
+      }
 
-      // 4. Fetch User Profiles
-      const { data: uData } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("createdAt", { ascending: false });
-      setUsers((uData as DBProfile[]) || []);
+      setUsers([]);
     } catch (err) {
       console.error("Error fetching admin dashboard data:", err);
+      setProducts([]);
+      setCategories(CATEGORIES.map((name) => ({ name, description: `Premium ${name} pieces` })));
     } finally {
-      setLoading(false);
+      if (!quiet) setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Initial dashboard load from admin APIs (async setState is expected).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-time data fetch
+    void fetchData();
+    void loadAdminReviews();
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -236,7 +251,7 @@ export default function AdminDashboard() {
 
       // C. Seed Products & Reviews
       for (const product of PRODUCTS) {
-        const { reviews, ...productData } = product as any;
+        const { reviews, ...productData } = product;
         
         // Match keys properly
         const mappedProduct = {
@@ -267,7 +282,7 @@ export default function AdminDashboard() {
         await supabase.from("products").upsert(mappedProduct);
 
         if (reviews && reviews.length > 0) {
-          const mappedReviews = reviews.map((r: any) => ({
+          const mappedReviews = reviews.map((r) => ({
             id: r.id,
             productId: product.id,
             author: r.author,
@@ -343,38 +358,106 @@ export default function AdminDashboard() {
     if (!newCatName.trim()) return;
 
     try {
-      const { error } = await supabase
-        .from("categories")
-        .insert([{ name: newCatName.trim(), description: newCatDesc.trim() }]);
+      const res = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newCatName.trim(),
+          description: newCatDesc.trim(),
+        }),
+      });
+      const result = await res.json().catch(() => ({}));
 
-      if (error) {
-        setCatError(error.message);
-      } else {
-        setNewCatName("");
-        setNewCatDesc("");
-        fetchData();
+      if (!res.ok) {
+        setCatError(result?.error || "Failed to add category");
+        return;
       }
+
+      setNewCatName("");
+      setNewCatDesc("");
+      await fetchData({ quiet: true });
+      alert(
+        result?.warning
+          ? `Category saved.\n\n${result.warning}`
+          : `"${result?.category?.name || "Category"}" saved to Supabase and is now live on the store.`
+      );
     } catch (err) {
       console.error(err);
       setCatError("Failed to add category");
     }
   };
 
+  const handleDeleteCategory = async (name: string) => {
+    const confirmed = window.confirm(
+      `Delete category "${name}"? Products using it will keep their category label until you edit them.`
+    );
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(
+        `/api/admin/categories?name=${encodeURIComponent(name)}`,
+        { method: "DELETE" }
+      );
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert("Failed to delete category: " + (result?.error || "Unknown error"));
+        return;
+      }
+      setCategories((prev) => prev.filter((c) => c.name !== name));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete category due to an unexpected error.");
+    }
+  };
+
   // Order status update
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from("orders")
-        .update({ status: newStatus })
-        .eq("id", orderId);
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: orderId, status: newStatus }),
+      });
+      const result = await res.json().catch(() => ({}));
 
-      if (error) {
-        alert("Failed to update status: " + error.message);
-      } else {
-        fetchData();
+      if (!res.ok) {
+        alert("Failed to update status: " + (result?.error || "Unknown error"));
+        return;
+      }
+
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+      );
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update order status.");
+    }
+  };
+
+  const handleDeleteProduct = async (p: DBProduct) => {
+    const confirmed = window.confirm(
+      `Delete "${p.name}" permanently? This cannot be undone.`
+    );
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`/api/admin/products?id=${encodeURIComponent(p.id)}`, {
+        method: "DELETE",
+      });
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        alert("Failed to delete product: " + (result?.error || "Unknown error"));
+        return;
+      }
+
+      setProducts((prev) => prev.filter((item) => item.id !== p.id));
+      if (isProductModalOpen && formId === p.id) {
+        setIsProductModalOpen(false);
       }
     } catch (err) {
       console.error(err);
+      alert("Failed to delete product due to an unexpected error.");
     }
   };
 
@@ -407,7 +490,6 @@ export default function AdminDashboard() {
   // Open Edit Product Modal
   const openEditProductModal = (p: DBProduct) => {
     setIsNewProduct(false);
-    setSelectedProduct(p);
     setFormId(p.id);
     setFormName(p.name);
     setFormSlug(p.slug);
@@ -443,32 +525,39 @@ export default function AdminDashboard() {
     setFormColors(formColors.filter((_, i) => i !== index));
   };
 
-  // Supabase storage image upload helpers
+  // Upload product images through authenticated admin API (service-role storage)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be 5MB or smaller.");
+      e.target.value = "";
+      return;
+    }
+
     setUploadingImage(true);
     try {
-      const file = files[0];
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const body = new FormData();
+      body.append("file", file);
 
-      const { error: uploadError } = await supabase.storage
-        .from("product-images")
-        .upload(filePath, file);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body,
+      });
 
-      if (uploadError) {
-        alert("Upload failed: " + uploadError.message);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.url) {
+        alert(data?.error || "Upload failed. Please try again.");
         return;
       }
 
-      const { data: urlData } = supabase.storage
-        .from("product-images")
-        .getPublicUrl(filePath);
-
-      setFormImages((prev) => [...prev, urlData.publicUrl]);
+      setFormImages((prev) => [...prev, data.url as string]);
+      if (typeof data.warning === "string" && data.warning) {
+        console.warn(data.warning);
+      }
     } catch (err) {
       console.error("Error uploading image:", err);
       alert("Error uploading image.");
@@ -486,6 +575,13 @@ export default function AdminDashboard() {
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formId.trim() || !formName.trim() || !formCategory.trim()) {
+      alert("Please fill Product ID, Name, and Category before saving.");
+      return;
+    }
+
+    const resolvedDescription = formDescription.trim() || "Premium handcrafted piece from the Qusay vault.";
+
     const productPayload = {
       id: formId,
       name: formName.trim(),
@@ -500,7 +596,7 @@ export default function AdminDashboard() {
       inStock: formInStock,
       variantLabel: formVariantLabel.trim(),
       tagline: formTagline.trim(),
-      description: formDescription.trim(),
+      description: resolvedDescription,
       shippingInfo: formShippingInfo.trim(),
       video: formVideo.trim() || null,
       images: formImages,
@@ -510,15 +606,24 @@ export default function AdminDashboard() {
     };
 
     try {
-      const { error } = await supabase
-        .from("products")
-        .upsert([productPayload]);
+      const res = await fetch("/api/admin/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productPayload),
+      });
+      const result = await res.json().catch(() => ({}));
 
-      if (error) {
-        alert("Failed to save product: " + error.message);
+      if (!res.ok) {
+        alert("Failed to save product: " + (result?.error || "Unknown error"));
       } else {
         setIsProductModalOpen(false);
-        fetchData();
+        // Quiet refresh: avoid full-page "Retrieving Vault Data..." spinner after a successful save.
+        void fetchData({ quiet: true });
+        alert(
+          result?.warning
+            ? `Piece saved.\n\n${result.warning}`
+            : "Piece saved to Supabase and is now visible in the store."
+        );
       }
     } catch (err) {
       console.error(err);
@@ -712,10 +817,18 @@ export default function AdminDashboard() {
 
                           <div className="pt-4 mt-4 border-t border-white/[0.06] flex gap-2">
                             <button
+                              type="button"
                               onClick={() => openEditProductModal(p)}
                               className="flex-1 border border-white/[0.08] hover:border-[#E50914] hover:text-[#E50914] text-xs uppercase py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
                             >
                               Edit Piece
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void handleDeleteProduct(p)}
+                              className="border border-red-900/50 hover:border-red-500 hover:bg-red-950/40 text-red-400 hover:text-red-300 text-xs uppercase px-3 py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
+                            >
+                              Delete
                             </button>
                           </div>
                         </div>
@@ -747,6 +860,13 @@ export default function AdminDashboard() {
                                 <p className="font-sans text-sm font-semibold text-[#F5F2EF]">{c.name}</p>
                                 <p className="font-sans text-xs text-[#F5F2EF]/40 mt-0.5">{c.description || "No description"}</p>
                               </div>
+                              <button
+                                type="button"
+                                onClick={() => void handleDeleteCategory(c.name)}
+                                className="border border-red-900/50 hover:border-red-500 text-red-400 hover:text-red-300 text-[10px] uppercase tracking-wider px-2.5 py-1.5 transition-all cursor-pointer"
+                              >
+                                Delete
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -835,7 +955,7 @@ export default function AdminDashboard() {
                                   <p className="text-[10px] text-[#F5F2EF]/40">{o.customerEmail}</p>
                                 </td>
                                 <td className="p-4 max-w-xs truncate">
-                                  {o.items?.map((item: any, idx: number) => (
+                                  {o.items?.map((item, idx: number) => (
                                     <span key={idx}>
                                       {item.name} ({item.quantity}x{item.variant ? ` - ${item.variant}` : ""})
                                       {idx < o.items.length - 1 ? ", " : ""}
@@ -926,27 +1046,32 @@ export default function AdminDashboard() {
 
               {/* REVIEWS TAB */}
               {activeTab === "reviews" && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h2 className="font-heading text-3xl text-[#F5F2EF]">Customer Reviews</h2>
-                      <p className="text-xs text-[#F5F2EF]/50 mt-1">Moderate and delete customer-submitted product reviews.</p>
+                      <p className="text-xs text-[#F5F2EF]/50 mt-1">
+                        Moderate and delete customer reviews submitted from the storefront.
+                      </p>
                     </div>
                     <button
-                      onClick={loadReviewsFromStorage}
+                      type="button"
+                      onClick={() => void loadAdminReviews()}
                       className="border border-white/[0.08] hover:border-[#E50914] text-[#F5F2EF]/60 hover:text-[#E50914] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
                     >
                       Refresh Reviews
                     </button>
                   </div>
 
-                  {adminReviews.length === 0 ? (
-                    <div className="border border-white/[0.06] bg-[#170909]/40 p-12 text-center">
-                      <p className="text-sm text-[#F5F2EF]/40 mb-2">No customer reviews found.</p>
-                      <p className="text-xs text-[#F5F2EF]/25">Reviews submitted by customers on product pages will appear here.</p>
-                    </div>
-                  ) : (
-                    <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
+                  <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
+                    {adminReviews.length === 0 ? (
+                      <div className="p-12 text-center">
+                        <p className="text-sm text-[#F5F2EF]/40 mb-2">No reviews found.</p>
+                        <p className="text-xs text-[#F5F2EF]/25">
+                          Customers can leave reviews from the home page or product pages.
+                        </p>
+                      </div>
+                    ) : (
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                           <thead>
@@ -965,7 +1090,7 @@ export default function AdminDashboard() {
                             {adminReviews.map((r) => (
                               <tr key={r.id} className="hover:bg-white/[0.01] transition-colors">
                                 <td className="p-4 pl-6">
-                                  <span className="font-semibold text-[#E50914]">{r.productName}</span>
+                                  <span className="font-semibold text-[#E50914]">{r.productName || "Unknown"}</span>
                                   <br />
                                   <span className="text-[10px] text-[#F5F2EF]/30 font-mono">{r.productSlug}</span>
                                 </td>
@@ -996,7 +1121,8 @@ export default function AdminDashboard() {
                                 </td>
                                 <td className="p-4 pr-6 text-right">
                                   <button
-                                    onClick={() => handleDeleteReview(r.id, r.productSlug)}
+                                    type="button"
+                                    onClick={() => void handleDeleteReview(r.id)}
                                     className="border border-[#E50914]/50 bg-[#E50914]/10 hover:bg-[#E50914] text-[#E50914] hover:text-white px-3 py-1.5 text-[10px] uppercase tracking-widest transition-all duration-200 cursor-pointer"
                                   >
                                     Delete
@@ -1007,16 +1133,22 @@ export default function AdminDashboard() {
                           </tbody>
                         </table>
                       </div>
-                      <div className="px-6 py-3 border-t border-white/[0.06] flex items-center justify-between">
-                        <p className="text-[10px] uppercase tracking-wider text-[#F5F2EF]/30">
-                          Total: {adminReviews.length} review{adminReviews.length !== 1 ? "s" : ""}
-                        </p>
-                        <p className="text-[10px] text-[#F5F2EF]/20">
-                          Avg Rating: {adminReviews.length > 0 ? (adminReviews.reduce((s, r) => s + r.rating, 0) / adminReviews.length).toFixed(1) : "—"} / 5
-                        </p>
-                      </div>
+                    )}
+                    <div className="border-t border-white/[0.06] px-6 py-3 flex flex-wrap gap-6 text-[10px] uppercase tracking-widest text-[#F5F2EF]/40">
+                      <span>
+                        Total: {adminReviews.length} review{adminReviews.length !== 1 ? "s" : ""}
+                      </span>
+                      <span>
+                        Avg Rating:{" "}
+                        {adminReviews.length > 0
+                          ? (
+                              adminReviews.reduce((sum, r) => sum + r.rating, 0) / adminReviews.length
+                            ).toFixed(1)
+                          : "—"}{" "}
+                        / 5
+                      </span>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
             </>
@@ -1040,7 +1172,11 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <form onSubmit={handleProductSubmit} className="space-y-6">
+            <form
+              onSubmit={handleProductSubmit}
+              noValidate
+              className="space-y-6"
+            >
               {/* Product Basic Fields */}
               <div className="grid md:grid-cols-3 gap-5">
                 <div>
@@ -1231,7 +1367,6 @@ export default function AdminDashboard() {
                   Description
                 </label>
                 <textarea
-                  required
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 h-24"
@@ -1387,7 +1522,11 @@ export default function AdminDashboard() {
                   Cancel
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  id="admin-save-piece-btn"
+                  onClick={(e) => {
+                    void handleProductSubmit(e as unknown as React.FormEvent);
+                  }}
                   className="border border-[#E50914] bg-[#E50914]/20 hover:bg-[#E50914] text-[#F5F2EF] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
                 >
                   Save Piece

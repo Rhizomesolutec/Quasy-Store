@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { Review } from "@/lib/types";
 import { Rating } from "@/components/ui/Rating";
 
-const LS_KEY = (slug: string) => `quasy_reviews_${slug}`;
-
 export function ProductReviews({
   reviews,
   rating,
@@ -27,61 +25,91 @@ export function ProductReviews({
   const [body, setBody] = useState("");
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // On mount: merge any localStorage reviews with the default product reviews
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(LS_KEY(productSlug));
-      if (stored) {
-        const parsed: Review[] = JSON.parse(stored);
-        // Merge: stored reviews first (newest), then seed reviews that are NOT duplicated
-        const storedIds = new Set(parsed.map((r) => r.id));
-        const merged = [...parsed, ...reviews.filter((r) => !storedIds.has(r.id))];
-        setLocalReviews(merged);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/reviews?slug=${encodeURIComponent(productSlug)}`,
+          { cache: "no-store" }
+        );
+        if (!res.ok) return;
+        const json = await res.json();
+        const cloud: Review[] = Array.isArray(json.reviews) ? json.reviews : [];
+        if (cancelled) return;
+
+        const byId = new Map<string, Review>();
+        for (const r of [...cloud, ...reviews]) {
+          if (r?.id && !byId.has(r.id)) byId.set(r.id, r);
+        }
+        setLocalReviews(Array.from(byId.values()));
+      } catch {
+        // keep seed reviews
       }
-    } catch {
-      // ignore parse errors
-    }
-  }, [productSlug]);
-
-  // Persist to localStorage whenever localReviews changes (but only user-submitted ones)
-  const persistToStorage = (updatedReviews: Review[]) => {
-    try {
-      // Store ALL reviews (seed + submitted) under the product slug key
-      // so admin can see the full list with any deletions applied
-      const existing = localReviews.map((r) => ({ ...r, productSlug, productName }));
-      const allWithMeta = updatedReviews.map((r) => ({ ...r, productSlug, productName }));
-      localStorage.setItem(LS_KEY(productSlug), JSON.stringify(allWithMeta));
-    } catch {
-      // ignore storage errors
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!author || !title || !body) return;
-
-    const newReview: Review = {
-      id: `rev-${Date.now()}`,
-      author,
-      rating: ratingInput,
-      date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }),
-      title,
-      body,
-      verified: true,
+    })();
+    return () => {
+      cancelled = true;
     };
+  }, [productSlug, reviews]);
 
-    const updated = [newReview, ...localReviews];
-    setLocalReviews(updated);
-    persistToStorage(updated);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!author || !title || !body || submitting) return;
 
-    setAuthor("");
-    setTitle("");
-    setBody("");
-    setRatingInput(5);
-    setSubmitSuccess(true);
-    setIsFormOpen(false);
-    setTimeout(() => setSubmitSuccess(false), 5000);
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productSlug,
+          productName,
+          author: author.trim(),
+          rating: ratingInput,
+          title: title.trim(),
+          body: body.trim(),
+          verified: true,
+        }),
+      });
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setSubmitError(result?.error || "Failed to submit review.");
+        return;
+      }
+
+      const saved: Review = result.review || {
+        id: `rev-${Date.now()}`,
+        author: author.trim(),
+        rating: ratingInput,
+        date: new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        title: title.trim(),
+        body: body.trim(),
+        verified: true,
+      };
+
+      setLocalReviews((prev) => [saved, ...prev.filter((r) => r.id !== saved.id)]);
+      setAuthor("");
+      setTitle("");
+      setBody("");
+      setRatingInput(5);
+      setSubmitSuccess(true);
+      setIsFormOpen(false);
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    } catch {
+      setSubmitError("Failed to submit review due to an unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reviewsCount = localReviews.length;
@@ -92,22 +120,23 @@ export function ProductReviews({
 
   return (
     <div>
-      {/* Top Section with Average & Write Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 pb-8 border-b border-white/[0.08]">
         <div className="flex items-baseline gap-3">
           <span className="font-heading text-5xl text-[#F5F2EF]">{averageRating.toFixed(1)}</span>
           <div>
             <Rating value={averageRating} size="md" />
             <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mt-1">
-              Based on {reviewsCount} reviews
+              Based on {reviewsCount || count} reviews
             </p>
           </div>
         </div>
 
         <button
+          type="button"
           onClick={() => {
             setIsFormOpen(!isFormOpen);
             setSubmitSuccess(false);
+            setSubmitError(null);
           }}
           className="px-6 py-2.5 bg-[#0B0B0B] text-[#CFC6C1] border border-[#E50914] hover:bg-[#660000] hover:text-[#F5F2EF] hover:shadow-[0_0_15px_rgba(229,9,20,0.35)] transition-all duration-300 text-[10px] uppercase tracking-widest font-heading rounded-md w-full sm:w-auto text-center"
         >
@@ -115,15 +144,13 @@ export function ProductReviews({
         </button>
       </div>
 
-      {/* Success Notification */}
       {submitSuccess && (
         <div className="mb-8 border border-[#E50914]/40 bg-[#1A0A0A] p-4 text-center shadow-[0_0_15px_rgba(229,9,20,0.15)] animate-fade-in">
           <p className="font-heading text-sm text-[#E50914] uppercase tracking-wider mb-1">Review Cast Successfully</p>
-          <p className="font-sans text-xs text-[#F5F2EF]/60">Your words have been etched into the vault of the Upside Down.</p>
+          <p className="font-sans text-xs text-[#F5F2EF]/60">Your review is saved and visible in the vault.</p>
         </div>
       )}
 
-      {/* Interactive Review Form */}
       {isFormOpen && (
         <form
           onSubmit={handleSubmit}
@@ -133,7 +160,12 @@ export function ProductReviews({
             Cast Your Assessment
           </h3>
 
-          {/* Rating Stars Input */}
+          {submitError && (
+            <p className="text-xs text-red-400 bg-red-950/20 border border-red-800/30 p-2 text-center">
+              {submitError}
+            </p>
+          )}
+
           <div className="space-y-2">
             <label className="block font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">Rating</label>
             <div className="flex items-center gap-2">
@@ -161,7 +193,6 @@ export function ProductReviews({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Author Name */}
             <div className="space-y-2">
               <label className="block font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">Your Name</label>
               <input
@@ -174,7 +205,6 @@ export function ProductReviews({
               />
             </div>
 
-            {/* Review Title */}
             <div className="space-y-2">
               <label className="block font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">Review Summary</label>
               <input
@@ -188,7 +218,6 @@ export function ProductReviews({
             </div>
           </div>
 
-          {/* Review Body */}
           <div className="space-y-2">
             <label className="block font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/60">Your Review</label>
             <textarea
@@ -201,17 +230,16 @@ export function ProductReviews({
             />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-[#0B0B0B] text-[#CFC6C1] border border-[#E50914] hover:bg-[#660000] hover:text-[#F5F2EF] hover:shadow-[0_0_15px_rgba(229,9,20,0.35)] transition-all duration-300 text-xs uppercase tracking-widest font-heading rounded-md font-semibold"
+            disabled={submitting}
+            className="w-full py-3 bg-[#0B0B0B] text-[#CFC6C1] border border-[#E50914] hover:bg-[#660000] hover:text-[#F5F2EF] hover:shadow-[0_0_15px_rgba(229,9,20,0.35)] transition-all duration-300 text-xs uppercase tracking-widest font-heading rounded-md font-semibold disabled:opacity-50"
           >
-            Submit Review
+            {submitting ? "Saving..." : "Submit Review"}
           </button>
         </form>
       )}
 
-      {/* Review List */}
       <div className="space-y-8">
         {localReviews.length === 0 ? (
           <p className="font-sans text-sm text-[#F5F2EF]/40 text-center py-6">

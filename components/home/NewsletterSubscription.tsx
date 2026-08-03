@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eyebrow, Divider } from "@/components/ui/Eyebrow";
-import { Button } from "@/components/ui/Button";
 
 export function NewsletterSubscription() {
   const [email, setEmail] = useState("");

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PRODUCTS } from "@/lib/products";
 import { Product } from "@/lib/types";
+import { useCatalogProducts } from "@/lib/useCatalogProducts";
 
 const STORAGE_KEY = "qusay_recently_viewed_v1";
 const MAX_ITEMS = 8;
@@ -20,6 +20,7 @@ export function trackRecentlyViewed(productId: string) {
 }
 
 export function useRecentlyViewed(excludeId?: string): Product[] {
+  const { products: catalog } = useCatalogProducts();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -28,14 +29,14 @@ export function useRecentlyViewed(excludeId?: string): Product[] {
       const ids: string[] = raw ? JSON.parse(raw) : [];
       const found = ids
         .filter((id) => id !== excludeId)
-        .map((id) => PRODUCTS.find((p) => p.id === id))
+        .map((id) => catalog.find((p) => p.id === id))
         .filter((p): p is Product => Boolean(p));
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from storage, unavailable during SSR
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resolve stored IDs against live catalog
       setProducts(found);
     } catch {
       setProducts([]);
     }
-  }, [excludeId]);
+  }, [excludeId, catalog]);
 
   return products;
 }

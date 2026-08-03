@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/PageHero";
 import { ShopExplorer } from "@/components/shop/ShopExplorer";
-import { PRODUCTS } from "@/lib/products";
+import { getCatalogCategories, getCatalogProducts } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Shop All",
   description: "Browse the full Qusay Store catalog of gothic fine jewelry.",
 };
 
-export default function ShopPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ShopPage() {
+  const [{ products }, { categories }] = await Promise.all([
+    getCatalogProducts(),
+    getCatalogCategories(),
+  ]);
+
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
@@ -19,7 +26,10 @@ export default function ShopPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]}
         bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg")}
       />
-      <ShopExplorer products={PRODUCTS} />
+      <ShopExplorer
+        products={products}
+        categories={categories.map((c) => c.name)}
+      />
     </main>
   );
 }

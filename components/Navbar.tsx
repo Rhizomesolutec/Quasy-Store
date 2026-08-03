@@ -45,7 +45,6 @@ export default function Navbar() {
     totalItems: cartTotalItems,
     subtotal: cartSubtotal,
     checkoutStep,
-    startCheckout,
     resetCheckout,
   } = useCart();
   const { wishlist } = useWishlist();

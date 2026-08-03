@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Product } from "@/lib/types";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { QuickViewModal } from "./QuickViewModal";
-import { ShopFilters, FilterState, PRICE_CEILING } from "./ShopFilters";
+import { ShopFilters, FilterState, getPriceCeiling } from "./ShopFilters";
 import { useRecentlyViewed } from "@/lib/useRecentlyViewed";
 
 const SORT_OPTIONS = [
@@ -16,22 +16,50 @@ const SORT_OPTIONS = [
   { value: "newest", label: "Newest" },
 ] as const;
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 12;
 
-export function ShopExplorer({ products, title }: { products: Product[]; title?: string }) {
-  const [filters, setFilters] = useState<FilterState>({
+export function ShopExplorer({
+  products,
+  title,
+  categories,
+}: {
+  products: Product[];
+  title?: string;
+  categories?: string[];
+}) {
+  const priceCeiling = useMemo(
+    () => getPriceCeiling(products.map((p) => p.price)),
+    [products]
+  );
+
+  const availableCategories = useMemo(() => {
+    if (categories && categories.length > 0) return categories;
+    const fromProducts = Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+    return fromProducts.sort((a, b) => a.localeCompare(b));
+  }, [categories, products]);
+
+  const [filters, setFilters] = useState<FilterState>(() => ({
     categories: [],
     colors: [],
     sizes: [],
     availability: "all",
-    maxPrice: PRICE_CEILING,
-  });
+    maxPrice: getPriceCeiling(products.map((p) => p.price)),
+  }));
   const [sortBy, setSortBy] = useState<(typeof SORT_OPTIONS)[number]["value"]>("featured");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const recentlyViewed = useRecentlyViewed();
+
+  // When new/expensive products appear in the catalog, open the price filter to include them.
+  useEffect(() => {
+    // Expand max price only when the catalog ceiling grows (e.g. new expensive piece).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional sync with catalog ceiling
+    setFilters((prev) =>
+      prev.maxPrice < priceCeiling ? { ...prev, maxPrice: priceCeiling } : prev
+    );
+  }, [priceCeiling]);
 
   const availableColors = useMemo(() => {
     const seen = new Map<string, { name: string; hex: string }>();
@@ -69,7 +97,9 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
       case "newest":
         result = [...result].sort((a, b) => Number(b.isNew) - Number(a.isNew));
         break;
+      case "featured":
       default:
+        // Keep Supabase order (newest first) so newly added pieces appear at the top.
         break;
     }
     return result;
@@ -80,7 +110,6 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
   return (
     <section className="w-full px-4 md:px-12 lg:px-24 py-16">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
-        {/* Sticky Filter Sidebar (desktop) */}
         <aside className="hidden md:block w-56 flex-shrink-0">
           <div className="sticky top-28">
             <ShopFilters
@@ -91,16 +120,16 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
               }}
               availableColors={availableColors}
               availableSizes={availableSizes}
+              availableCategories={availableCategories}
               resultCount={filtered.length}
+              priceCeiling={priceCeiling}
             />
           </div>
         </aside>
 
-        {/* Main Content */}
         <div className="flex-1 min-w-0">
           {title && <h2 className="font-heading text-2xl text-[#F5F2EF] mb-6">{title}</h2>}
 
-          {/* Toolbar */}
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/[0.06]">
             <button
               onClick={() => setIsMobileFiltersOpen(true)}
@@ -127,7 +156,6 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
             </select>
           </div>
 
-          {/* Grid */}
           {visibleProducts.length === 0 ? (
             <div className="py-24 text-center">
               <p className="font-heading text-xl text-[#F5F2EF] mb-2">No pieces match these filters</p>
@@ -151,7 +179,6 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
             </motion.div>
           )}
 
-          {/* Load More */}
           {visibleCount < filtered.length && (
             <div className="flex justify-center mt-16">
               <button
@@ -163,7 +190,6 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
             </div>
           )}
 
-          {/* Recently Viewed */}
           {recentlyViewed.length > 0 && (
             <div className="mt-24 pt-12 border-t border-white/[0.06]">
               <h3 className="font-heading text-xl text-[#F5F2EF] mb-8">Recently Viewed</h3>
@@ -177,7 +203,6 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
         </div>
       </div>
 
-      {/* Mobile Filters Drawer */}
       <AnimatePresence>
         {isMobileFiltersOpen && (
           <>
@@ -211,7 +236,9 @@ export function ShopExplorer({ products, title }: { products: Product[]; title?:
                 }}
                 availableColors={availableColors}
                 availableSizes={availableSizes}
+                availableCategories={availableCategories}
                 resultCount={filtered.length}
+                priceCeiling={priceCeiling}
               />
             </motion.div>
           </>

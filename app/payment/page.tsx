@@ -6,35 +6,31 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHero } from "@/components/ui/PageHero";
-import { Button } from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
-import { createClient } from "@/utils/supabase/client";
-
-const supabase = createClient();
 
 type PaymentMethod = "card" | "upi" | "netbanking";
+type UpiApp = "gpay" | "phonepe" | "paytm" | "upi";
+type ShippingZone = "domestic" | "international";
 
 const STORAGE_SESSION_KEY = "qusay_demo_session_v1";
+
+function readSessionEmail() {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(STORAGE_SESSION_KEY) || "";
+}
 
 export default function PaymentPage() {
   const router = useRouter();
   const { cart, subtotal, clearCart } = useCart();
 
-  // Redirect if cart is empty and checkout hasn't succeeded
-  useEffect(() => {
-    if (cart.length === 0 && !checkoutSuccess) {
-      router.push("/cart");
-    }
-  }, [cart]);
-
   // Form States
   const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(readSessionEmail);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [shippingZone, setShippingZone] = useState<"domestic" | "international">("domestic");
+  const [shippingZone, setShippingZone] = useState<ShippingZone>("domestic");
 
   // Payment Selection State
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
@@ -47,20 +43,19 @@ export default function PaymentPage() {
 
   // UPI Form States
   const [upiId, setUpiId] = useState("");
-  const [selectedUpiApp, setSelectedUpiApp] = useState<"gpay" | "phonepe" | "paytm" | "upi">("gpay");
+  const [selectedUpiApp, setSelectedUpiApp] = useState<UpiApp>("gpay");
 
   // Transaction States
   const [processing, setProcessing] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [generatedOrderId, setGeneratedOrderId] = useState("");
 
-  // Populate from local storage session if available
+  // Redirect if cart is empty and checkout hasn't succeeded
   useEffect(() => {
-    const savedEmail = localStorage.getItem(STORAGE_SESSION_KEY);
-    if (savedEmail) {
-      setEmail(savedEmail);
+    if (cart.length === 0 && !checkoutSuccess) {
+      router.push("/cart");
     }
-  }, []);
+  }, [cart, checkoutSuccess, router]);
 
   const shipping = cart.length === 0 ? 0 : shippingZone === "domestic" ? 8 : 24;
   const total = subtotal + shipping;
@@ -70,46 +65,41 @@ export default function PaymentPage() {
     setProcessing(true);
 
     try {
-      // 1. Generate Order ID (QS-10XXX)
       const orderNum = Math.floor(10000 + Math.random() * 90000);
       const orderId = `QS-${orderNum}`;
-      setGeneratedOrderId(orderId);
 
-      // 2. Insert User Profile Details
-      const { error: profileError } = await supabase.from("profiles").upsert([
-        {
-          email: email.trim(),
-          fullName: fullName.trim(),
-          address: address.trim(),
-          city: city.trim(),
-          postalCode: postalCode.trim(),
-        },
-      ]);
-
-      if (profileError) {
-        console.error("Failed to upsert profile:", profileError);
-      }
-
-      // 3. Insert Purchase Order Details
-      const { error: orderError } = await supabase.from("orders").insert([
-        {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           id: orderId,
           customerName: fullName.trim(),
           customerEmail: email.trim(),
-          items: cart, // Store full array of products
-          total: total,
-          status: "Pending",
-          date: new Date().toISOString().split("T")[0],
-        },
-      ]);
+          address: address.trim(),
+          city: city.trim(),
+          postalCode: postalCode.trim(),
+          shippingZone,
+          paymentMethod,
+          items: cart,
+          total,
+        }),
+      });
 
-      if (orderError) {
-        alert("Failed to register order: " + orderError.message);
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        alert("Failed to register order: " + (result?.error || "Unknown error"));
         setProcessing(false);
         return;
       }
 
-      // 4. Trigger Success State
+      const savedId = result?.order?.id || orderId;
+      setGeneratedOrderId(savedId);
+      try {
+        localStorage.setItem(STORAGE_SESSION_KEY, email.trim());
+      } catch {
+        // ignore
+      }
       setCheckoutSuccess(true);
       clearCart();
     } catch (err) {
@@ -260,7 +250,12 @@ export default function PaymentPage() {
                       <select
                         id="checkout-shipping-zone"
                         value={shippingZone}
-                        onChange={(e) => setShippingZone(e.target.value as any)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "domestic" || value === "international") {
+                            setShippingZone(value);
+                          }
+                        }}
                         className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all"
                       >
                         <option value="domestic">Domestic Shipping — {formatPrice(8)} (2–4 days)</option>
@@ -407,7 +402,7 @@ export default function PaymentPage() {
                             <button
                               key={app.id}
                               type="button"
-                              onClick={() => setSelectedUpiApp(app.id as any)}
+                              onClick={() => setSelectedUpiApp(app.id as UpiApp)}
                               className={`py-2.5 px-1 flex flex-col items-center justify-center gap-1.5 border transition-all duration-200 cursor-pointer rounded-sm ${
                                 selectedUpiApp === app.id
                                   ? "border-[#E50914] bg-[#E50914]/10 text-white"

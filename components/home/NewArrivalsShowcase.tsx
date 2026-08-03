@@ -5,11 +5,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { getNewArrivals } from "@/lib/products";
+import type { Product } from "@/lib/types";
 
-export function NewArrivalsShowcase() {
+export function NewArrivalsShowcase({ products }: { products: Product[] }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const products = getNewArrivals(6);
 
   const scrollBy = (dir: number) => {
     scrollerRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });

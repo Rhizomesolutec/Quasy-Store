@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { PRODUCTS } from "@/lib/products";
+import type { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { EmptyState } from "@/components/ui/EmptyState";
 
@@ -26,7 +26,13 @@ function saveRecent(query: string) {
   return next;
 }
 
-export function SearchClient({ initialQuery }: { initialQuery: string }) {
+export function SearchClient({
+  initialQuery,
+  products,
+}: {
+  initialQuery: string;
+  products: Product[];
+}) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
   const [recent, setRecent] = useState<string[]>([]);
@@ -46,20 +52,20 @@ export function SearchClient({ initialQuery }: { initialQuery: string }) {
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
-    return PRODUCTS.filter(
+    return products.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
         p.collection.toLowerCase().includes(q) ||
         p.tagline.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, products]);
 
   const suggestions = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
-    return PRODUCTS.filter((p) => p.name.toLowerCase().includes(q)).slice(0, 5);
-  }, [query]);
+    return products.filter((p) => p.name.toLowerCase().includes(q)).slice(0, 5);
+  }, [query, products]);
 
   const runSearch = (value: string) => {
     setQuery(value);

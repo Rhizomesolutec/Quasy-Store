@@ -5,7 +5,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { ProductGrid } from "@/components/shop/ProductGrid";
-import { getNewArrivals } from "@/lib/products";
+import { filterNewArrivals, getCatalogProducts } from "@/lib/catalog";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -13,8 +13,11 @@ export const metadata: Metadata = {
   description: "The latest additions to the Qusay Store catalog.",
 };
 
-export default function NewArrivalsPage() {
-  const arrivals = getNewArrivals();
+export const dynamic = "force-dynamic";
+
+export default async function NewArrivalsPage() {
+  const { products } = await getCatalogProducts();
+  const arrivals = filterNewArrivals(products);
   const [feature, ...rest] = arrivals;
 
   return (

@@ -4,15 +4,18 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { getBestSellers } from "@/lib/products";
+import { filterBestSellers, getCatalogProducts } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Best Sellers",
   description: "Customer favourites and top rated pieces from Qusay Store.",
 };
 
-export default function BestSellersPage() {
-  const bestSellers = getBestSellers();
+export const dynamic = "force-dynamic";
+
+export default async function BestSellersPage() {
+  const { products } = await getCatalogProducts();
+  const bestSellers = filterBestSellers(products);
   const topRated = [...bestSellers].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
   return (
@@ -26,7 +29,6 @@ export default function BestSellersPage() {
         bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 10/vol 10.jpg")}
       />
 
-      {/* Top Rated strip */}
       <section className="w-full px-4 md:px-12 lg:px-24 py-16 max-w-7xl">
         <RevealOnScroll>
           <div className="flex items-center justify-between mb-10">
@@ -52,7 +54,6 @@ export default function BestSellersPage() {
         </div>
       </section>
 
-      {/* Full grid */}
       <section className="w-full px-4 md:px-12 lg:px-24 py-8 pb-24 max-w-7xl border-t border-white/[0.06]">
         <RevealOnScroll className="pt-16 mb-10">
           <h2 className="font-heading text-2xl text-[#F5F2EF] text-center">All Best Sellers</h2>

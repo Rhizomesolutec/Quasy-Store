@@ -1,7 +1,6 @@
 "use client";
 
 import { formatPrice } from "@/lib/utils";
-import { CATEGORIES } from "@/lib/products";
 
 export interface FilterState {
   categories: string[];
@@ -11,28 +10,55 @@ export interface FilterState {
   maxPrice: number;
 }
 
-export const PRICE_CEILING = 250;
+/** Minimum slider ceiling so older catalog items still filter cleanly. */
+export const PRICE_FLOOR_CEILING = 250;
+
+/** Derive a shop price ceiling from the live catalog (covers admin-added expensive pieces). */
+export function getPriceCeiling(prices: number[]): number {
+  const highest = prices.reduce((max, price) => Math.max(max, price || 0), 0);
+  const rounded = Math.ceil(Math.max(highest, PRICE_FLOOR_CEILING) / 50) * 50;
+  return rounded;
+}
+
+/** @deprecated Use getPriceCeiling(products) — kept as a safe default only. */
+export const PRICE_CEILING = PRICE_FLOOR_CEILING;
 
 interface ShopFiltersProps {
   filters: FilterState;
   setFilters: (updater: (prev: FilterState) => FilterState) => void;
   availableColors: { name: string; hex: string }[];
   availableSizes: string[];
+  availableCategories: string[];
   resultCount: number;
+  priceCeiling: number;
 }
 
 function toggleValue(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
-export function ShopFilters({ filters, setFilters, availableColors, availableSizes, resultCount }: ShopFiltersProps) {
+export function ShopFilters({
+  filters,
+  setFilters,
+  availableColors,
+  availableSizes,
+  availableCategories,
+  resultCount,
+  priceCeiling,
+}: ShopFiltersProps) {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">Filters</h3>
         <button
           onClick={() =>
-            setFilters(() => ({ categories: [], colors: [], sizes: [], availability: "all", maxPrice: PRICE_CEILING }))
+            setFilters(() => ({
+              categories: [],
+              colors: [],
+              sizes: [],
+              availability: "all",
+              maxPrice: priceCeiling,
+            }))
           }
           className="font-sans text-[10px] uppercase tracking-widest text-[#E50914] hover:text-[#660000] transition-colors"
         >
@@ -46,7 +72,7 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
       <div>
         <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Category</p>
         <div className="space-y-2.5">
-          {CATEGORIES.map((cat) => (
+          {availableCategories.map((cat) => (
             <label key={cat} className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="checkbox"
@@ -68,9 +94,9 @@ export function ShopFilters({ filters, setFilters, availableColors, availableSiz
         <input
           type="range"
           min={20}
-          max={PRICE_CEILING}
+          max={priceCeiling}
           step={5}
-          value={filters.maxPrice}
+          value={Math.min(filters.maxPrice, priceCeiling)}
           onChange={(e) => setFilters((prev) => ({ ...prev, maxPrice: Number(e.target.value) }))}
           className="w-full accent-[#E50914]"
         />

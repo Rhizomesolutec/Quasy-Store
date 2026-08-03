@@ -5,11 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
-import { PRODUCTS } from "@/lib/products";
 import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/lib/types";
 
-export function FeaturedProductsCarousel() {
-  const products = PRODUCTS.slice(0, 8);
+export function FeaturedProductsCarousel({ products }: { products: Product[] }) {
+  const items = products.slice(0, 8);
   const trackRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -57,7 +57,7 @@ export function FeaturedProductsCarousel() {
         }`}
         style={{ scrollbarWidth: "none" }}
       >
-        {products.map((product, idx) => (
+        {items.map((product, idx) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, scale: 0.96 }}

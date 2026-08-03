@@ -4,59 +4,87 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
-import { categoryToSlug, getProductsByCategory } from "@/lib/products";
-import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
+import { categoryToSlug } from "@/lib/catalog";
+import type { Product } from "@/lib/types";
 
-const HOME_FEATURED_CATEGORIES = [
+const PREFERRED_ORDER = [
   "Necklaces",
   "Glow Dark Necklace",
   "Bracelets",
   "Denim Sling Bag",
-] as const;
+];
 
-const CATEGORY_META: Record<string, { image: string; tagline: string; color: string; badge: string }> = {
+const CATEGORY_META: Record<
+  string,
+  { image: string; tagline: string; badge: string }
+> = {
   Necklaces: {
     image: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"),
     tagline: "Chain-drawn pendants built around the house spider motif.",
-    color: "#FF0055",
     badge: "SITCOMS",
   },
   "Glow Dark Necklace": {
     image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 11/vol 11.jpg"),
     tagline: "Photoluminescent crystal pieces that charge by day and glow after dark.",
-    color: "#00FF66",
     badge: "KIDS",
   },
   Bracelets: {
     image: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.jpg"),
     tagline: "Cuffs and chains that translate cathedral scrollwork to the wrist.",
-    color: "#00F0FF",
     badge: "MOVIES",
   },
   "Denim Sling Bag": {
     image: encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.jpg"),
     tagline: "Hand-stitched denim carriers finished with industrial metal rings.",
-    color: "#FFE600",
     badge: "SLING BAGS",
   },
 };
 
-export function FeaturedCategories() {
+const DEFAULT_META = {
+  image: "/images/spider-1.jpg",
+  tagline: "Original handcrafted gothic relic from the Qusay vault.",
+  badge: "NEW",
+};
+
+export function FeaturedCategories({
+  products,
+  categories = [],
+}: {
+  products: Product[];
+  categories?: string[];
+}) {
+  const liveNames =
+    categories.length > 0
+      ? categories
+      : Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+
+  const ordered = [
+    ...PREFERRED_ORDER.filter((name) =>
+      liveNames.some((n) => n.toLowerCase() === name.toLowerCase())
+    ),
+    ...liveNames.filter(
+      (name) =>
+        !PREFERRED_ORDER.some((p) => p.toLowerCase() === name.toLowerCase())
+    ),
+  ].slice(0, 4);
+
   return (
     <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           eyebrow="Browse by Type"
           title="Featured Categories"
-          description="Four core silhouettes, each carrying the same gothic scrollwork and hand-finished detail."
+          description="Core silhouettes and signature lines — each carrying the same gothic scrollwork and hand-finished detail."
           ctaHref="/categories"
           ctaLabel="View All Categories"
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
-          {HOME_FEATURED_CATEGORIES.map((category, idx) => {
-            const meta = CATEGORY_META[category];
-            const count = getProductsByCategory(category).length;
+          {ordered.map((category, idx) => {
+            const meta = CATEGORY_META[category] || DEFAULT_META;
+            const count = products.filter(
+              (p) => p.category.toLowerCase() === category.toLowerCase()
+            ).length;
 
             return (
               <motion.div
@@ -70,10 +98,7 @@ export function FeaturedCategories() {
                   href={`/categories/${categoryToSlug(category)}`}
                   className="group relative block aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#E50914]/50 retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
                 >
-                  {/* Top Retro Red Badge */}
-                  <div
-                    className="absolute top-3 left-3 z-20 px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]"
-                  >
+                  <div className="absolute top-3 left-3 z-20 px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]">
                     {meta.badge}
                   </div>
 

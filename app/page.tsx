@@ -17,41 +17,54 @@ import { NewsletterSubscription } from "@/components/home/NewsletterSubscription
 import { SocialGallery } from "@/components/home/SocialGallery";
 import { FaqPreview } from "@/components/home/FaqPreview";
 import { FinalCta } from "@/components/home/FinalCta";
+import {
+  filterBestSellers,
+  filterNewArrivals,
+  getCatalogCategories,
+  getCatalogProducts,
+} from "@/lib/catalog";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
   const mobileSequencePath = path.join(process.cwd(), "public", "images", "hero-mobile");
   const isMobileSequenceAvailable = fs.existsSync(mobileSequencePath);
+  const [{ products }, { categories }] = await Promise.all([
+    getCatalogProducts(),
+    getCatalogCategories(),
+  ]);
+  const newArrivals = filterNewArrivals(products, 6);
+  const bestSellers = filterBestSellers(products, 4);
 
   return (
     <main className="relative w-full flex flex-col items-center">
       <div className="bg-noise" />
       <HangingSpider />
 
-      {/* Wrapper to isolate flex layout from GSAP pin spacer */}
       <div className="w-full block">
         <Hero isMobileSequenceAvailable={isMobileSequenceAvailable} />
       </div>
 
-      {/* Existing product showcase — unchanged */}
       <DetailsPricing />
 
-      {/* New premium landing sections */}
-      <FeaturedCategories />
-      <NewArrivalsShowcase />
-      <BestSellersGrid />
+      <FeaturedCategories
+        products={products}
+        categories={categories.map((c) => c.name)}
+      />
+      <NewArrivalsShowcase products={newArrivals} />
+      <BestSellersGrid products={bestSellers} />
       <FeaturedCollectionBanner />
       <WhyShopWithUs />
-      <CustomerReviews />
+      <CustomerReviews products={products} />
       <BrandStoryPreview />
       <ShoppingExperience />
-      <FeaturedProductsCarousel />
+      <FeaturedProductsCarousel products={products} />
       <LimitedEditionBanner />
       <NewsletterSubscription />
       <SocialGallery />
       <FaqPreview />
       <FinalCta />
 
-      {/* Closing mark — preserved brand footer line */}
       <div className="w-full flex flex-col items-center justify-end pb-14 pt-8 border-t border-white/[0.04]">
         <p className="font-sans text-xs tracking-widest text-[#F5F2EF]/40 uppercase">
           © 1924 The Arachnid Requiem
