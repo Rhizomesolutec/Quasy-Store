@@ -90,6 +90,7 @@ export default function AdminDashboard() {
 
   // Database Data States
   const [products, setProducts] = useState<DBProduct[]>([]);
+  const [productsWarning, setProductsWarning] = useState<string | null>(null);
   const [categories, setCategories] = useState<DBCategory[]>([]);
   const [orders, setOrders] = useState<DBOrder[]>([]);
   const [users, setUsers] = useState<DBProfile[]>([]);
@@ -175,8 +176,17 @@ export default function AdminDashboard() {
       if (productsRes.ok) {
         const productsJson = await productsRes.json();
         setProducts((productsJson.products as DBProduct[]) || []);
+        setProductsWarning(
+          typeof productsJson.warning === "string" ? productsJson.warning : null
+        );
       } else {
+        const productsJson = await productsRes.json().catch(() => ({}));
         setProducts([]);
+        setProductsWarning(
+          typeof productsJson.error === "string"
+            ? productsJson.error
+            : `Failed to load products (${productsRes.status}).`
+        );
       }
 
       const categoriesRes = await fetch("/api/admin/categories", { cache: "no-store" });
@@ -204,6 +214,7 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Error fetching admin dashboard data:", err);
       setProducts([]);
+      setProductsWarning("Failed to load products due to an unexpected error.");
       setCategories(CATEGORIES.map((name) => ({ name, description: `Premium ${name} pieces` })));
     } finally {
       if (!quiet) setLoading(false);
@@ -755,6 +766,9 @@ export default function AdminDashboard() {
                   {products.length === 0 ? (
                     <div className="border border-[#E50914]/20 p-12 text-center bg-[#170909]/60 space-y-4">
                       <p className="text-sm text-[#F5F2EF]/60">Your Supabase database is currently empty.</p>
+                      {productsWarning && (
+                        <p className="text-xs text-amber-400/80 max-w-md mx-auto">{productsWarning}</p>
+                      )}
                       <button
                         onClick={handleSeedDatabase}
                         disabled={seeding}

@@ -30,6 +30,11 @@ export type AdminStoredProduct = {
 
 const STORE_PATH = path.join(process.cwd(), "data", "admin-products.json");
 
+/** Local file mirror is for local/dev only — Vercel filesystem is read-only. */
+function localStoreEnabled() {
+  return process.env.VERCEL !== "1" && process.env.DISABLE_LOCAL_PRODUCT_STORE !== "1";
+}
+
 async function ensureStore() {
   await fs.mkdir(path.dirname(STORE_PATH), { recursive: true });
   try {
@@ -40,12 +45,15 @@ async function ensureStore() {
 }
 
 export async function readLocalProducts(): Promise<AdminStoredProduct[]> {
-  await ensureStore();
-  const raw = await fs.readFile(STORE_PATH, "utf8");
+  if (!localStoreEnabled()) return [];
+
   try {
+    await ensureStore();
+    const raw = await fs.readFile(STORE_PATH, "utf8");
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as AdminStoredProduct[]) : [];
-  } catch {
+  } catch (error) {
+    console.warn("Local product store read skipped:", error);
     return [];
   }
 }
@@ -53,38 +61,57 @@ export async function readLocalProducts(): Promise<AdminStoredProduct[]> {
 export async function upsertLocalProduct(
   product: AdminStoredProduct
 ): Promise<AdminStoredProduct> {
-  const products = await readLocalProducts();
   const now = new Date().toISOString();
-  const index = products.findIndex(
-    (item) => item.id === product.id || item.slug === product.slug
-  );
-
-  const next: AdminStoredProduct = {
+  const stamped: AdminStoredProduct = {
     ...product,
     rating: product.rating ?? 0,
     reviewCount: product.reviewCount ?? 0,
     updatedAt: now,
-    createdAt: index >= 0 ? products[index].createdAt || now : now,
+    createdAt: product.createdAt || now,
   };
 
-  if (index >= 0) {
-    products[index] = { ...products[index], ...next };
-  } else {
-    products.unshift(next);
-  }
+  if (!localStoreEnabled()) return stamped;
 
-  await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
-  return next;
+  try {
+    const products = await readLocalProducts();
+    const index = products.findIndex(
+      (item) => item.id === product.id || item.slug === product.slug
+    );
+
+    const next: AdminStoredProduct = {
+      ...stamped,
+      createdAt: index >= 0 ? products[index].createdAt || now : now,
+    };
+
+    if (index >= 0) {
+      products[index] = { ...products[index], ...next };
+    } else {
+      products.unshift(next);
+    }
+
+    await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
+    return next;
+  } catch (error) {
+    console.warn("Local product store write skipped:", error);
+    return stamped;
+  }
 }
 
 export async function deleteLocalProduct(
   id: string
 ): Promise<AdminStoredProduct | null> {
-  const products = await readLocalProducts();
-  const index = products.findIndex((item) => item.id === id);
-  if (index < 0) return null;
+  if (!localStoreEnabled()) return null;
 
-  const [removed] = products.splice(index, 1);
-  await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
-  return removed;
+  try {
+    const products = await readLocalProducts();
+    const index = products.findIndex((item) => item.id === id);
+    if (index < 0) return null;
+
+    const [removed] = products.splice(index, 1);
+    await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
+    return removed;
+  } catch (error) {
+    console.warn("Local product store delete skipped:", error);
+    return null;
+  }
 }

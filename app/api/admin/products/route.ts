@@ -11,6 +11,7 @@ import {
 import { normalizeProduct } from "@/lib/catalog";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 async function requireAdmin() {
   const cookieStore = await cookies();
@@ -59,7 +60,22 @@ function toStoredProduct(body: AdminStoredProduct): AdminStoredProduct {
     colors: Array.isArray(body.colors) ? body.colors : [],
     rating: Number(body.rating) || 0,
     reviewCount: Number(body.reviewCount) || 0,
+    createdAt: body.createdAt,
+    updatedAt: body.updatedAt,
   };
+}
+
+function mapProducts(rows: AdminStoredProduct[]) {
+  return rows.map((row) =>
+    normalizeProduct(row as unknown as Record<string, unknown>)
+  );
+}
+
+/** Best-effort local mirror — never throw (Vercel FS is read-only). */
+async function mirrorLocal(rows: AdminStoredProduct[]) {
+  for (const row of rows) {
+    await upsertLocalProduct(toStoredProduct(row));
+  }
 }
 
 export async function GET() {
@@ -69,63 +85,68 @@ export async function GET() {
 
   try {
     const supabase = createAdminClient();
-    let query = await supabase
+    let { data, error } = await supabase
       .from("products")
       .select("*")
       .order("createdAt", { ascending: false });
 
-    if (query.error) {
-      query = await supabase.from("products").select("*");
+    if (error) {
+      const fallback = await supabase.from("products").select("*");
+      data = fallback.data;
+      error = fallback.error;
     }
 
-    if (query.error) {
-      throw query.error;
+    if (error) {
+      throw error;
     }
 
-    const cloud = (query.data || []) as AdminStoredProduct[];
+    const cloud = ((data || []) as AdminStoredProduct[]).map(toStoredProduct);
+
+    // Push any local-only products into Supabase (local/dev only).
     const local = await readLocalProducts();
-
-    // Push any local-only products into Supabase so the storefront can show them.
     if (local.length > 0) {
       const cloudIds = new Set(cloud.map((p) => p.id));
       const missing = local.filter((p) => !cloudIds.has(p.id));
       for (const product of missing) {
         const payload = toStoredProduct(product);
-        const { data, error } = await supabase
+        const upsert = await supabase
           .from("products")
           .upsert([payload])
           .select("*")
           .single();
-        if (!error && data) {
-          cloud.unshift(data as AdminStoredProduct);
+        if (!upsert.error && upsert.data) {
+          cloud.unshift(toStoredProduct(upsert.data as AdminStoredProduct));
         }
       }
     }
 
     if (cloud.length > 0) {
-      for (const row of cloud) {
-        await upsertLocalProduct(toStoredProduct(row));
-      }
+      // Mirror for local/dev only — must not break the response on Vercel.
+      void mirrorLocal(cloud);
       return NextResponse.json({
-        products: cloud.map((row) =>
-          normalizeProduct(row as unknown as Record<string, unknown>)
-        ),
+        products: mapProducts(cloud),
         storage: "supabase",
       });
     }
 
+    if (local.length > 0) {
+      return NextResponse.json({
+        products: mapProducts(local),
+        storage: "local",
+        warning: "No products in Supabase yet — showing local cache.",
+      });
+    }
+
     return NextResponse.json({
-      products: local.map((row) =>
-        normalizeProduct(row as unknown as Record<string, unknown>)
-      ),
-      storage: "local",
-      warning: "No products in Supabase yet — showing local cache.",
+      products: [],
+      storage: "supabase",
+      warning: "No products found in Supabase.",
     });
   } catch (error) {
     console.error("Admin products GET error:", error);
     const local = await readLocalProducts();
     return NextResponse.json({
-      products: local.map((row) => normalizeProduct(row as unknown as Record<string, unknown>)),
+      products: mapProducts(local),
       storage: "local",
       warning:
         error instanceof Error
@@ -159,7 +180,6 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      // Keep a local copy so admin work isn't lost, but report the cloud failure.
       const local = await upsertLocalProduct(productPayload);
       return NextResponse.json(
         {
@@ -215,7 +235,6 @@ export async function DELETE(request: Request) {
     const supabase = createAdminClient();
     const { error } = await supabase.from("products").delete().eq("id", id);
 
-    // Always remove from local cache.
     const removed = await deleteLocalProduct(id);
 
     if (error) {
