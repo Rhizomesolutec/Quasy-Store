@@ -1,26 +1,80 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+
+const TOTAL_FRAMES = 300;
+const LAST_FRAME_INDEX = TOTAL_FRAMES - 1;
+const CRITICAL_INITIAL_FRAMES = 36;
+const CRITICAL_TAIL_STEP = 12;
+const PRELOAD_CONCURRENCY = 16;
+const EAGER_DECODE_FRAMES = 24;
+
+export interface SequenceCanvasHandle {
+  setProgress: (progress: number) => void;
+}
 
 interface SequenceCanvasProps {
-  scrollProgress: number;
   onProgress: (loaded: number, total: number) => void;
   onLoaded: (images: HTMLImageElement[]) => void;
   prefersReducedMotion: boolean;
   isMobileSequenceAvailable: boolean;
 }
 
-export default function SequenceCanvas({
-  scrollProgress,
+function clampFrame(frame: number) {
+  return Math.min(LAST_FRAME_INDEX, Math.max(0, frame));
+}
+
+function buildCriticalFrameSet() {
+  const critical = new Set<number>();
+
+  for (let i = 0; i < CRITICAL_INITIAL_FRAMES; i++) {
+    critical.add(i);
+  }
+
+  for (let i = CRITICAL_INITIAL_FRAMES; i < TOTAL_FRAMES; i += CRITICAL_TAIL_STEP) {
+    critical.add(i);
+  }
+
+  critical.add(0);
+  critical.add(LAST_FRAME_INDEX);
+  return critical;
+}
+
+function resolveNearestLoadedFrame(
+  target: number,
+  loadedFrames: boolean[]
+) {
+  if (loadedFrames[target]) return target;
+
+  for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+    const before = target - offset;
+    if (before >= 0 && loadedFrames[before]) return before;
+
+    const after = target + offset;
+    if (after < TOTAL_FRAMES && loadedFrames[after]) return after;
+  }
+
+  return -1;
+}
+
+const SequenceCanvas = forwardRef<SequenceCanvasHandle, SequenceCanvasProps>(function SequenceCanvas({
   onProgress,
   onLoaded,
   prefersReducedMotion,
   isMobileSequenceAvailable,
-}: SequenceCanvasProps) {
+}, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [images, setImages] = useState<HTMLImageElement[]>([]);
+  const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
+  const loadedFramesRef = useRef<boolean[]>([]);
   const [isPreloaded, setIsPreloaded] = useState(false);
-  const [loadedSequence, setLoadedSequence] = useState<"none" | "desktop" | "mobile">("none");
+  const loadedSequenceRef = useRef<"none" | "desktop" | "mobile">("none");
+  const loadRunIdRef = useRef(0);
 
   // Animation frame indices
   const currentFrameRef = useRef(0);
@@ -39,112 +93,178 @@ export default function SequenceCanvas({
     onLoadedRef.current = onLoaded;
   }, [onLoaded]);
 
-  // Preload Images
+  useImperativeHandle(
+    ref,
+    () => ({
+      setProgress: (progress: number) => {
+        if (prefersReducedMotion) {
+          targetFrameRef.current = 0;
+          return;
+        }
+        targetFrameRef.current = clampFrame(progress * LAST_FRAME_INDEX);
+      },
+    }),
+    [prefersReducedMotion]
+  );
+
+  // Ensure reduced motion always pins to first frame
+  useEffect(() => {
+    if (!prefersReducedMotion) return;
+    targetFrameRef.current = 0;
+    currentFrameRef.current = 0;
+  }, [prefersReducedMotion]);
+
+  // Preload images with critical-first strategy
   useEffect(() => {
     let active = true;
-    let loadedCount = 0;
-    const loadedImages: HTMLImageElement[] = [];
+    const criticalFrames = buildCriticalFrameSet();
+    const criticalFrameList = Array.from(criticalFrames);
+    const criticalTotal = criticalFrameList.length;
+    const allFrameIndices = Array.from({ length: TOTAL_FRAMES }, (_, index) => index);
 
-    const preload = async () => {
-      let isMobileViewport = false;
-      if (typeof window !== "undefined") {
-        isMobileViewport = window.innerWidth < 768;
-      }
-
-      const desktopPrefix = "/images/Hero section/ezgif-frame-";
-      const mobilePrefix = "/images/hero-mobile/ezgif-frame-";
-      const pad = (n: number) => String(n).padStart(3, "0");
-
-      const useMobile = isMobileViewport && isMobileSequenceAvailable;
-
-      const activePrefix = useMobile ? mobilePrefix : desktopPrefix;
-      const sequenceType = useMobile ? "mobile" : "desktop";
-
-      // If we already loaded this sequence type, don't reload
-      if (loadedSequence === sequenceType) return;
-
-      setIsPreloaded(false);
-      onProgressRef.current(0, 300);
-
-      const urls = Array.from(
-        { length: 300 },
-        (_, i) => `${activePrefix}${pad(i + 1)}.png`
+    const runQueue = async (
+      frameIndices: number[],
+      urls: string[],
+      onFrameLoaded: (index: number, image: HTMLImageElement) => void
+    ) => {
+      let cursor = 0;
+      const workerCount = Math.max(
+        1,
+        Math.min(PRELOAD_CONCURRENCY, frameIndices.length)
       );
-      const total = urls.length;
 
-      const promises = urls.map((url, index) => {
-        return new Promise<void>((resolve) => {
-          const img = new Image();
-          img.src = url;
+      const worker = async () => {
+        while (active && cursor < frameIndices.length) {
+          const queueIndex = cursor++;
+          const frameIndex = frameIndices[queueIndex];
+          const image = new Image();
+          image.decoding = "async";
+          if (frameIndex < 3) {
+            image.fetchPriority = "high";
+          }
 
-          const handleLoad = () => {
-            if (!active) return resolve();
-            if ("decode" in img) {
-              img
-                .decode()
-                .catch(() => { })
-                .finally(() => {
-                  if (active) {
-                    loadedCount++;
-                    onProgressRef.current(loadedCount, total);
-                    resolve();
-                  }
-                });
-            } else {
-              loadedCount++;
-              onProgressRef.current(loadedCount, total);
-              resolve();
-            }
-          };
+          const loadedImage = await new Promise<HTMLImageElement | null>((resolve) => {
+            const finalize = () => resolve(image);
+            image.onload = () => {
+              if (frameIndex < EAGER_DECODE_FRAMES && "decode" in image) {
+                image
+                  .decode()
+                  .catch(() => { })
+                  .finally(finalize);
+              } else {
+                finalize();
+              }
+            };
+            image.onerror = () => resolve(null);
+            image.src = urls[frameIndex];
+          });
 
-          img.onload = handleLoad;
-          img.onerror = handleLoad;
-          loadedImages[index] = img;
-        });
-      });
+          if (!active || !loadedImage) continue;
+          onFrameLoaded(frameIndex, loadedImage);
+        }
+      };
 
-      await Promise.all(promises);
-
-      if (active) {
-        setImages(loadedImages);
-        setIsPreloaded(true);
-        setLoadedSequence(sequenceType);
-        onLoadedRef.current(loadedImages);
-      }
+      await Promise.all(Array.from({ length: workerCount }, () => worker()));
     };
 
-    preload();
-
-    // Listen to resize to check if we cross the 768px breakpoint
-    const handleResize = () => {
-      if (typeof window === "undefined") return;
+    const getSequenceType = (): "desktop" | "mobile" => {
+      if (typeof window === "undefined") return "desktop";
       const isMobileViewport = window.innerWidth < 768;
-      const expectedType = isMobileViewport ? "mobile" : "desktop";
-      if (loadedSequence !== "none" && loadedSequence !== expectedType) {
-        preload();
+      return isMobileViewport && isMobileSequenceAvailable ? "mobile" : "desktop";
+    };
+
+    const preload = async (sequenceType: "desktop" | "mobile") => {
+      const runId = ++loadRunIdRef.current;
+      const desktopPrefix = "/images/Hero section/ezgif-frame-";
+      const mobilePrefix = "/images/hero-mobile/ezgif-frame-";
+      const activePrefix = sequenceType === "mobile" ? mobilePrefix : desktopPrefix;
+      const pad = (n: number) => String(n).padStart(3, "0");
+      const urls = Array.from(
+        { length: TOTAL_FRAMES },
+        (_, i) => `${activePrefix}${pad(i + 1)}.png`
+      );
+      const stagedImages: (HTMLImageElement | null)[] = Array.from(
+        { length: TOTAL_FRAMES },
+        () => null
+      );
+      const stagedLoadedFlags = Array.from({ length: TOTAL_FRAMES }, () => false);
+      let criticalLoaded = 0;
+      let notifiedReady = false;
+
+      currentFrameRef.current = 0;
+      targetFrameRef.current = 0;
+      lastDrawnFrameRef.current = -1;
+      setIsPreloaded(false);
+      onProgressRef.current(0, criticalTotal);
+
+      const onFrameLoaded = (frameIndex: number, image: HTMLImageElement) => {
+        if (!active || loadRunIdRef.current !== runId) return;
+
+        stagedImages[frameIndex] = image;
+        stagedLoadedFlags[frameIndex] = true;
+
+        if (criticalFrames.has(frameIndex)) {
+          criticalLoaded++;
+          onProgressRef.current(Math.min(criticalLoaded, criticalTotal), criticalTotal);
+
+          if (!notifiedReady && criticalLoaded >= criticalTotal) {
+            imagesRef.current = stagedImages;
+            loadedFramesRef.current = stagedLoadedFlags;
+            setIsPreloaded(true);
+            loadedSequenceRef.current = sequenceType;
+            onLoadedRef.current(stagedImages.filter(Boolean) as HTMLImageElement[]);
+            notifiedReady = true;
+          }
+        }
+      };
+
+      await runQueue(criticalFrameList, urls, onFrameLoaded);
+
+      if (!active || loadRunIdRef.current !== runId) return;
+
+      if (!notifiedReady) {
+        imagesRef.current = stagedImages;
+        loadedFramesRef.current = stagedLoadedFlags;
+        setIsPreloaded(true);
+        loadedSequenceRef.current = sequenceType;
+        onLoadedRef.current(stagedImages.filter(Boolean) as HTMLImageElement[]);
+        notifiedReady = true;
       }
+
+      const nonCriticalFrameList = allFrameIndices.filter(
+        (index) => !criticalFrames.has(index)
+      );
+      await runQueue(nonCriticalFrameList, urls, onFrameLoaded);
+
+      if (!active || loadRunIdRef.current !== runId) return;
+      imagesRef.current = stagedImages;
+      loadedFramesRef.current = stagedLoadedFlags;
+    };
+
+    const maybePreload = () => {
+      const expectedType = getSequenceType();
+      if (loadedSequenceRef.current === expectedType) return;
+      void preload(expectedType);
+    };
+
+    maybePreload();
+
+    const handleResize = () => {
+      maybePreload();
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       active = false;
+      loadRunIdRef.current += 1;
       window.removeEventListener("resize", handleResize);
     };
-  }, [loadedSequence]);
-
-  // Update target frame based on scroll progress
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      targetFrameRef.current = 0;
-    } else {
-      targetFrameRef.current = Math.min(299, Math.max(0, scrollProgress * 299));
-    }
-  }, [scrollProgress, prefersReducedMotion]);
+  }, [isMobileSequenceAvailable]);
 
   // Canvas drawing & resize loop
   useEffect(() => {
-    if (!isPreloaded || images.length === 0) return;
+    if (!isPreloaded) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -153,8 +273,8 @@ export default function SequenceCanvas({
 
     let animationFrameId: number;
 
-    const drawFrame = (frameIndex: number) => {
-      const img = images[frameIndex];
+    const drawFrame = (resolvedFrameIndex: number) => {
+      const img = imagesRef.current[resolvedFrameIndex];
       if (!img) return;
 
       // Clear canvas
@@ -187,8 +307,15 @@ export default function SequenceCanvas({
       ctx.imageSmoothingQuality = "high";
 
       // Re-draw current frame after resize
-      const currentFrame = Math.round(currentFrameRef.current);
-      drawFrame(currentFrame);
+      const requestedFrame = clampFrame(Math.round(currentFrameRef.current));
+      const resolvedFrame = resolveNearestLoadedFrame(
+        requestedFrame,
+        loadedFramesRef.current
+      );
+      if (resolvedFrame >= 0) {
+        drawFrame(resolvedFrame);
+        lastDrawnFrameRef.current = resolvedFrame;
+      }
     };
 
     // Initialize dimensions
@@ -205,12 +332,16 @@ export default function SequenceCanvas({
       const easedCurrent = current + diff * 0.1;
       currentFrameRef.current = easedCurrent;
 
-      const frameToDraw = Math.min(299, Math.max(0, Math.round(easedCurrent)));
+      const requestedFrame = clampFrame(Math.round(easedCurrent));
+      const resolvedFrame = resolveNearestLoadedFrame(
+        requestedFrame,
+        loadedFramesRef.current
+      );
 
-      // Only draw when the frame index changes to save GPU resources
-      if (frameToDraw !== lastDrawnFrameRef.current) {
-        drawFrame(frameToDraw);
-        lastDrawnFrameRef.current = frameToDraw;
+      // Only draw when resolved frame changes to save GPU resources
+      if (resolvedFrame >= 0 && resolvedFrame !== lastDrawnFrameRef.current) {
+        drawFrame(resolvedFrame);
+        lastDrawnFrameRef.current = resolvedFrame;
       }
 
       animationFrameId = requestAnimationFrame(loop);
@@ -222,7 +353,7 @@ export default function SequenceCanvas({
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isPreloaded, images, prefersReducedMotion]);
+  }, [isPreloaded]);
 
   return (
     <canvas
@@ -231,4 +362,6 @@ export default function SequenceCanvas({
       style={{ mixBlendMode: "normal" }}
     />
   );
-}
+});
+
+export default SequenceCanvas;

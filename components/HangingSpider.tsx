@@ -1,73 +1,88 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 
 export default function HangingSpider() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [swayRotation, setSwayRotation] = useState(0);
-  const [dimensions, setDimensions] = useState({ minY: 90, maxY: 500 });
+  const [isVisible, setIsVisible] = useState(false);
+  const dimensionsRef = useRef({ minY: 90, maxY: 500 });
+  const lastScrollYRef = useRef(0);
+  const lastTimeRef = useRef(0);
+  const threadHeight = useMotionValue(90);
+  const swayRotation = useMotionValue(0);
 
-  // Update scrollProgress relative to the entire page scroll height
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = window.scrollY / totalHeight;
-        setScrollProgress(progress);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Update dimensions on screen resize
+  // Keep thread height bounds in sync with viewport size.
   useEffect(() => {
     const updateDimensions = () => {
-      setDimensions({
+      dimensionsRef.current = {
         minY: 90,
-        maxY: window.innerHeight - 110
-      });
+        maxY: window.innerHeight - 110,
+      };
+
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
+      const { minY, maxY } = dimensionsRef.current;
+      threadHeight.set(minY + progress * (maxY - minY));
     };
+
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+  }, [threadHeight]);
 
-  // Calculate scroll velocity and apply swaying physics
+  // Update thread length + visibility from scroll without re-rendering every frame.
   useEffect(() => {
-    let lastY = window.scrollY;
-    let lastTime = Date.now();
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? window.scrollY / totalHeight : 0;
+      const { minY, maxY } = dimensionsRef.current;
+      threadHeight.set(minY + progress * (maxY - minY));
+      setIsVisible((prev) => {
+        const next = progress > 0.02;
+        return prev === next ? prev : next;
+      });
+    };
+
+    lastScrollYRef.current = window.scrollY;
+    lastTimeRef.current = performance.now();
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [threadHeight]);
+
+  // Calculate scroll velocity and apply swaying physics via motion values.
+  useEffect(() => {
     let active = true;
 
-    const checkScrollVelocity = () => {
+    const tick = () => {
       if (!active) return;
+
       const currentY = window.scrollY;
-      const currentTime = Date.now();
-      const dy = currentY - lastY;
-      const dt = currentTime - lastTime;
+      const now = performance.now();
+      const dy = currentY - lastScrollYRef.current;
+      const dt = now - lastTimeRef.current;
 
       if (dt > 0) {
         const velocity = dy / dt; // pixels per ms
         const targetRotation = Math.max(-15, Math.min(15, velocity * 4.5));
-        setSwayRotation(prev => prev + (targetRotation - prev) * 0.1);
+        const currentRotation = swayRotation.get();
+        swayRotation.set(currentRotation + (targetRotation - currentRotation) * 0.1);
       }
 
-      lastY = currentY;
-      lastTime = currentTime;
-      requestAnimationFrame(checkScrollVelocity);
+      lastScrollYRef.current = currentY;
+      lastTimeRef.current = now;
+      requestAnimationFrame(tick);
     };
 
-    requestAnimationFrame(checkScrollVelocity);
+    requestAnimationFrame(tick);
     return () => {
       active = false;
     };
-  }, []);
+  }, [swayRotation]);
 
   return (
     <AnimatePresence>
-      {scrollProgress > 0.02 && (
+      {isVisible && (
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,9 +91,9 @@ export default function HangingSpider() {
           className="fixed left-2 sm:left-6 md:left-10 top-0 bottom-0 w-8 z-50 pointer-events-none flex flex-col items-center"
         >
           {/* Silk Thread stretching from viewport top */}
-          <div
+          <motion.div
             className="w-[0.8px] bg-gradient-to-b from-[#E50914]/20 via-[#F5F2EF]/45 to-[#F5F2EF]/70"
-            style={{ height: `${dimensions.minY + scrollProgress * (dimensions.maxY - dimensions.minY)}px` }}
+            style={{ height: threadHeight }}
           />
 
           {/* Swaying Spider Pendant (Glowing Crimson Core) */}

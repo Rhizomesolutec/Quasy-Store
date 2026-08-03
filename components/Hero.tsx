@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import SequenceCanvas from "./SequenceCanvas";
+import SequenceCanvas, { type SequenceCanvasHandle } from "./SequenceCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,15 +26,19 @@ interface HeroProps {
 
 export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const sequenceCanvasRef = useRef<SequenceCanvasHandle | null>(null);
+  const sequenceVisibleRef = useRef(true);
   const titleContainerRef = useRef<HTMLDivElement>(null);
-  const descRef = useRef<HTMLDivElement>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isSequenceVisible, setIsSequenceVisible] = useState(true);
   const [spiderRecoil, setSpiderRecoil] = useState(false);
 
   // PNG Sequence Background state
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [sequenceProgress, setSequenceProgress] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
   const [preloadProgress, setPreloadProgress] = useState({ loaded: 0, total: 300 });
 
   // Interactive preloader spider web refs
@@ -49,10 +53,19 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   // Handle prefers-reduced-motion
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
     const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
+
+  const handleSequenceProgress = useCallback((loaded: number, total: number) => {
+    setPreloadProgress({ loaded, total });
+  }, []);
+
+  const handleSequenceLoaded = useCallback(() => {
+    setIsLoaded(true);
+    sequenceVisibleRef.current = true;
+    setIsSequenceVisible(true);
   }, []);
 
 
@@ -249,9 +262,20 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
       pinSpacing: true, // Explicitly enable pinSpacing to isolate sections
       scrub: true,
       onUpdate: (self) => {
-        setSequenceProgress(self.progress);
+        const progress = self.progress;
+        sequenceCanvasRef.current?.setProgress(progress);
+
+        const shouldShowSequence = progress < 0.995;
+        if (shouldShowSequence !== sequenceVisibleRef.current) {
+          sequenceVisibleRef.current = shouldShowSequence;
+          setIsSequenceVisible(shouldShowSequence);
+        }
       },
     });
+
+    sequenceCanvasRef.current?.setProgress(0);
+    sequenceVisibleRef.current = true;
+    setIsSequenceVisible(true);
 
     return () => {
       trigger.kill();
@@ -273,12 +297,12 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
       {/* PNG Sequence Background Canvas Wrapper (fades out completely when animation finishes) */}
       <div
         className="absolute inset-0 w-full h-full pointer-events-none z-0 transition-opacity duration-300"
-        style={{ opacity: sequenceProgress >= 0.995 ? 0 : 1 }}
+        style={{ opacity: isSequenceVisible ? 1 : 0 }}
       >
         <SequenceCanvas
-          scrollProgress={sequenceProgress}
-          onProgress={(loaded, total) => setPreloadProgress({ loaded, total })}
-          onLoaded={() => setIsLoaded(true)}
+          ref={sequenceCanvasRef}
+          onProgress={handleSequenceProgress}
+          onLoaded={handleSequenceLoaded}
           prefersReducedMotion={prefersReducedMotion}
           isMobileSequenceAvailable={isMobileSequenceAvailable}
         />

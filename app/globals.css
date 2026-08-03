@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -11,11 +10,11 @@
 }
 
 .font-pixel {
-  font-family: 'Press Start 2P', monospace !important;
+  font-family: var(--font-press-start-2p), monospace !important;
 }
 
 .font-vt323 {
-  font-family: 'VT323', monospace !important;
+  font-family: var(--font-vt323), monospace !important;
 }
 
 /* Stranger Things Red Hollow Outline Text Effect (100% Transparent Inside + Subtle Crimson Red Border Outline) */

@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  ReactNode,
+} from "react";
 import { WishlistItem } from "@/lib/types";
 
 const STORAGE_KEY = "qusay_wishlist_v1";
@@ -35,24 +43,32 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(wishlist));
   }, [wishlist, hydrated]);
 
-  const isInWishlist = (productId: string) => wishlist.some((item) => item.productId === productId);
+  const isInWishlist = useCallback(
+    (productId: string) => wishlist.some((item) => item.productId === productId),
+    [wishlist]
+  );
 
-  const toggleItem = (item: WishlistItem) => {
+  const toggleItem = useCallback((item: WishlistItem) => {
     setWishlist((prev) =>
       prev.some((line) => line.productId === item.productId)
         ? prev.filter((line) => line.productId !== item.productId)
         : [...prev, item]
     );
-  };
+  }, []);
 
-  const removeItem = (productId: string) => {
+  const removeItem = useCallback((productId: string) => {
     setWishlist((prev) => prev.filter((line) => line.productId !== productId));
-  };
+  }, []);
 
-  const clearWishlist = () => setWishlist([]);
+  const clearWishlist = useCallback(() => setWishlist([]), []);
+
+  const value = useMemo(
+    () => ({ wishlist, isInWishlist, toggleItem, removeItem, clearWishlist }),
+    [wishlist, isInWishlist, toggleItem, removeItem, clearWishlist]
+  );
 
   return (
-    <WishlistContext.Provider value={{ wishlist, isInWishlist, toggleItem, removeItem, clearWishlist }}>
+    <WishlistContext.Provider value={value}>
       {children}
     </WishlistContext.Provider>
   );
