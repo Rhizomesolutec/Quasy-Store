@@ -181,7 +181,7 @@ const SequenceCanvas = forwardRef<SequenceCanvasHandle, SequenceCanvasProps>(fun
       const pad = (n: number) => String(n).padStart(3, "0");
       const urls = Array.from(
         { length: TOTAL_FRAMES },
-        (_, i) => `${activePrefix}${pad(i + 1)}.png`
+        (_, i) => `${activePrefix}${pad(i + 1)}.webp`
       );
       const stagedImages: (HTMLImageElement | null)[] = Array.from(
         { length: TOTAL_FRAMES },

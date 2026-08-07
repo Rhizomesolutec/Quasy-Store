@@ -28,7 +28,7 @@ export default async function NewArrivalsPage() {
         title="New Arrivals"
         description="Freshly cast, freshly catalogued. The newest relics to enter the vault."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "New Arrivals" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.webp")}
       />
 
       {feature && (

@@ -18,7 +18,7 @@ export function BrandStoryPreview() {
         >
           <div className="absolute inset-0 crt-scanlines z-10 pointer-events-none opacity-20" />
           <Image
-            src="/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"
+            src="/images/Nacklace/Spider Collection/vol 2/vol 2.webp"
             alt="Qusay Store Gothic Spider Necklace"
             fill
             sizes="(min-width: 768px) 40vw, 100vw"

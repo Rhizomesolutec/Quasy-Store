@@ -35,7 +35,7 @@ export default function AccountPage() {
         title={email ? "Your Vault" : "Account"}
         description={email ? undefined : "Sign in to track orders, manage addresses, and access your wishlist."}
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Account" }]}
-        bgImage={encodeURI("/images/Nacklace/Glow dark nacklace/vol 10/vol 10.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Glow dark nacklace/vol 10/vol 10.webp")}
       />
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-16 pb-24 max-w-5xl">

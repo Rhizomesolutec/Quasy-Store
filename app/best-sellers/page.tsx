@@ -26,7 +26,7 @@ export default async function BestSellersPage() {
         title="Best Sellers"
         description="The pieces our collectors return for — proven, trending, and rarely in stock for long."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Best Sellers" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 10/vol 10.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 10/vol 10.webp")}
       />
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-16 max-w-7xl">

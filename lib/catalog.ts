@@ -61,6 +61,11 @@ export function normalizeProduct(row: RawProduct): Product {
   const compareAt = row.compareAtPrice;
   const video = row.video;
 
+  const toWebp = (src: string) =>
+    src.startsWith("/images/")
+      ? src.replace(/\.(jpe?g|png|gif|bmp)(\?.*)?$/i, ".webp$2")
+      : src;
+
   return {
     id: asString(row.id),
     slug: asString(row.slug),
@@ -72,7 +77,7 @@ export function normalizeProduct(row: RawProduct): Product {
       compareAt === undefined || compareAt === null || compareAt === ""
         ? undefined
         : asNumber(compareAt),
-    images: asStringArray(row.images),
+    images: asStringArray(row.images).map(toWebp),
     colors: asColors(row.colors),
     sizes: asStringArray(row.sizes),
     rating: asNumber(row.rating),

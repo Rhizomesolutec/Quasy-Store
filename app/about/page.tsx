@@ -50,7 +50,7 @@ export default function AboutPage() {
         title="Our Story"
         description="A restored catalog of gothic mourning jewelry, cast the same way it was a century ago."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.webp")}
       />
 
       {/* Founder section */}

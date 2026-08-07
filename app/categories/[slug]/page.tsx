@@ -33,17 +33,17 @@ export async function generateMetadata({
 function getCategoryBgImage(category: string): string {
   switch (category) {
     case "Necklaces":
-      return "/images/Nacklace/Spider Collection/vol 2/vol 2.jpg";
+      return "/images/Nacklace/Spider Collection/vol 2/vol 2.webp";
     case "Glow Dark Necklace":
-      return "/images/Nacklace/Glow dark nacklace/vol 11/vol 11.jpg";
+      return "/images/Nacklace/Glow dark nacklace/vol 11/vol 11.webp";
     case "Bracelets":
-      return "/images/Nacklace/Bracelet/Bracelet 1.jpg";
+      return "/images/Nacklace/Bracelet/Bracelet 1.webp";
     case "Denim Sling Bag":
-      return "/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.jpg";
+      return "/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.webp";
     case "Pant Hook Chain":
-      return "/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.jpg";
+      return "/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.webp";
     default:
-      return "/images/spider-1.jpg";
+      return "/images/spider-1.webp";
   }
 }
 

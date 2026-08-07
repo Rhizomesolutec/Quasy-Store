@@ -17,7 +17,7 @@ const SHOWS_GRID = [
     price: 185,
     badgeColor: "#E50914",
     headerLabel: "THE FRESH REQUIEM",
-    image: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg"),
+    image: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.webp"),
     slug: "arachnid-requiem-necklace",
   },
   {
@@ -27,7 +27,7 @@ const SHOWS_GRID = [
     price: 210,
     badgeColor: "#E50914",
     headerLabel: "SAVED BY THE GLOW",
-    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg"),
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.webp"),
     slug: "midnight-glow-necklace",
   },
   {
@@ -37,7 +37,7 @@ const SHOWS_GRID = [
     price: 198,
     badgeColor: "#E50914",
     headerLabel: "TEENAGE MUTANT COVEN",
-    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.jpg"),
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.webp"),
     slug: "glow-dark-crystal-vol5",
   },
   {
@@ -47,7 +47,7 @@ const SHOWS_GRID = [
     price: 175,
     badgeColor: "#E50914",
     headerLabel: "GOTHIC DOUG",
-    image: encodeURI("/images/Nacklace/Spider Collection/vol 3/vol 3.jpg"),
+    image: encodeURI("/images/Nacklace/Spider Collection/vol 3/vol 3.webp"),
     slug: "spider-collection-vol3",
   },
   {
@@ -57,7 +57,7 @@ const SHOWS_GRID = [
     price: 152,
     badgeColor: "#E50914",
     headerLabel: "POWER RELICS",
-    image: "/images/Nacklace/Bracelet/Bracelet 6/Bracelet 6.jpg",
+    image: "/images/Nacklace/Bracelet/Bracelet 6/Bracelet 6.webp",
     slug: "cathedral-cuff",
   },
   {
@@ -67,7 +67,7 @@ const SHOWS_GRID = [
     price: 118,
     badgeColor: "#E50914",
     headerLabel: "F.R.I.E.N.D.S OF NIGHT",
-    image: "/images/Nacklace/Bracelet/Bracelet 11/Bracelet 11.jpg",
+    image: "/images/Nacklace/Bracelet/Bracelet 11/Bracelet 11.webp",
     slug: "coven-chain-bracelet",
   },
   {
@@ -77,7 +77,7 @@ const SHOWS_GRID = [
     price: 165,
     badgeColor: "#E50914",
     headerLabel: "MIDNIGHT SPECIAL",
-    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 4/vol 4.jpg"),
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 4/vol 4.webp"),
     slug: "obsidian-pendant-necklace",
   },
   {
@@ -87,7 +87,7 @@ const SHOWS_GRID = [
     price: 195,
     badgeColor: "#E50914",
     headerLabel: "ARCHIVAL SELECTION",
-    image: "/images/spider-1.jpg",
+    image: "/images/spider-1.webp",
     slug: "relic-locket-necklace",
   },
   {
@@ -97,7 +97,7 @@ const SHOWS_GRID = [
     price: 205,
     badgeColor: "#E50914",
     headerLabel: "SAVED BY THE COVEN",
-    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 6/vol 6.jpg"),
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 6/vol 6.webp"),
     slug: "glow-dark-crystal-vol6",
   },
   {
@@ -107,7 +107,7 @@ const SHOWS_GRID = [
     price: 180,
     badgeColor: "#E50914",
     headerLabel: "GOTHIC DOUG II",
-    image: encodeURI("/images/Nacklace/Spider Collection/vol 4/var 4.jpg"),
+    image: encodeURI("/images/Nacklace/Spider Collection/vol 4/var 4.webp"),
     slug: "spider-collection-vol4",
   },
   {
@@ -117,7 +117,7 @@ const SHOWS_GRID = [
     price: 165,
     badgeColor: "#E50914",
     headerLabel: "DENIM RAMPAGE",
-    image: encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.jpg"),
+    image: encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.webp"),
     slug: "pant-hook-chain",
   },
   {
@@ -127,7 +127,7 @@ const SHOWS_GRID = [
     price: 145,
     badgeColor: "#E50914",
     headerLabel: "PINHEAD SHADOWS",
-    image: encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.jpg"),
+    image: encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.webp"),
     slug: "gothic-jacket-pin",
   },
 ];
@@ -280,7 +280,7 @@ export default function DetailsPricing() {
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
             <div ref={addToRefs} className="relative w-full lg:w-1/2 aspect-[4/5] bg-black rounded-sm overflow-hidden border-2 border-[#222] retro-box-shadow">
               <Image 
-                src={encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg")} 
+                src={encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.webp")} 
                 alt="The Arachnid Requiem Spider Necklace" 
                 fill 
                 sizes="(min-width: 1024px) 50vw, 100vw"
@@ -314,7 +314,7 @@ export default function DetailsPricing() {
                       slug: "arachnid-requiem-necklace",
                       name: "The Arachnid Requiem",
                       price: 185,
-                      image: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg"),
+                      image: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.webp"),
                     })
                   }
                   className="bg-black hover:bg-[#00FF66] text-[#00FF66] hover:text-black font-pixel font-bold text-[9px] sm:text-[10px] px-5 py-3 uppercase tracking-wider border-2 border-white/60 hover:border-[#00FF66] retro-box-shadow transition-all active:scale-95 flex items-center gap-2"
@@ -329,7 +329,7 @@ export default function DetailsPricing() {
           <div className="flex flex-col lg:flex-row-reverse gap-12 lg:gap-20 items-center">
             <div ref={addToRefs} className="relative w-full lg:w-1/2 aspect-[4/5] bg-black rounded-sm overflow-hidden border-2 border-[#222] retro-box-shadow">
               <Image 
-                src={encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg")} 
+                src={encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.webp")} 
                 alt="Midnight Glow night light necklace" 
                 fill 
                 sizes="(min-width: 1024px) 50vw, 100vw"
@@ -363,7 +363,7 @@ export default function DetailsPricing() {
                       slug: "midnight-glow-necklace",
                       name: "The Midnight Glow",
                       price: 210,
-                      image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg"),
+                      image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.webp"),
                     })
                   }
                   className="bg-black hover:bg-[#00FF66] text-[#00FF66] hover:text-black font-pixel font-bold text-[9px] sm:text-[10px] px-5 py-3 uppercase tracking-wider border-2 border-white/60 hover:border-[#00FF66] retro-box-shadow transition-all active:scale-95 flex items-center gap-2"

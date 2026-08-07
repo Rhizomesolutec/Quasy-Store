@@ -59,7 +59,7 @@ export default function CartPage() {
         eyebrow="Review Your Order"
         title="Shopping Bag"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Cart" }]}
-        bgImage={encodeURI("/images/Nacklace/Bracelet/Bracelet 2.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Bracelet/Bracelet 2.webp")}
       />
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-16 pb-24 max-w-6xl">

@@ -3,22 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import SequenceCanvas, { type SequenceCanvasHandle } from "./SequenceCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
-
-interface WebNode {
-  x: number;
-  y: number;
-  baseX: number;
-  baseY: number;
-  vx: number;
-  vy: number;
-  angle: number;
-  radius: number;
-}
 
 interface HeroProps {
   isMobileSequenceAvailable?: boolean;
@@ -30,7 +19,6 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   const sequenceVisibleRef = useRef(true);
   const titleContainerRef = useRef<HTMLDivElement>(null);
 
-  const [isLoaded, setIsLoaded] = useState(false);
   const [isSequenceVisible, setIsSequenceVisible] = useState(true);
   const [spiderRecoil, setSpiderRecoil] = useState(false);
 
@@ -39,16 +27,6 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   });
-  const [preloadProgress, setPreloadProgress] = useState({ loaded: 0, total: 300 });
-
-  // Interactive preloader spider web refs
-  const loadingWebCanvasRef = useRef<HTMLCanvasElement>(null);
-  const loadingMouseRef = useRef({ x: -9999, y: -9999, active: false });
-  const loadingCenterNodeRef = useRef<WebNode | null>(null);
-  const loadingNodesRef = useRef<WebNode[]>([]);
-
-  // Web nodes list
-  // loading web nodes are defined above
 
   // Handle prefers-reduced-motion
   useEffect(() => {
@@ -58,199 +36,16 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  const handleSequenceProgress = useCallback((loaded: number, total: number) => {
-    setPreloadProgress({ loaded, total });
+  const handleSequenceProgress = useCallback((_loaded: number, _total: number) => {
+    // Sequence still preloads in the background; no blocking overlay.
   }, []);
 
   const handleSequenceLoaded = useCallback(() => {
-    setIsLoaded(true);
     sequenceVisibleRef.current = true;
     setIsSequenceVisible(true);
   }, []);
 
-
-
-  // Elastic Loading Spider Web Canvas Physics
-  useEffect(() => {
-    if (isLoaded) return;
-    const canvas = loadingWebCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const radialStrands = 12;
-    const rings = 8;
-    const springFactor = 0.035;
-    const friction = 0.9;
-    const mouseRadius = 180;
-    const mousePushForce = 40;
-
-    const generateWeb = () => {
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const nodes: WebNode[] = [];
-
-      const centerNode: WebNode = {
-        x: centerX,
-        y: centerY,
-        baseX: centerX,
-        baseY: centerY,
-        vx: 0,
-        vy: 0,
-        angle: 0,
-        radius: 0,
-      };
-      loadingCenterNodeRef.current = centerNode;
-
-      const maxDist = Math.max(width, height) * 0.52;
-
-      for (let r = 1; r <= rings; r++) {
-        const ringRadius = (r / rings) * maxDist;
-        for (let s = 0; s < radialStrands; s++) {
-          const angle = (s * Math.PI * 2) / radialStrands;
-          const x = centerX + Math.cos(angle) * ringRadius;
-          const y = centerY + Math.sin(angle) * ringRadius;
-
-          nodes.push({
-            x,
-            y,
-            baseX: x,
-            baseY: y,
-            vx: 0,
-            vy: 0,
-            angle,
-            radius: ringRadius,
-          });
-        }
-      }
-      loadingNodesRef.current = nodes;
-    };
-
-    generateWeb();
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      generateWeb();
-    };
-    window.addEventListener("resize", handleResize);
-
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const m = loadingMouseRef.current;
-      const centerNode = loadingCenterNodeRef.current;
-
-      // Update Center Node
-      if (centerNode) {
-        if (m.active) {
-          const dx = m.x - centerNode.x;
-          const dy = m.y - centerNode.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < mouseRadius) {
-            const force = (mouseRadius - dist) / mouseRadius;
-            centerNode.vx -= (dx / dist) * force * mousePushForce * 0.3;
-            centerNode.vy -= (dy / dist) * force * mousePushForce * 0.3;
-          }
-        }
-        centerNode.vx += (centerNode.baseX - centerNode.x) * springFactor;
-        centerNode.vy += (centerNode.baseY - centerNode.y) * springFactor;
-        centerNode.vx *= friction;
-        centerNode.vy *= friction;
-        centerNode.x += centerNode.vx;
-        centerNode.y += centerNode.vy;
-      }
-
-      // Update remaining nodes
-      loadingNodesRef.current.forEach((node) => {
-        if (m.active) {
-          const dx = m.x - node.x;
-          const dy = m.y - node.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < mouseRadius) {
-            const force = (mouseRadius - dist) / mouseRadius;
-            node.vx -= (dx / dist) * force * mousePushForce * 0.6;
-            node.vy -= (dy / dist) * force * mousePushForce * 0.6;
-          }
-        }
-        node.vx += (node.baseX - node.x) * springFactor;
-        node.vy += (node.baseY - node.y) * springFactor;
-        node.vx *= friction;
-        node.vy *= friction;
-        node.x += node.vx;
-        node.y += node.vy;
-      });
-
-      // Draw Web Rings (Concentric Polygons with sagging organic curves)
-      for (let r = 0; r < rings; r++) {
-        ctx.beginPath();
-        // Silver-white stroke matching the hero section web with clear visibility
-        ctx.strokeStyle = `rgba(216, 207, 192, ${0.08 + (r / rings) * 0.15})`;
-        ctx.lineWidth = 0.8;
-
-        const firstIdx = r * radialStrands;
-        const firstNode = loadingNodesRef.current[firstIdx];
-
-        if (firstNode) {
-          ctx.moveTo(firstNode.x, firstNode.y);
-
-          for (let s = 0; s < radialStrands; s++) {
-            const nextS = (s + 1) % radialStrands;
-            const node1 = loadingNodesRef.current[r * radialStrands + s];
-            const node2 = loadingNodesRef.current[r * radialStrands + nextS];
-
-            if (node1 && node2) {
-              const midX = (node1.x + node2.x) / 2;
-              const midY = (node1.y + node2.y) / 2;
-
-              // Sag control point slightly towards the center (by 12%) to create natural spider web curvature
-              const dx = midX - centerX;
-              const dy = midY - centerY;
-              const controlX = centerX + dx * 0.88;
-              const controlY = centerY + dy * 0.88;
-
-              ctx.quadraticCurveTo(controlX, controlY, node2.x, node2.y);
-            }
-          }
-        }
-        ctx.stroke();
-      }
-
-      // Draw Web Radial Lines
-      for (let s = 0; s < radialStrands; s++) {
-        ctx.beginPath();
-        ctx.strokeStyle = "rgba(216, 207, 192, 0.14)";
-        ctx.lineWidth = 1;
-        if (centerNode) ctx.moveTo(centerNode.x, centerNode.y);
-        else ctx.moveTo(centerX, centerY);
-
-        for (let r = 0; r < rings; r++) {
-          const idx = r * radialStrands + s;
-          const node = loadingNodesRef.current[idx];
-          if (node) ctx.lineTo(node.x, node.y);
-        }
-        ctx.stroke();
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isLoaded]);
-
-  // 2. GSAP Scroll Trigger to pin the Hero section and track frame progress
+  // GSAP Scroll Trigger to pin the Hero section and track frame progress
   useEffect(() => {
     if (!containerRef.current || prefersReducedMotion) return;
 
@@ -283,11 +78,6 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   }, [prefersReducedMotion]);
   // Letter array for dropping animation
   const titleLetters = ["Q", "U", "S", "A", "Y"];
-
-  const preloadPercent = Math.min(
-    100,
-    Math.round((preloadProgress.loaded / preloadProgress.total) * 100)
-  );
 
   return (
     <div
@@ -335,7 +125,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
           {/* Estd label */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : -10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.3 }}
             className="flex items-center gap-3 mb-2 justify-center"
           >
@@ -351,7 +141,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
                 {/* Interactive Silk Line Thread */}
                 <motion.div
                   initial={{ height: 0 }}
-                  animate={{ height: isLoaded ? "70px" : 0 }}
+                  animate={{ height: "70px" }}
                   transition={{
                     type: "spring",
                     stiffness: 65,
@@ -365,9 +155,9 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
                 <motion.div
                   initial={{ opacity: 0, y: -100 }}
                   animate={{
-                    opacity: isLoaded ? 1 : 0,
-                    y: isLoaded ? 0 : -100,
-                    rotate: isLoaded ? [-1.8, 1.8, -1.8] : 0
+                    opacity: 1,
+                    y: 0,
+                    rotate: [-1.8, 1.8, -1.8]
                   }}
                   transition={{
                     y: { type: "spring", stiffness: 70, damping: 11, delay: i * 0.12 + 0.6 },
@@ -510,7 +300,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
           {/* Slogan */}
           <motion.p
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 1.1 }}
             className="font-sans text-[10px] md:text-xs tracking-[0.24em] uppercase text-[#E50914] font-bold mt-2"
           >
@@ -520,7 +310,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
           {/* Brand Lore Description */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 1.3 }}
             className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#F5F2EF]/55 max-w-lg mt-5 mb-8 text-center mx-auto"
           >
@@ -530,7 +320,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
           {/* Action Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 15 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 1.5 }}
             className="flex flex-row gap-4 items-center justify-center w-full"
           >
@@ -552,7 +342,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
       {/* Floating Scroll Down Indicator at the bottom */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 0.35 : 0 }}
+        animate={{ opacity: 0.35 }}
         transition={{ duration: 0.8, delay: 1.8 }}
         whileHover={{ opacity: 0.8 }}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 transition-opacity duration-300 cursor-pointer z-30"
@@ -576,49 +366,6 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 13l-7 7-7-7m14-6l-7 7-7-7" />
         </motion.svg>
       </motion.div>
-
-
-
-      {/* Premium Preloader */}
-      <AnimatePresence>
-        {!isLoaded && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            onMouseMove={(e) => {
-              const canvas = loadingWebCanvasRef.current;
-              if (!canvas) return;
-              const rect = canvas.getBoundingClientRect();
-              loadingMouseRef.current = {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-                active: true,
-              };
-            }}
-            onMouseLeave={() => {
-              loadingMouseRef.current.active = false;
-            }}
-            className="fixed inset-0 bg-[#070707] z-[9999] flex flex-col items-center justify-center font-sans select-none overflow-hidden"
-          >
-            {/* Loading Spider Web Canvas background */}
-            <canvas
-              ref={loadingWebCanvasRef}
-              className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-55"
-            />
-
-            <div className="relative z-10 flex flex-col items-center gap-4">
-              <div className="w-10 h-10 border-2 border-[#E50914]/20 border-t-[#E50914] rounded-full animate-spin" />
-              <span className="font-pixel text-[9px] tracking-[0.2em] text-[#F5F2EF]/60 uppercase">
-                LOADING ARTIFACTS
-              </span>
-              <span className="font-heading text-3xl md:text-4xl text-[#E50914] font-bold tracking-wider">
-                {preloadPercent}%
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

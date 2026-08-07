@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
 
 const GALLERY = [
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.jpg"), tall: true, color: "#FF0055" },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.jpg"), tall: false, color: "#00FF66" },
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.jpg"), tall: false, color: "#00F0FF" },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.jpg"), tall: true, color: "#FFE600" },
-  { src: encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.jpg"), tall: false, color: "#A855F7" },
-  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg"), tall: true, color: "#39FF14" },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 1/vol 1.webp"), tall: true, color: "#FF0055" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.webp"), tall: false, color: "#00FF66" },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.webp"), tall: false, color: "#00F0FF" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 5/vol 5.webp"), tall: true, color: "#FFE600" },
+  { src: encodeURI("/images/Nacklace/Spider Collection/vol 8/vol 8.webp"), tall: false, color: "#A855F7" },
+  { src: encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.webp"), tall: true, color: "#39FF14" },
 ];
 
 export function SocialGallery() {

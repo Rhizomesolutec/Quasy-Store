@@ -44,7 +44,7 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
         ) : (
           <>
             <Image
-              src={images[activeIndex] || "/images/placeholder.jpg"}
+              src={images[activeIndex] || "/images/spider-1.webp"}
               alt={alt}
               fill
               priority

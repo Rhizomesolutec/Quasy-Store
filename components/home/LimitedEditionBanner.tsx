@@ -10,7 +10,7 @@ export function LimitedEditionBanner() {
     <section className="w-full px-4 md:px-12 lg:px-24 py-16 md:py-24">
       <div className="max-w-7xl mx-auto relative overflow-hidden rounded-sm border-2 border-[#E50914]/50 retro-box-shadow min-h-[480px] md:min-h-[520px] flex items-center">
         <Image
-          src={encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.jpg")}
+          src={encodeURI("/images/Nacklace/Glow dark nacklace/vol 7/vol 7.webp")}
           alt="Limited Edition Midnight Glow"
           fill
           sizes="100vw"

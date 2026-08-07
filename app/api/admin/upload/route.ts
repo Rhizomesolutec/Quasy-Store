@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import sharp from "sharp";
 import { createAdminClient } from "@/utils/supabase/admin";
 
 export const runtime = "nodejs";
@@ -17,26 +18,6 @@ const ALLOWED_TYPES = new Set([
   "image/gif",
   "image/avif",
 ]);
-
-function resolveExtension(file: File) {
-  const rawExt = file.name.includes(".")
-    ? file.name.split(".").pop()?.toLowerCase()
-    : undefined;
-  if (rawExt && /^[a-z0-9]+$/i.test(rawExt)) return rawExt;
-
-  const mimeExt = file.type.split("/")[1]?.toLowerCase().replace("jpeg", "jpg");
-  return mimeExt || "jpg";
-}
-
-function resolveContentType(file: File, ext: string) {
-  if (file.type && ALLOWED_TYPES.has(file.type)) return file.type;
-  if (ext === "jpg" || ext === "jpeg") return "image/jpeg";
-  if (ext === "png") return "image/png";
-  if (ext === "webp") return "image/webp";
-  if (ext === "gif") return "image/gif";
-  if (ext === "avif") return "image/avif";
-  return "application/octet-stream";
-}
 
 async function saveLocally(bytes: Uint8Array, fileName: string) {
   const uploadsDir = path.join(process.cwd(), "public", "uploads", "products");
@@ -94,8 +75,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No image file provided" }, { status: 400 });
     }
 
-    const ext = resolveExtension(file);
-    const contentType = resolveContentType(file, ext);
+    const rawExt = file.name.includes(".")
+      ? file.name.split(".").pop()?.toLowerCase()
+      : undefined;
+    const ext = rawExt && /^[a-z0-9]+$/i.test(rawExt) ? rawExt : "jpg";
 
     // Some browsers send an empty MIME type; allow by extension in that case.
     const typeOk =
@@ -116,9 +99,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
+    const input = Buffer.from(await file.arrayBuffer());
+    const webpBuffer = await sharp(input)
+      .webp({ quality: 82, effort: 4 })
+      .toBuffer();
+    const bytes = new Uint8Array(webpBuffer);
+
+    const fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.webp`;
     const remotePath = `products/${fileName}`;
-    const bytes = new Uint8Array(await file.arrayBuffer());
+    const contentType = "image/webp";
 
     try {
       const url = await uploadToSupabase(bytes, remotePath, contentType);

@@ -43,7 +43,7 @@ export default function ContactPage() {
         title="Contact"
         description="Questions about an order, a repair, or a collaboration? We read every message."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 5/vol 5.webp")}
       />
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-6xl">

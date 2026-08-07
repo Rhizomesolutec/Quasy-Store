@@ -24,7 +24,7 @@ export default async function ShopPage() {
         title="Shop All Relics"
         description="Every piece currently in the vault — filter by category, finish, size, and price to find the one that finds you."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Shop" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.webp")}
       />
       <ShopExplorer
         products={products}

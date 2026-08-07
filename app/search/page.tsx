@@ -25,7 +25,7 @@ export default async function SearchPage({
         eyebrow="Find Your Relic"
         title="Search"
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Search" }]}
-        bgImage="/images/spider-3.jpg"
+        bgImage="/images/spider-3.webp"
       />
       <section className="w-full px-4 md:px-12 lg:px-24 py-16 pb-24">
         <SearchClient initialQuery={q ?? ""} products={products} />

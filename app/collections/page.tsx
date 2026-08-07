@@ -24,7 +24,7 @@ export default async function CollectionsPage() {
         title="Collections"
         description="Three distinct registers of the same gothic language — each with its own finish, mood, and story."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Collections" }]}
-        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 7/vol 7.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Spider Collection/vol 7/vol 7.webp")}
       />
 
       <section className="w-full flex flex-col">

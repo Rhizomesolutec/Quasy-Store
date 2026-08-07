@@ -1,7 +1,7 @@
 export const SHARED_SPIDER_IMAGES = {
-  one: "/images/spider-1.jpg",
-  two: "/images/spider-2.jpg",
-  three: "/images/spider-3.jpg",
+  one: "/images/spider-1.webp",
+  two: "/images/spider-2.webp",
+  three: "/images/spider-3.webp",
 } as const;
 
 export const SHARED_SPIDER_SET = [

@@ -19,29 +19,29 @@ const CATEGORY_META: Record<
   { image: string; tagline: string; badge: string }
 > = {
   Necklaces: {
-    image: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"),
+    image: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.webp"),
     tagline: "Chain-drawn pendants built around the house spider motif.",
     badge: "SITCOMS",
   },
   "Glow Dark Necklace": {
-    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 11/vol 11.jpg"),
+    image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 11/vol 11.webp"),
     tagline: "Photoluminescent crystal pieces that charge by day and glow after dark.",
     badge: "KIDS",
   },
   Bracelets: {
-    image: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.jpg"),
+    image: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.webp"),
     tagline: "Cuffs and chains that translate cathedral scrollwork to the wrist.",
     badge: "MOVIES",
   },
   "Denim Sling Bag": {
-    image: encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.jpg"),
+    image: encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.webp"),
     tagline: "Hand-stitched denim carriers finished with industrial metal rings.",
     badge: "SLING BAGS",
   },
 };
 
 const DEFAULT_META = {
-  image: "/images/spider-1.jpg",
+  image: "/images/spider-1.webp",
   tagline: "Original handcrafted gothic relic from the Qusay vault.",
   badge: "NEW",
 };

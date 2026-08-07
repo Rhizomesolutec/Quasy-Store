@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const CATEGORY_IMAGES: Record<string, string> = {
-  Necklaces: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.jpg"),
-  "Glow Dark Necklace": encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.jpg"),
-  Bracelets: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.jpg"),
-  "Pant Hook Chain": encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.jpg"),
-  "Denim Sling Bag": encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.jpg"),
-  "Key Chain": encodeURI("/images/Nacklace/Keychain/Keychain 1/Keychain 1.jpg"),
-  "Jacket Pin": encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.jpg"),
-  "Metal Hook Bookmark": encodeURI("/images/Nacklace/Metal hook bookmark/Metal hook bookmark 1/Metal hook bookmark 1.jpg"),
+  Necklaces: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.webp"),
+  "Glow Dark Necklace": encodeURI("/images/Nacklace/Glow dark nacklace/vol 2/vol 2.webp"),
+  Bracelets: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.webp"),
+  "Pant Hook Chain": encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 1.webp"),
+  "Denim Sling Bag": encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.webp"),
+  "Key Chain": encodeURI("/images/Nacklace/Keychain/Keychain 1/Keychain 1.webp"),
+  "Jacket Pin": encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.webp"),
+  "Metal Hook Bookmark": encodeURI("/images/Nacklace/Metal hook bookmark/Metal hook bookmark 1/Metal hook bookmark 1.webp"),
 };
 
 export default async function CategoriesPage() {
@@ -40,14 +40,14 @@ export default async function CategoriesPage() {
         title="Categories"
         description="Core silhouettes and signature lines — each carrying the same gothic scrollwork and hand-finished detail."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Categories" }]}
-        bgImage={encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 2.jpg")}
+        bgImage={encodeURI("/images/Nacklace/Pant Hook Chain/Pant Hook Chain 2.webp")}
       />
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-6xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {categories.map((category) => {
             const count = filterByCategory(products, category.name).length;
-            const image = CATEGORY_IMAGES[category.name] || "/images/spider-1.jpg";
+            const image = CATEGORY_IMAGES[category.name] || "/images/spider-1.webp";
             const tagline =
               category.description || "Original handcrafted gothic relic.";
             return (
