@@ -649,22 +649,22 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative">
+    <div className="min-h-screen bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative pt-20 md:pt-24">
       <div className="bg-noise" />
 
-      {/* Header */}
-      <header className="border-b border-white/[0.08] bg-[#170909]/80 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="font-heading text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
-          <span className="text-[10px] uppercase bg-[#E50914]/20 text-[#E50914] px-2 py-0.5 border border-[#E50914]/30 tracking-widest">
+      {/* Header — sits below the site navbar on all screens */}
+      <header className="border-b border-white/[0.08] bg-[#170909]/80 backdrop-blur-md sticky top-20 md:top-24 z-30 px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="font-heading text-xl sm:text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
+          <span className="text-[10px] uppercase bg-[#E50914]/20 text-[#E50914] px-2 py-0.5 border border-[#E50914]/30 tracking-widest whitespace-nowrap">
             Vault Dashboard
           </span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           <Link
             id="admin-storefront-btn"
             href="/"
-            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
           >
             Go to Store
           </Link>
@@ -672,14 +672,14 @@ export default function AdminDashboard() {
             id="admin-seed-btn"
             onClick={handleSeedDatabase}
             disabled={seeding}
-            className="border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 cursor-pointer"
+            className="border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 cursor-pointer"
           >
             {seeding ? "Seeding..." : "Seed Database"}
           </button>
           <button
             id="admin-signout-btn"
             onClick={handleSignOut}
-            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
+            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
           >
             Sign Out
           </button>
