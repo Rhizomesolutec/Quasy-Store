@@ -27,7 +27,7 @@ export function SectionHeader({
 
   return (
     <RevealOnScroll
-      className={`mb-12 md:mb-16 flex flex-col ${isCenter ? "items-center text-center" : "items-start text-left"} ${className}`}
+      className={`flex flex-col ${isCenter ? "items-center text-center" : "items-start text-left"} ${className || "mb-12 md:mb-16"}`}
     >
       <Eyebrow className="mb-4">{eyebrow}</Eyebrow>
       <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] text-[#F5F2EF] leading-[1.1] tracking-tight max-w-3xl">

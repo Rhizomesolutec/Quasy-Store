@@ -18,7 +18,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const onSale = !!product.compareAtPrice && product.compareAtPrice > product.price;
 
   return (
-    <div className="group relative flex flex-col h-full bg-[#171717] border border-[#E50914]/25 p-4 shadow-[0_0_8px_rgba(229,9,20,0.12)] hover:shadow-[0_0_15px_rgba(229,9,20,0.25)] transition-all duration-300 rounded-none relative">
+    <div className="group relative flex flex-col h-full bg-[#171717] border border-[#E50914]/25 p-2.5 sm:p-4 shadow-[0_0_8px_rgba(229,9,20,0.12)] hover:shadow-[0_0_15px_rgba(229,9,20,0.25)] transition-all duration-300 rounded-none relative">
       {/* Retro L-corners */}
       <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-[#FF2A45] pointer-events-none" />
       <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-[#FF2A45] pointer-events-none" />
@@ -52,19 +52,19 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         )}
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 flex flex-col gap-1 sm:gap-1.5">
           {onSale && (
-            <span className="bg-[#E50914] text-[#F5F2EF] text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
+            <span className="bg-[#E50914] text-[#F5F2EF] text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold px-1.5 py-0.5 sm:px-2 sm:py-1">
               Sale
             </span>
           )}
           {product.isNew && (
-            <span className="bg-[#F5F2EF]/10 border border-[#F5F2EF]/30 text-[#F5F2EF] text-[9px] uppercase tracking-widest font-semibold px-2 py-1 backdrop-blur-sm">
+            <span className="bg-[#F5F2EF]/10 border border-[#F5F2EF]/30 text-[#F5F2EF] text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold px-1.5 py-0.5 sm:px-2 sm:py-1 backdrop-blur-sm">
               New
             </span>
           )}
           {!product.inStock && (
-            <span className="bg-black/70 border border-white/[0.1] text-[#F5F2EF]/70 text-[9px] uppercase tracking-widest font-semibold px-2 py-1">
+            <span className="bg-black/70 border border-white/[0.1] text-[#F5F2EF]/70 text-[8px] sm:text-[9px] uppercase tracking-widest font-semibold px-1.5 py-0.5 sm:px-2 sm:py-1">
               Sold Out
             </span>
           )}
@@ -84,9 +84,9 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             });
           }}
           aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-3 right-3 z-20 p-1.5 text-[#F5F2EF] hover:text-[#E50914] transition-colors"
+          className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 z-20 p-1 sm:p-1.5 text-[#F5F2EF] hover:text-[#E50914] transition-colors"
         >
-          <svg className="w-5 h-5" fill={wished ? "#E50914" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill={wished ? "#E50914" : "none"} stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -110,17 +110,17 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
         )}
       </div>
 
-      <div className="mt-4 flex flex-col gap-1.5 flex-1">
-        <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40">{product.category}</span>
-        <Link href={`/shop/${product.slug}`} className="font-heading product-card-title text-lg leading-tight transition-colors">
+      <div className="mt-2.5 sm:mt-4 flex flex-col gap-1 sm:gap-1.5 flex-1">
+        <span className="font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-[#F5F2EF]/40">{product.category}</span>
+        <Link href={`/shop/${product.slug}`} className="font-heading product-card-title text-sm sm:text-lg leading-tight transition-colors">
           {product.name}
         </Link>
-        <div className="mt-auto pt-2 flex flex-col gap-1.5">
+        <div className="mt-auto pt-1.5 sm:pt-2 flex flex-col gap-1 sm:gap-1.5">
           <Rating value={product.rating} count={product.reviewCount} />
           <div className="flex items-center gap-2 pt-0.5">
-            <span className="font-pixel text-xs text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.4)]">{formatPrice(product.price)}</span>
+            <span className="font-pixel text-[10px] sm:text-xs text-[#FF2A45] drop-shadow-[0_0_4px_rgba(255,42,69,0.4)]">{formatPrice(product.price)}</span>
             {onSale && (
-              <span className="font-pixel text-[10px] text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
+              <span className="font-pixel text-[9px] sm:text-[10px] text-[#F5F2EF]/40 line-through">{formatPrice(product.compareAtPrice!)}</span>
             )}
           </div>
         </div>

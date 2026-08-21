@@ -69,7 +69,7 @@ export function FeaturedCategories({
   ].slice(0, 4);
 
   return (
-    <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32">
+    <section className="w-full px-4 md:px-12 lg:px-24 py-12 md:py-32">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           eyebrow="Browse by Type"
@@ -77,9 +77,10 @@ export function FeaturedCategories({
           description="Core silhouettes and signature lines — each carrying the same gothic scrollwork and hand-finished detail."
           ctaHref="/categories"
           ctaLabel="View All Categories"
+          className="mb-6 md:mb-16"
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 md:gap-6">
           {ordered.map((category, idx) => {
             const meta = CATEGORY_META[category] || DEFAULT_META;
             const count = products.filter(
@@ -96,9 +97,9 @@ export function FeaturedCategories({
               >
                 <Link
                   href={`/categories/${categoryToSlug(category)}`}
-                  className="group relative block aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#E50914]/50 retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
+                  className="group relative block aspect-square sm:aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#E50914]/50 retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
                 >
-                  <div className="absolute top-3 left-3 z-20 px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]">
+                  <div className="absolute top-2 left-2 md:top-3 md:left-3 z-20 px-2 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]">
                     {meta.badge}
                   </div>
 
@@ -106,16 +107,16 @@ export function FeaturedCategories({
                     src={meta.image}
                     alt={category}
                     fill
-                    sizes="(min-width: 640px) 50vw, 100vw"
+                    sizes="50vw"
                     className="object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/30 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-8">
-                    <span className="font-pixel text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
+                  <div className="absolute inset-0 flex flex-col items-start justify-end p-3 sm:p-4 md:p-8">
+                    <span className="font-pixel text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
                     <h3
-                      className="font-heading hollow-red-text text-3xl md:text-4xl mb-2 tracking-wider transition-all duration-300 group-hover:translate-x-1"
+                      className="font-heading hollow-red-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1"
                       style={{
                         color: "transparent",
                         WebkitTextFillColor: "transparent",
@@ -125,12 +126,12 @@ export function FeaturedCategories({
                     >
                       {category}
                     </h3>
-                    <p className="font-sans text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">
+                    <p className="hidden sm:block font-sans text-[11px] md:text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-2 md:mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">
                       {meta.tagline}
                     </p>
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#F5F2EF] border-b border-[#E50914]/40 pb-1 transition-colors duration-300 flex items-center gap-1 font-bold">
-                      <span>Explore {category}</span>
-                      <span className="text-[#E50914]">►</span>
+                    <span className="font-mono text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-wider sm:tracking-widest text-[#F5F2EF] border-b border-[#E50914]/40 pb-0.5 sm:pb-1 transition-colors duration-300 flex items-center gap-1 font-bold max-w-full">
+                      <span className="truncate">Explore {category}</span>
+                      <span className="text-[#E50914] shrink-0">►</span>
                     </span>
                   </div>
                 </Link>

@@ -116,7 +116,7 @@ export function CustomerReviews({ products }: { products: Product[] }) {
     }
   };
 
-  const displayReviews = reviews.length > 0 ? reviews.slice(0, 6) : FALLBACK_TESTIMONIALS;
+  const displayReviews = reviews.length > 0 ? reviews.slice(0, 3) : FALLBACK_TESTIMONIALS;
 
   const resetForm = () => {
     setAuthor("");
@@ -172,9 +172,9 @@ export function CustomerReviews({ products }: { products: Product[] }) {
   };
 
   return (
-    <section className="w-full px-4 md:px-12 lg:px-24 py-24 md:py-32 border-t border-white/[0.05] bg-gradient-to-b from-transparent via-[#FF0055]/[0.02] to-transparent">
+    <section className="w-full px-4 md:px-12 lg:px-24 py-12 md:py-16 border-t border-white/[0.05] bg-gradient-to-b from-transparent via-[#FF0055]/[0.02] to-transparent">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <SectionHeader
             eyebrow="From the Vault"
             title="What Collectors Say"
@@ -189,7 +189,7 @@ export function CustomerReviews({ products }: { products: Product[] }) {
               setSuccess(false);
               setError(null);
             }}
-            className="self-start md:self-end mb-6 md:mb-16 border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-5 py-3 text-[10px] uppercase tracking-widest transition-all duration-300"
+            className="self-start md:self-end border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-5 py-2.5 text-[10px] uppercase tracking-widest transition-all duration-300"
           >
             {isFormOpen ? "Cancel Review" : "Write a Review"}
           </button>
@@ -323,7 +323,7 @@ export function CustomerReviews({ products }: { products: Product[] }) {
           </form>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           {displayReviews.map((t, idx) => (
             <motion.blockquote
               key={t.id}
@@ -331,31 +331,31 @@ export function CustomerReviews({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="relative border-2 border-[#E50914]/50 bg-[#0a0a0c] p-7 md:p-8 flex flex-col retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
+              className="relative border-2 border-[#E50914]/50 bg-[#0a0a0c] p-3 sm:p-5 md:p-6 flex flex-col retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
             >
-              <span className="font-heading text-5xl leading-none absolute top-5 right-6 select-none opacity-30 text-[#E50914]">
+              <span className="font-heading text-2xl sm:text-4xl leading-none absolute top-2 right-3 sm:top-4 sm:right-5 select-none opacity-30 text-[#E50914]">
                 &rdquo;
               </span>
               <Rating value={t.rating} />
               {t.title && (
-                <p className="font-heading text-sm text-[#F5F2EF] mt-4">{t.title}</p>
+                <p className="font-heading text-xs sm:text-sm text-[#F5F2EF] mt-2 sm:mt-3">{t.title}</p>
               )}
-              <p className="font-mono text-xs text-[#F5F2EF]/80 leading-relaxed mt-3 mb-8 flex-1">
+              <p className="font-mono text-[10px] sm:text-xs text-[#F5F2EF]/80 leading-relaxed mt-2 mb-3 sm:mb-5 flex-1 line-clamp-3 sm:line-clamp-4">
                 &ldquo;{t.body}&rdquo;
               </p>
-              <footer className="pt-4 border-t border-[#222]">
-                <cite className="font-heading text-base text-[#F5F2EF] not-italic block">
+              <footer className="pt-2 sm:pt-3 border-t border-[#222]">
+                <cite className="font-heading text-xs sm:text-sm text-[#F5F2EF] not-italic block">
                   {t.author}
                 </cite>
                 {t.productSlug ? (
                   <Link
                     href={`/shop/${t.productSlug}`}
-                    className="inline-block font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 mt-2 font-bold text-white bg-[#E50914] hover:bg-[#B3121D] transition-colors"
+                    className="inline-block font-mono text-[8px] sm:text-[9px] uppercase tracking-widest px-1.5 sm:px-2 py-0.5 mt-1.5 sm:mt-2 font-bold text-white bg-[#E50914] hover:bg-[#B3121D] transition-colors"
                   >
                     {t.productName || "View product"}
                   </Link>
                 ) : (
-                  <span className="inline-block font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 mt-2 font-bold text-white bg-[#E50914]">
+                  <span className="inline-block font-mono text-[8px] sm:text-[9px] uppercase tracking-widest px-1.5 sm:px-2 py-0.5 mt-1.5 sm:mt-2 font-bold text-white bg-[#E50914]">
                     {t.productName || "Verified collector"}
                   </span>
                 )}

@@ -15,17 +15,17 @@ export function NewArrivalsShowcase({ products }: { products: Product[] }) {
   };
 
   return (
-    <section className="w-full py-24 md:py-32 border-t border-white/[0.05] overflow-hidden">
+    <section className="w-full py-12 md:py-16 border-t border-white/[0.05] overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-4">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <SectionHeader
             eyebrow="Just Restored"
             title="New Arrivals"
             description="Freshly cast, freshly catalogued. The newest relics to enter the vault."
             align="left"
-            className="mb-0 md:mb-0"
+            className="mb-0"
           />
-          <div className="flex items-center gap-3 self-start md:self-end mb-6 md:mb-16">
+          <div className="flex items-center gap-3 self-start md:self-end">
             <button
               onClick={() => scrollBy(-1)}
               aria-label="Scroll left"
@@ -46,7 +46,7 @@ export function NewArrivalsShowcase({ products }: { products: Product[] }) {
 
       <div
         ref={scrollerRef}
-        className="flex gap-5 md:gap-6 overflow-x-auto px-4 md:px-12 lg:px-24 pb-4 snap-x snap-mandatory scrollbar-thin"
+        className="flex gap-3 md:gap-4 overflow-x-auto px-4 md:px-12 lg:px-24 pb-3 snap-x snap-mandatory scrollbar-thin"
         style={{ scrollbarWidth: "none" }}
       >
         {products.map((product, idx) => (
@@ -56,14 +56,14 @@ export function NewArrivalsShowcase({ products }: { products: Product[] }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.6, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-shrink-0 w-[70vw] sm:w-[42vw] md:w-[280px] lg:w-[300px] snap-start"
+            className="flex-shrink-0 w-[45vw] min-[480px]:w-[200px] md:w-[230px] lg:w-[250px] snap-start"
           >
             <ProductCard product={product} />
           </motion.div>
         ))}
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 mt-10 flex justify-center">
+      <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 mt-6 flex justify-center">
         <Link
           href="/new-arrivals"
           className="font-pixel text-[10px] uppercase font-bold tracking-widest text-[#E50914] border-b border-[#E50914]/50 pb-1.5 hover:text-white transition-colors"

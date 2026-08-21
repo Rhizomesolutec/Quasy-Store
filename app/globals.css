@@ -27,6 +27,14 @@
   filter: drop-shadow(0 0 4px rgba(179, 18, 29, 0.4));
 }
 
+/* The 1.4px stroke swallows the letterforms at small mobile type sizes */
+@media (max-width: 639px) {
+  .stranger-things-title,
+  .hollow-red-text {
+    -webkit-text-stroke-width: 1px !important;
+  }
+}
+
 html {
   overflow-x: hidden;
   max-width: 100%;
