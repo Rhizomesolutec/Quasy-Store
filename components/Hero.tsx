@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import SequenceCanvas, { type SequenceCanvasHandle } from "./SequenceCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -302,40 +301,10 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 1.1 }}
-            className="font-sans text-[10px] md:text-xs tracking-[0.24em] uppercase text-[#E50914] font-bold mt-2"
+            className="font-sans text-[8px] sm:text-[10px] md:text-xs tracking-[0.12em] sm:tracking-[0.24em] whitespace-nowrap uppercase text-[#E50914] font-bold mt-2"
           >
             Forged in Shadow &bull; Wearable Gothic Lore
           </motion.p>
-
-          {/* Brand Lore Description */}
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.3 }}
-            className="font-sans text-[11px] md:text-xs tracking-wider leading-relaxed text-[#F5F2EF]/55 max-w-lg mt-5 mb-8 text-center mx-auto"
-          >
-            A dark synthesis of raw gothic lore and sterling silver artistry. Discover our limited-edition wearable relics, forged in darkness and designed for those who walk between the shadows.
-          </motion.p>
-
-          {/* Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 1.5 }}
-            className="flex flex-row gap-4 items-center justify-center w-full"
-          >
-            <Link href="/shop" className="relative group overflow-hidden border border-[#F5F2EF]/30 px-6 py-3 rounded-sm bg-transparent transition-all duration-300 hover:border-[#E50914]/80">
-              <div className="absolute inset-0 w-0 bg-[#E50914]/10 group-hover:w-full transition-all duration-500 ease-out" />
-              <span className="relative font-sans text-[10px] tracking-widest uppercase text-[#F5F2EF] group-hover:text-white transition-colors duration-300">
-                Shop Relics
-              </span>
-            </Link>
-            <Link href="/about" className="relative group overflow-hidden px-6 py-3 rounded-sm bg-[#F5F2EF]/5 border border-transparent transition-all duration-300 hover:bg-[#F5F2EF]/10">
-              <span className="font-sans text-[10px] tracking-widest uppercase text-[#F5F2EF]/70 group-hover:text-[#F5F2EF] transition-colors duration-300">
-                Our Lore
-              </span>
-            </Link>
-          </motion.div>
         </div>
       </div>
 
