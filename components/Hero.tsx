@@ -114,7 +114,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
       </div>
 
       {/* Main Container: Centered Content */}
-      <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center justify-center z-30 select-none px-4 md:px-8">
+      <div className="relative w-full max-w-3xl mx-auto flex flex-col items-center justify-center z-30 select-none px-4 md:px-8 -translate-y-12 sm:translate-y-0">
 
         {/* Column: Typography, Descriptions, and Action Buttons */}
         <div
