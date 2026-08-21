@@ -323,7 +323,10 @@ export function CustomerReviews({ products }: { products: Product[] }) {
           </form>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+        <div
+          className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 -mx-4 px-4 scrollbar-thin md:mx-0 md:px-0 md:pb-0 md:overflow-visible md:grid md:grid-cols-3 md:gap-4"
+          style={{ scrollbarWidth: "none" }}
+        >
           {displayReviews.map((t, idx) => (
             <motion.blockquote
               key={t.id}
@@ -331,7 +334,7 @@ export function CustomerReviews({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="relative border-2 border-[#E50914]/50 bg-[#0a0a0c] p-3 sm:p-5 md:p-6 flex flex-col retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
+              className="relative flex-shrink-0 w-[70vw] min-[480px]:w-[280px] snap-start md:w-auto md:flex-shrink border-2 border-[#E50914]/50 bg-[#0a0a0c] p-3 sm:p-5 md:p-6 flex flex-col retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
             >
               <span className="font-heading text-2xl sm:text-4xl leading-none absolute top-2 right-3 sm:top-4 sm:right-5 select-none opacity-30 text-[#E50914]">
                 &rdquo;

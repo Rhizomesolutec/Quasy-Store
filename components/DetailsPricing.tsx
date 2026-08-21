@@ -289,7 +289,7 @@ export default function DetailsPricing() {
             </div>
             <div ref={addToRefs} className="w-1/2 flex flex-col justify-center">
               <span className="font-pixel text-[8px] sm:text-[10px] uppercase font-bold tracking-wider text-[#E50914] mb-1 md:mb-2">
-                VOL 01 · SIGNATURE CASTING
+                VOL 01
               </span>
               <h3 className="font-heading text-base sm:text-xl md:text-3xl lg:text-4xl text-[#F5F2EF] mb-1 md:mb-4">
                 Wear the Shadows
@@ -338,7 +338,7 @@ export default function DetailsPricing() {
             </div>
             <div ref={addToRefs} className="w-1/2 flex flex-col justify-center">
               <span className="font-pixel text-[8px] sm:text-[10px] uppercase font-bold tracking-wider text-[#E50914] mb-1 md:mb-2">
-                VOL 07 · LUMINESCENT INLAY
+                VOL 07
               </span>
               <h3 className="font-heading text-base sm:text-xl md:text-3xl lg:text-4xl text-[#F5F2EF] mb-1 md:mb-4">
                 The Midnight Glow
