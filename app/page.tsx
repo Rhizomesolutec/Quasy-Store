@@ -3,6 +3,7 @@ import path from "path";
 import Hero from "@/components/Hero";
 import DetailsPricing from "@/components/DetailsPricing";
 import HangingSpider from "@/components/HangingSpider";
+import { HandmadeShowcase } from "@/components/home/HandmadeShowcase";
 import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { NewArrivalsShowcase } from "@/components/home/NewArrivalsShowcase";
 import { BestSellersGrid } from "@/components/home/BestSellersGrid";
@@ -38,6 +39,8 @@ export default async function Home() {
       <div className="w-full block">
         <Hero isMobileSequenceAvailable={isMobileSequenceAvailable} />
       </div>
+
+      <HandmadeShowcase products={products} />
 
       <DetailsPricing />
 

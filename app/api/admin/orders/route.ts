@@ -35,6 +35,7 @@ export async function GET() {
       id: String(row.id),
       customerName: String(row.customerName || ""),
       customerEmail: String(row.customerEmail || ""),
+      customerPhone: row.customerPhone ? String(row.customerPhone) : undefined,
       items: Array.isArray(row.items) ? row.items : [],
       total: Number(row.total) || 0,
       status: String(row.status || "Pending"),

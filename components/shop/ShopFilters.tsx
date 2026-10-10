@@ -5,7 +5,6 @@ import { formatPrice } from "@/lib/utils";
 export interface FilterState {
   categories: string[];
   colors: string[];
-  sizes: string[];
   availability: "all" | "in-stock" | "out-of-stock";
   maxPrice: number;
 }
@@ -27,7 +26,6 @@ interface ShopFiltersProps {
   filters: FilterState;
   setFilters: (updater: (prev: FilterState) => FilterState) => void;
   availableColors: { name: string; hex: string }[];
-  availableSizes: string[];
   availableCategories: string[];
   resultCount: number;
   priceCeiling: number;
@@ -41,7 +39,6 @@ export function ShopFilters({
   filters,
   setFilters,
   availableColors,
-  availableSizes,
   availableCategories,
   resultCount,
   priceCeiling,
@@ -55,7 +52,6 @@ export function ShopFilters({
             setFilters(() => ({
               categories: [],
               colors: [],
-              sizes: [],
               availability: "all",
               maxPrice: priceCeiling,
             }))
@@ -121,29 +117,6 @@ export function ShopFilters({
           })}
         </div>
       </div>
-
-      {/* Size */}
-      {availableSizes.length > 0 && (
-        <div>
-          <p className="font-sans text-xs uppercase tracking-widest text-[#F5F2EF]/70 mb-3">Size</p>
-          <div className="flex flex-wrap gap-2">
-            {availableSizes.map((size) => {
-              const active = filters.sizes.includes(size);
-              return (
-                <button
-                  key={size}
-                  onClick={() => setFilters((prev) => ({ ...prev, sizes: toggleValue(prev.sizes, size) }))}
-                  className={`px-3 py-1.5 text-xs border transition-colors ${
-                    active ? "border-[#E50914] bg-[#E50914] text-[#F5F2EF]" : "border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914]/50"
-                  }`}
-                >
-                  {size}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Availability */}
       <div>

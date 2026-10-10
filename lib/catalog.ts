@@ -79,7 +79,7 @@ export function normalizeProduct(row: RawProduct): Product {
         : asNumber(compareAt),
     images: asStringArray(row.images).map(toWebp),
     colors: asColors(row.colors),
-    sizes: asStringArray(row.sizes),
+    sizes: [],
     rating: asNumber(row.rating),
     reviewCount: asNumber(row.reviewCount),
     isNew: asBoolean(row.isNew),
@@ -104,6 +104,30 @@ export type CatalogResult = {
   source: "supabase" | "static";
 };
 
+function formatSupabaseError(error: unknown): string {
+  if (!error) return "Unknown error";
+  if (error instanceof Error && error.message) return error.message;
+  if (typeof error === "object") {
+    const row = error as {
+      message?: string;
+      code?: string;
+      details?: string;
+      hint?: string;
+    };
+    const parts = [row.message, row.code, row.details, row.hint].filter(Boolean);
+    if (parts.length > 0) return parts.join(" — ");
+  }
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+
+function staticCatalog(): CatalogResult {
+  return { products: PRODUCTS.map((p) => ({ ...p, sizes: [] })), source: "static" };
+}
+
 /**
  * Load the full catalog from Supabase.
  * Falls back to the static PRODUCTS seed if cloud is empty/unreachable.
@@ -112,36 +136,27 @@ export type CatalogResult = {
 export async function getCatalogProducts(): Promise<CatalogResult> {
   try {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("products")
-      .select("*")
-      .order("createdAt", { ascending: false });
+    const { data, error } = await supabase.from("products").select("*");
 
     if (error) {
-      // Retry without createdAt ordering in case the column is missing.
-      const fallback = await supabase.from("products").select("*");
-      if (fallback.error) throw fallback.error;
-      const rows = (fallback.data || []) as RawProduct[];
-      if (rows.length > 0) {
-        return {
-          products: rows.map(normalizeProduct),
-          source: "supabase",
-        };
-      }
-    } else {
-      const rows = (data || []) as RawProduct[];
-      if (rows.length > 0) {
-        return {
-          products: rows.map(normalizeProduct),
-          source: "supabase",
-        };
-      }
+      console.warn("Catalog fetch from Supabase failed:", formatSupabaseError(error));
+      return staticCatalog();
     }
-  } catch (err) {
-    console.error("Catalog fetch from Supabase failed:", err);
-  }
 
-  return { products: PRODUCTS, source: "static" };
+    const rows = (data || []) as RawProduct[];
+    if (rows.length === 0) {
+      return staticCatalog();
+    }
+
+    const products = rows
+      .map(normalizeProduct)
+      .sort((a, b) => b.id.localeCompare(a.id));
+
+    return { products, source: "supabase" };
+  } catch (err) {
+    console.warn("Catalog fetch from Supabase failed:", formatSupabaseError(err));
+    return staticCatalog();
+  }
 }
 
 export async function getCatalogProductBySlug(
@@ -159,7 +174,7 @@ export async function getCatalogProductBySlug(
       return normalizeProduct(data as RawProduct);
     }
   } catch (err) {
-    console.error("Catalog product-by-slug failed:", err);
+    console.warn("Catalog product-by-slug failed:", formatSupabaseError(err));
   }
 
   const { products } = await getCatalogProducts();
@@ -181,7 +196,7 @@ export async function getCatalogProductById(
       return normalizeProduct(data as RawProduct);
     }
   } catch (err) {
-    console.error("Catalog product-by-id failed:", err);
+    console.warn("Catalog product-by-id failed:", formatSupabaseError(err));
   }
 
   const { products } = await getCatalogProducts();
@@ -285,7 +300,7 @@ export async function getCatalogCategories(): Promise<{
       };
     }
   } catch (err) {
-    console.error("Catalog categories fetch failed:", err);
+    console.warn("Catalog categories fetch failed:", formatSupabaseError(err));
   }
 
   for (const name of CATEGORIES) {

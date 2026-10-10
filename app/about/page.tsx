@@ -5,6 +5,7 @@ import { Eyebrow, Divider } from "@/components/ui/Eyebrow";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { LinkButton } from "@/components/ui/Button";
 import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
+import { STORE, storeMailHref, storeTelHref } from "@/lib/store";
 
 export const metadata: Metadata = {
   title: "About",
@@ -144,6 +145,35 @@ export default function AboutPage() {
             </RevealOnScroll>
           ))}
         </div>
+      </section>
+
+      {/* Visit */}
+      <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-3xl text-center border-t border-white/[0.06]">
+        <RevealOnScroll>
+          <h2 className="font-heading text-2xl md:text-3xl text-[#F5F2EF] mb-4">{STORE.name}</h2>
+          <p className="font-sans text-sm text-[#F5F2EF]/60 leading-relaxed mb-2">
+            {STORE.addressLine}
+            <br />
+            {STORE.city}, {STORE.region}, {STORE.country}
+          </p>
+          <p className="font-sans text-sm text-[#F5F2EF]/60 mb-6">
+            <a href={storeTelHref()} className="hover:text-[#E50914] transition-colors">
+              {STORE.phoneDisplay}
+            </a>
+            {" · "}
+            <a href={storeMailHref()} className="hover:text-[#E50914] transition-colors">
+              {STORE.email}
+            </a>
+          </p>
+          <a
+            href={STORE.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-sans text-[10px] uppercase tracking-widest text-[#E50914] hover:text-[#F5F2EF] transition-colors"
+          >
+            View on Google Maps ►
+          </a>
+        </RevealOnScroll>
       </section>
 
       {/* CTA */}

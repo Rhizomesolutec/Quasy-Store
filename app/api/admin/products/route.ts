@@ -55,7 +55,7 @@ function toStoredProduct(body: AdminStoredProduct): AdminStoredProduct {
     shippingInfo: String(body.shippingInfo || ""),
     video: body.video ? String(body.video) : null,
     images: Array.isArray(body.images) ? body.images : [],
-    sizes: Array.isArray(body.sizes) ? body.sizes : [],
+    sizes: [],
     details: Array.isArray(body.details) ? body.details : [],
     colors: Array.isArray(body.colors) ? body.colors : [],
     rating: Number(body.rating) || 0,
@@ -63,6 +63,16 @@ function toStoredProduct(body: AdminStoredProduct): AdminStoredProduct {
     createdAt: body.createdAt,
     updatedAt: body.updatedAt,
   };
+}
+
+/** Columns that exist on the live products table — updatedAt is local-only. */
+function toSupabaseProduct(product: AdminStoredProduct) {
+  const { updatedAt: _updatedAt, ...row } = product;
+  if (!row.createdAt) {
+    const { createdAt: _createdAt, ...withoutCreatedAt } = row;
+    return withoutCreatedAt;
+  }
+  return row;
 }
 
 function mapProducts(rows: AdminStoredProduct[]) {
@@ -108,7 +118,7 @@ export async function GET() {
       const cloudIds = new Set(cloud.map((p) => p.id));
       const missing = local.filter((p) => !cloudIds.has(p.id));
       for (const product of missing) {
-        const payload = toStoredProduct(product);
+        const payload = toSupabaseProduct(toStoredProduct(product));
         const upsert = await supabase
           .from("products")
           .upsert([payload])
@@ -175,7 +185,7 @@ export async function POST(request: Request) {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("products")
-      .upsert([productPayload])
+      .upsert([toSupabaseProduct(productPayload)])
       .select("*")
       .single();
 

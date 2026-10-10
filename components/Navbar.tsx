@@ -411,7 +411,6 @@ export default function Navbar() {
                                 <h4 className="font-heading text-sm text-[#F5F2EF] leading-none mb-1.5">{item.name}</h4>
                                 <p className="font-sans text-[10px] text-[#F5F2EF]/40 uppercase tracking-widest">
                                   {item.variant}
-                                  {item.size ? ` · ${item.size}` : ""}
                                 </p>
                               </div>
 

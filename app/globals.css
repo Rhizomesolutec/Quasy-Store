@@ -27,11 +27,21 @@
   filter: drop-shadow(0 0 4px rgba(179, 18, 29, 0.4));
 }
 
+/* Full-strength red reads as glare on mobile and tablet, where the type is smaller */
+@media (max-width: 1023px) {
+  .stranger-things-title,
+  .hollow-red-text {
+    -webkit-text-stroke-color: #4A0A0F !important;
+    -webkit-text-stroke-width: 0.9px !important;
+    filter: none;
+  }
+}
+
 /* The 1.4px stroke swallows the letterforms at small mobile type sizes */
 @media (max-width: 639px) {
   .stranger-things-title,
   .hollow-red-text {
-    -webkit-text-stroke-width: 1px !important;
+    -webkit-text-stroke-width: 0.7px !important;
   }
 }
 

@@ -94,7 +94,6 @@ export default function CartPage() {
                       </Link>
                       <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mt-1">
                         {item.variant}
-                        {item.size ? ` · ${item.size}` : ""}
                       </p>
                     </div>
                     <div className="flex items-center justify-between mt-3">

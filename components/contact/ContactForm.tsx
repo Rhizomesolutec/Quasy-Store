@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { STORE } from "@/lib/store";
 
 type Status = "idle" | "submitting" | "success";
 
@@ -12,7 +13,12 @@ export function ContactForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
-    setTimeout(() => setStatus("success"), 1400);
+    const subject = encodeURIComponent(form.subject || "Qusay Store inquiry");
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
+    );
+    window.location.href = `mailto:${STORE.email}?subject=${subject}&body=${body}`;
+    setTimeout(() => setStatus("success"), 600);
   };
 
   if (status === "success") {
@@ -25,7 +31,7 @@ export function ContactForm() {
         </div>
         <h3 className="font-heading text-xl text-[#F5F2EF] mb-2">Message Sent</h3>
         <p className="font-sans text-sm text-[#F5F2EF]/60 max-w-sm mx-auto leading-relaxed">
-          A raven has been dispatched. Expect a reply within one to two business days.
+          Your mail app should open addressed to {STORE.email}. If it doesn&apos;t, write us there directly.
         </p>
       </div>
     );

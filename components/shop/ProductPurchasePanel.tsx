@@ -11,7 +11,6 @@ import { trackRecentlyViewed } from "@/lib/useRecentlyViewed";
 
 export function ProductPurchasePanel({ product }: { product: Product }) {
   const [color, setColor] = useState(0);
-  const [size, setSize] = useState<string | undefined>(product.sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const { addItem } = useCart();
@@ -37,7 +36,6 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         price: product.price,
         image: product.images[0],
         variant: product.colors[color]?.name ?? product.variantLabel,
-        size,
       },
       quantity
     );
@@ -100,26 +98,6 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
             ))}
           </div>
         </div>
-
-        {/* Size selector */}
-        {product.sizes.length > 0 && (
-          <div className="mt-6">
-            <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-2.5">Size — {size}</p>
-            <div className="flex flex-wrap gap-2">
-              {product.sizes.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSize(s)}
-                  className={`px-4 py-2 text-xs border transition-colors ${
-                    size === s ? "border-[#E50914] bg-[#E50914] text-[#F5F2EF]" : "border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914]/50"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Quantity + Add to cart */}
         <div className="mt-8 flex items-stretch gap-3">

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Fraunces, DM_Serif_Display, Press_Start_2P, VT323 } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import CustomCursor from "@/components/CustomCursor";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { STORE, STORE_ADDRESS } from "@/lib/store";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -40,7 +42,8 @@ export const metadata: Metadata = {
     default: "Qusay Store — Gothic Fine Jewelry",
     template: "%s — Qusay Store",
   },
-  description: "A unique vintage aesthetic landing page and premium gothic jewelry store.",
+  description:
+    "Gothic fine jewelry from Qusay Store, Chalil Moolakkal, Panayi, Anakkayam, Malappuram. WhatsApp orders at +91 8075 814 037.",
 };
 
 export default function RootLayout({
@@ -59,6 +62,28 @@ export default function RootLayout({
             <CustomCursor />
             <Navbar />
             {children}
+            <Footer />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "JewelryStore",
+                  name: STORE.name,
+                  email: STORE.email,
+                  telephone: STORE.phoneTel,
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: STORE.addressLine,
+                    addressLocality: STORE.city,
+                    addressRegion: STORE.region,
+                    addressCountry: STORE.country,
+                  },
+                  url: STORE.mapsUrl,
+                  description: STORE_ADDRESS,
+                }),
+              }}
+            />
           </WishlistProvider>
         </CartProvider>
       </body>

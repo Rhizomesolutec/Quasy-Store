@@ -3,10 +3,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { Accordion } from "@/components/ui/Accordion";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { STORE, storeMailHref, storeTelHref, storeWhatsAppHref } from "@/lib/store";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Qusay Store — order inquiries, repairs, and press.",
+  description:
+    "Contact Qusay Store in Anakkayam, Malappuram — WhatsApp +91 8075 814 037 or storequsay@gmail.com.",
 };
 
 const SOCIALS = [
@@ -55,17 +57,34 @@ export default function ContactPage() {
           <RevealOnScroll delay={0.1} className="space-y-8">
             {/* Business info card */}
             <div className="border border-white/[0.08] p-6 space-y-4">
-              <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">The Workshop</h3>
+              <h3 className="font-heading text-sm uppercase tracking-widest text-[#F5F2EF]">{STORE.name}</h3>
               <div className="font-sans text-sm text-[#F5F2EF]/60 space-y-1.5">
-                <p>14 Cathedral Row, Suite 3</p>
-                <p>New Haven Quarter, NH 06510</p>
+                <p>{STORE.addressLine}</p>
+                <p>
+                  {STORE.city}, {STORE.region}, {STORE.country}
+                </p>
               </div>
               <div className="font-sans text-sm text-[#F5F2EF]/60 space-y-1.5 pt-2 border-t border-white/[0.06]">
-                <p>hello@qusaystore.com</p>
-                <p>+1 (555) 019-2426</p>
-              </div>
-              <div className="font-sans text-sm text-[#F5F2EF]/60 pt-2 border-t border-white/[0.06]">
-                <p>Mon–Fri, 10:00–18:00 EST</p>
+                <p>
+                  <a href={storeMailHref()} className="hover:text-[#E50914] transition-colors">
+                    {STORE.email}
+                  </a>
+                </p>
+                <p>
+                  <a href={storeTelHref()} className="hover:text-[#E50914] transition-colors">
+                    {STORE.phoneDisplay}
+                  </a>
+                </p>
+                <p>
+                  <a
+                    href={storeWhatsAppHref()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-[#25D366] transition-colors"
+                  >
+                    Chat on WhatsApp
+                  </a>
+                </p>
               </div>
               <div className="flex gap-4 pt-2 border-t border-white/[0.06]">
                 {SOCIALS.map((s) => (
@@ -80,23 +99,22 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <div className="relative aspect-[4/3] border border-white/[0.08] bg-[#1A0A0A] overflow-hidden flex items-center justify-center">
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(216,207,192,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(216,207,192,0.08) 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
+            <div className="relative aspect-[4/3] border border-white/[0.08] bg-[#1A0A0A] overflow-hidden">
+              <iframe
+                title={`${STORE.displayName} location`}
+                src={STORE.mapsEmbedUrl}
+                className="absolute inset-0 w-full h-full border-0 grayscale contrast-125 opacity-80"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               />
-              <div className="relative z-10 flex flex-col items-center gap-2 text-center px-6">
-                <svg className="w-8 h-8 text-[#E50914]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40">Map preview unavailable</p>
-              </div>
+              <a
+                href={STORE.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-3 left-3 z-10 bg-black/80 border border-white/[0.1] px-3 py-1.5 font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF] hover:border-[#E50914] hover:text-[#E50914] transition-colors"
+              >
+                Open in Google Maps ►
+              </a>
             </div>
           </RevealOnScroll>
         </div>

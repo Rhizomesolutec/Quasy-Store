@@ -67,10 +67,15 @@ interface DBOrder {
   id: string;
   customerName: string;
   customerEmail: string;
+  customerPhone?: string;
   items: DBOrderItem[];
   total: number;
   status: string;
   date: string;
+  paymentMethod?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
 }
 
 interface DBProfile {
@@ -100,6 +105,8 @@ export default function AdminDashboard() {
   const [productSearch, setProductSearch] = useState("");
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isNewProduct, setIsNewProduct] = useState(false);
+  const [notice, setNotice] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [productToDelete, setProductToDelete] = useState<DBProduct | null>(null);
 
   // Category addition form
   const [newCatName, setNewCatName] = useState("");
@@ -125,7 +132,6 @@ export default function AdminDashboard() {
   const [formVideo, setFormVideo] = useState("");
   const [formImages, setFormImages] = useState<string[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [formSizesText, setFormSizesText] = useState("");
   const [formDetailsText, setFormDetailsText] = useState("");
   const [formColors, setFormColors] = useState<{ name: string; hex: string }[]>([]);
 
@@ -228,6 +234,12 @@ export default function AdminDashboard() {
     void loadAdminReviews();
   }, []);
 
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 3500);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
   const handleSignOut = async () => {
     try {
       const res = await fetch("/api/admin/logout", { method: "POST" });
@@ -275,7 +287,7 @@ export default function AdminDashboard() {
           compareAtPrice: productData.compareAtPrice || null,
           images: productData.images,
           colors: productData.colors,
-          sizes: productData.sizes,
+          sizes: [],
           rating: productData.rating,
           reviewCount: productData.reviewCount,
           isNew: productData.isNew,
@@ -445,11 +457,13 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteProduct = async (p: DBProduct) => {
-    const confirmed = window.confirm(
-      `Delete "${p.name}" permanently? This cannot be undone.`
-    );
-    if (!confirmed) return;
+  const handleDeleteProduct = (p: DBProduct) => {
+    setProductToDelete(p);
+  };
+
+  const confirmDeleteProduct = async () => {
+    const p = productToDelete;
+    if (!p) return;
 
     try {
       const res = await fetch(`/api/admin/products?id=${encodeURIComponent(p.id)}`, {
@@ -458,17 +472,19 @@ export default function AdminDashboard() {
       const result = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert("Failed to delete product: " + (result?.error || "Unknown error"));
+        setNotice({ type: "error", message: result?.error || "Failed to delete product." });
         return;
       }
 
       setProducts((prev) => prev.filter((item) => item.id !== p.id));
+      setProductToDelete(null);
       if (isProductModalOpen && formId === p.id) {
         setIsProductModalOpen(false);
       }
+      setNotice({ type: "success", message: "Product deleted successfully." });
     } catch (err) {
       console.error(err);
-      alert("Failed to delete product due to an unexpected error.");
+      setNotice({ type: "error", message: "Failed to delete product. Please try again." });
     }
   };
 
@@ -492,7 +508,6 @@ export default function AdminDashboard() {
     setFormShippingInfo("Ships in 2–4 business days. Free returns within 30 days.");
     setFormVideo("");
     setFormImages([]);
-    setFormSizesText("18\", 20\", 22\"");
     setFormDetailsText("");
     setFormColors([]);
     setIsProductModalOpen(true);
@@ -518,7 +533,6 @@ export default function AdminDashboard() {
     setFormShippingInfo(p.shippingInfo || "");
     setFormVideo(p.video || "");
     setFormImages(p.images || []);
-    setFormSizesText(p.sizes?.join(", ") || "");
     setFormDetailsText(p.details?.join("\n") || "");
     setFormColors(p.colors || []);
     setIsProductModalOpen(true);
@@ -611,7 +625,6 @@ export default function AdminDashboard() {
       shippingInfo: formShippingInfo.trim(),
       video: formVideo.trim() || null,
       images: formImages,
-      sizes: formSizesText.split(",").map(s => s.trim()).filter(Boolean),
       details: formDetailsText.split("\n").map(d => d.trim()).filter(Boolean),
       colors: formColors,
     };
@@ -625,20 +638,24 @@ export default function AdminDashboard() {
       const result = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert("Failed to save product: " + (result?.error || "Unknown error"));
+        setNotice({
+          type: "error",
+          message: result?.error || "Failed to save product.",
+        });
       } else {
         setIsProductModalOpen(false);
         // Quiet refresh: avoid full-page "Retrieving Vault Data..." spinner after a successful save.
         void fetchData({ quiet: true });
-        alert(
-          result?.warning
-            ? `Piece saved.\n\n${result.warning}`
-            : "Piece saved to Supabase and is now visible in the store."
-        );
+        setNotice({
+          type: "success",
+          message: isNewProduct
+            ? "Product added successfully."
+            : "Product updated successfully.",
+        });
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to save product due to an unexpected error.");
+      setNotice({ type: "error", message: "Failed to save product. Please try again." });
     }
   };
 
@@ -651,6 +668,19 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative pt-20 md:pt-24">
       <div className="bg-noise" />
+
+      {notice && (
+        <div
+          role="status"
+          className={`fixed top-24 md:top-28 right-4 z-[90] max-w-sm border px-4 py-3 shadow-lg ${
+            notice.type === "success"
+              ? "border-green-800/40 bg-[#0d1a12] text-green-300"
+              : "border-red-800/40 bg-[#1A0A0A] text-red-300"
+          }`}
+        >
+          <p className="font-sans text-sm">{notice.message}</p>
+        </div>
+      )}
 
       {/* Header — sits below the site navbar on all screens */}
       <header className="border-b border-white/[0.08] bg-[#170909]/80 backdrop-blur-md sticky top-20 md:top-24 z-30 px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -967,6 +997,19 @@ export default function AdminDashboard() {
                                 <td className="p-4">
                                   <p className="font-semibold">{o.customerName}</p>
                                   <p className="text-[10px] text-[#F5F2EF]/40">{o.customerEmail}</p>
+                                  {o.customerPhone && (
+                                    <a
+                                      href={`https://wa.me/${o.customerPhone.replace(/\D/g, "")}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 mt-1 text-[10px] font-mono text-[#25D366] hover:underline"
+                                    >
+                                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.86 9.86 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.01h-.01a8.2 8.2 0 01-4.18-1.15l-.3-.18-3.11.82.83-3.04-.19-.31a8.19 8.19 0 01-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.7 8.23-8.25 8.23z" />
+                                      </svg>
+                                      {o.customerPhone}
+                                    </a>
+                                  )}
                                 </td>
                                 <td className="p-4 max-w-xs truncate">
                                   {o.items?.map((item, idx: number) => (
@@ -976,7 +1019,14 @@ export default function AdminDashboard() {
                                     </span>
                                   )) || "No items"}
                                 </td>
-                                <td className="p-4 font-mono font-semibold">{formatPrice(o.total)}</td>
+                                <td className="p-4 font-mono font-semibold">
+                                  {formatPrice(o.total)}
+                                  {o.paymentMethod && (
+                                    <span className="block mt-1 text-[9px] font-sans uppercase tracking-wider text-[#F5F2EF]/40">
+                                      via {o.paymentMethod}
+                                    </span>
+                                  )}
+                                </td>
                                 <td className="p-4">
                                   <span className={`px-2 py-0.5 border text-[9px] uppercase tracking-wider ${
                                     o.status === "Delivered"
@@ -1171,6 +1221,35 @@ export default function AdminDashboard() {
       </div>
 
       {/* PRODUCT ADD/EDIT MODAL */}
+      {productToDelete && (
+        <div className="fixed inset-0 z-[70] bg-black/80 flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#141414] border border-white/[0.08] p-6 space-y-5">
+            <h3 className="font-heading text-xl text-[#F5F2EF]">Delete product</h3>
+            <p className="font-sans text-sm text-[#F5F2EF]/70 leading-relaxed">
+              Are you sure you want to delete{" "}
+              <span className="text-[#F5F2EF] font-semibold">{productToDelete.name}</span>?
+              This cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setProductToDelete(null)}
+                className="border border-white/[0.1] hover:border-white/30 text-[#F5F2EF]/70 px-4 py-2 text-xs uppercase tracking-widest transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void confirmDeleteProduct()}
+                className="border border-[#E50914] bg-[#E50914]/20 hover:bg-[#E50914] text-[#F5F2EF] px-4 py-2 text-xs uppercase tracking-widest transition-all"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 overflow-y-auto">
           <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-6 md:p-8 space-y-6">
@@ -1388,7 +1467,7 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              {/* Lists Section: Images, Sizes, Details, and Colors */}
+              {/* Lists Section: Images, Details, and Colors */}
               <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-white/[0.08]">
                 <div className="space-y-3">
                   <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
@@ -1454,30 +1533,16 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                    Sizes (Comma separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={formSizesText}
-                    onChange={(e) => setFormSizesText(e.target.value)}
-                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
-                    placeholder="e.g. 18&quot;, 20&quot;, 22&quot;"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                    Shipping & Returns Details
-                  </label>
-                  <input
-                    type="text"
-                    value={formShippingInfo}
-                    onChange={(e) => setFormShippingInfo(e.target.value)}
-                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
-                  />
-                </div>
+              <div>
+                <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
+                  Shipping & Returns Details
+                </label>
+                <input
+                  type="text"
+                  value={formShippingInfo}
+                  onChange={(e) => setFormShippingInfo(e.target.value)}
+                  className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50"
+                />
               </div>
 
               {/* Dynamic Color Palette Picker */}

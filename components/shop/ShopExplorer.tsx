@@ -41,7 +41,6 @@ export function ShopExplorer({
   const [filters, setFilters] = useState<FilterState>(() => ({
     categories: [],
     colors: [],
-    sizes: [],
     availability: "all",
     maxPrice: getPriceCeiling(products.map((p) => p.price)),
   }));
@@ -67,17 +66,10 @@ export function ShopExplorer({
     return Array.from(seen.values());
   }, [products]);
 
-  const availableSizes = useMemo(() => {
-    const seen = new Set<string>();
-    products.forEach((p) => p.sizes.forEach((s) => seen.add(s)));
-    return Array.from(seen.values());
-  }, [products]);
-
   const filtered = useMemo(() => {
     let result = products.filter((p) => {
       if (filters.categories.length && !filters.categories.includes(p.category)) return false;
       if (filters.colors.length && !p.colors.some((c) => filters.colors.includes(c.name))) return false;
-      if (filters.sizes.length && !p.sizes.some((s) => filters.sizes.includes(s))) return false;
       if (filters.availability === "in-stock" && !p.inStock) return false;
       if (filters.availability === "out-of-stock" && p.inStock) return false;
       if (p.price > filters.maxPrice) return false;
@@ -119,7 +111,6 @@ export function ShopExplorer({
                 setVisibleCount(PAGE_SIZE);
               }}
               availableColors={availableColors}
-              availableSizes={availableSizes}
               availableCategories={availableCategories}
               resultCount={filtered.length}
               priceCeiling={priceCeiling}
@@ -235,7 +226,6 @@ export function ShopExplorer({
                   setVisibleCount(PAGE_SIZE);
                 }}
                 availableColors={availableColors}
-                availableSizes={availableSizes}
                 availableCategories={availableCategories}
                 resultCount={filtered.length}
                 priceCeiling={priceCeiling}

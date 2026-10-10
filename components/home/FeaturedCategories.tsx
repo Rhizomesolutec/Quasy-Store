@@ -115,15 +115,7 @@ export function FeaturedCategories({
                     <span className="font-pixel text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
-                    <h3
-                      className="font-heading hollow-red-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1"
-                      style={{
-                        color: "transparent",
-                        WebkitTextFillColor: "transparent",
-                        WebkitTextStroke: "1.4px #B3121D",
-                        filter: "none",
-                      }}
-                    >
+                    <h3 className="font-heading hollow-red-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1">
                       {category}
                     </h3>
                     <p className="hidden sm:block font-sans text-[11px] md:text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-2 md:mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">

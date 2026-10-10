@@ -33,17 +33,13 @@ export function BrandStoryPreview() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.85, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="text-[8px] sm:text-[10px] font-pixel font-bold text-[#E50914] tracking-widest uppercase mb-1 sm:mb-2 block">
-            ● ARCHIVAL CATALOG NO. 1924
-          </span>
           <Eyebrow className="mb-2 sm:mb-3">Since 1924</Eyebrow>
-          <h2 className="font-heading text-base sm:text-2xl md:text-4xl text-[#F5F2EF] leading-[1.1] mb-2 sm:mb-4">
-            We didn&apos;t design this collection.
-            <br />
+          <h2 className="font-heading text-base sm:text-2xl md:text-4xl text-[#F5F2EF] leading-[1.15] mb-3 sm:mb-4">
+            We didn&apos;t design this collection.{" "}
             <span className="text-[#E50914]">We excavated it.</span>
           </h2>
-          <Divider className="mb-2 sm:mb-4" />
-          <p className="font-mono text-[10px] sm:text-xs md:text-sm text-[#F5F2EF]/70 leading-relaxed mb-3 sm:mb-6 line-clamp-3 sm:line-clamp-none">
+          <Divider className="hidden sm:block mb-2 sm:mb-4" />
+          <p className="hidden sm:block font-mono text-xs md:text-sm text-[#F5F2EF]/70 leading-relaxed mb-6">
             When the original moulds resurfaced in 2019, most were unusable. What survived was enough —
             and Qusay Store exists to finish what that first workshop started, slowly and without cutting corners.
           </p>

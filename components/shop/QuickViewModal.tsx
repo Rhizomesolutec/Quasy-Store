@@ -14,14 +14,12 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
   const { addItem } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [color, setColor] = useState(0);
-  const [size, setSize] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (product) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- resets local selection state when a new product opens
       setActiveImage(0);
       setColor(0);
-      setSize(product.sizes[0]);
     }
   }, [product]);
 
@@ -108,27 +106,6 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
                   </div>
                 </div>
 
-                {product.sizes.length > 0 && (
-                  <div className="mb-6">
-                    <p className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-2">Size</p>
-                    <div className="flex flex-wrap gap-2">
-                      {product.sizes.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => setSize(s)}
-                          className={`px-3 py-1.5 text-xs border transition-colors ${
-                            size === s
-                              ? "border-[#E50914] bg-[#E50914] text-[#F5F2EF]"
-                              : "border-white/[0.12] text-[#F5F2EF]/70 hover:border-[#E50914]/50"
-                          }`}
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 <div className="mt-auto flex flex-col gap-3">
                   <Button
                     variant="filled"
@@ -142,7 +119,6 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
                         price: product.price,
                         image: product.images[0],
                         variant: product.colors[color]?.name ?? product.variantLabel,
-                        size,
                       });
                       onClose();
                     }}

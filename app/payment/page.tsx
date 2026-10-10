@@ -8,9 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
+import { buildOrderWhatsAppUrl, isWhatsAppConfigured } from "@/lib/whatsapp";
 
-type PaymentMethod = "card" | "upi" | "netbanking";
-type UpiApp = "gpay" | "phonepe" | "paytm" | "upi";
 type ShippingZone = "domestic" | "international";
 
 const STORAGE_SESSION_KEY = "qusay_demo_session_v1";
@@ -27,28 +26,18 @@ export default function PaymentPage() {
   // Form States
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState(readSessionEmail);
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [shippingZone, setShippingZone] = useState<ShippingZone>("domestic");
 
-  // Payment Selection State
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
-
-  // Credit Card Form States
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvv, setCardCvv] = useState("");
-  const [cardName, setCardName] = useState("");
-
-  // UPI Form States
-  const [upiId, setUpiId] = useState("");
-  const [selectedUpiApp, setSelectedUpiApp] = useState<UpiApp>("gpay");
-
   // Transaction States
   const [processing, setProcessing] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [generatedOrderId, setGeneratedOrderId] = useState("");
+  const [whatsappUrl, setWhatsappUrl] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   // Redirect if cart is empty and checkout hasn't succeeded
   useEffect(() => {
@@ -63,11 +52,34 @@ export default function PaymentPage() {
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setProcessing(true);
+    setError(null);
+
+    const orderNum = Math.floor(10000 + Math.random() * 90000);
+    const orderId = `QS-${orderNum}`;
+
+    // Built before the cart is cleared so the message still has the line items.
+    const messageUrl = buildOrderWhatsAppUrl({
+      orderId,
+      customerName: fullName.trim(),
+      customerPhone: phone.trim(),
+      customerEmail: email.trim(),
+      address: address.trim(),
+      city: city.trim(),
+      postalCode: postalCode.trim(),
+      shippingZone,
+      items: cart.map((item) => ({
+        name: item.name,
+        variant: item.variant,
+        size: item.size,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      subtotal,
+      shipping,
+      total,
+    });
 
     try {
-      const orderNum = Math.floor(10000 + Math.random() * 90000);
-      const orderId = `QS-${orderNum}`;
-
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,11 +87,12 @@ export default function PaymentPage() {
           id: orderId,
           customerName: fullName.trim(),
           customerEmail: email.trim(),
+          customerPhone: phone.trim(),
           address: address.trim(),
           city: city.trim(),
           postalCode: postalCode.trim(),
           shippingZone,
-          paymentMethod,
+          paymentMethod: "whatsapp",
           items: cart,
           total,
         }),
@@ -88,23 +101,29 @@ export default function PaymentPage() {
       const result = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        alert("Failed to register order: " + (result?.error || "Unknown error"));
+        setError(result?.error || "Failed to register your order. Please try again.");
         setProcessing(false);
         return;
       }
 
       const savedId = result?.order?.id || orderId;
       setGeneratedOrderId(savedId);
+      setWhatsappUrl(messageUrl);
+
       try {
         localStorage.setItem(STORAGE_SESSION_KEY, email.trim());
       } catch {
         // ignore
       }
+
       setCheckoutSuccess(true);
       clearCart();
+
+      // Blocked popups are fine — the success screen shows the same link.
+      window.open(messageUrl, "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Checkout submission failed:", err);
-      alert("Checkout failed due to an unexpected error.");
+      setError("Checkout failed due to an unexpected error.");
       setProcessing(false);
     }
   };
@@ -134,19 +153,44 @@ export default function PaymentPage() {
               className="border border-[#E50914]/20 bg-[#170909]/60 p-8 md:p-12 text-center max-w-2xl mx-auto space-y-6"
             >
               <span className="text-4xl text-[#E50914]">✦</span>
-              <h2 className="font-heading text-3xl text-[#F5F2EF]">Order Placed Successfully</h2>
+              <h2 className="font-heading text-3xl text-[#F5F2EF]">Order Registered</h2>
               <p className="font-sans text-sm text-[#F5F2EF]/70 max-w-md mx-auto leading-relaxed">
-                The order has been forged. Your confirmation receipt is registered under ID: 
+                Your order is saved under ID:
                 <span className="font-mono block text-lg font-semibold text-[#E50914] mt-2 tracking-widest">
                   {generatedOrderId}
                 </span>
               </p>
+
+              <div className="border border-[#25D366]/30 bg-[#25D366]/[0.06] p-5 max-w-md mx-auto space-y-4">
+                <p className="font-sans text-xs text-[#F5F2EF]/70 leading-relaxed">
+                  Send us the order on WhatsApp to receive the payment details and
+                  confirm dispatch. We reply with UPI or bank transfer options.
+                </p>
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full border border-[#25D366] bg-[#25D366]/15 hover:bg-[#25D366] hover:text-[#070707] text-[#F5F2EF] px-6 py-3 text-xs uppercase tracking-widest transition-all duration-300"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.9-.95 1.08-.17.18-.35.2-.65.05-.3-.15-1.13-.42-2.15-1.33-.8-.71-1.33-1.59-1.48-1.89-.15-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.08 4.37.71.28 1.26.44 1.69.56.71.19 1.36.16 1.87.1.57-.07 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.12-.27-.2-.57-.35z" />
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.86 9.86 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.01h-.01a8.2 8.2 0 01-4.18-1.15l-.3-.18-3.11.82.83-3.04-.19-.31a8.19 8.19 0 01-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.7 8.23-8.25 8.23z" />
+                  </svg>
+                  <span>Continue on WhatsApp</span>
+                </a>
+                <p className="font-sans text-[10px] text-[#F5F2EF]/40">
+                  Didn&apos;t open automatically? Tap the button above.
+                </p>
+              </div>
+
               <div className="border-t border-white/[0.06] pt-6 max-w-xs mx-auto">
                 <p className="font-sans text-xs text-[#F5F2EF]/40 uppercase tracking-widest">
                   Shipping updates will be sent to
                 </p>
                 <p className="font-mono text-xs text-[#F5F2EF]/70 mt-1">{email}</p>
+                <p className="font-mono text-xs text-[#F5F2EF]/70">{phone}</p>
               </div>
+
               <div className="pt-4 flex justify-center gap-4">
                 <Link
                   href="/shop"
@@ -187,7 +231,21 @@ export default function PaymentPage() {
                         placeholder="Alex Sterling"
                       />
                     </div>
-                    <div className="sm:col-span-2">
+                    <div>
+                      <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
+                        WhatsApp Number
+                      </label>
+                      <input
+                        id="checkout-phone"
+                        type="tel"
+                        required
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3.5 py-3 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]/50 transition-all font-mono"
+                        placeholder="+91 98765 43210"
+                      />
+                    </div>
+                    <div>
                       <label className="block font-sans text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1.5">
                         Email Address
                       </label>
@@ -265,194 +323,62 @@ export default function PaymentPage() {
                   </div>
                 </div>
 
-                {/* Payment Methods */}
+                {/* Payment via WhatsApp */}
                 <div className="space-y-5">
                   <h3 className="font-heading text-lg text-[#F5F2EF] border-b border-white/[0.06] pb-2">
-                    2. Payment Portal
+                    2. Payment via WhatsApp
                   </h3>
 
-                  {/* Tabs */}
-                  <div className="grid grid-cols-3 gap-2 border-b border-white/[0.06] pb-4">
-                    {(["card", "upi", "netbanking"] as PaymentMethod[]).map((method) => (
-                      <button
-                        key={method}
-                        type="button"
-                        onClick={() => setPaymentMethod(method)}
-                        className={`py-2.5 text-[10px] uppercase tracking-widest transition-all duration-200 border-b cursor-pointer text-center ${
-                          paymentMethod === method
-                            ? "text-[#E50914] border-[#E50914]"
-                            : "text-[#F5F2EF]/40 hover:text-[#F5F2EF] border-transparent"
-                        }`}
-                      >
-                        {method === "card" ? "Credit Card" : method === "upi" ? "UPI ID" : "Net Banking"}
-                      </button>
-                    ))}
+                  <div className="bg-[#141414] border border-white/[0.04] p-6 space-y-5">
+                    <div className="flex items-start gap-4">
+                      <span className="flex-shrink-0 w-10 h-10 rounded-full bg-[#25D366]/15 border border-[#25D366]/40 flex items-center justify-center text-[#25D366]">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.86 9.86 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.01h-.01a8.2 8.2 0 01-4.18-1.15l-.3-.18-3.11.82.83-3.04-.19-.31a8.19 8.19 0 01-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.7 8.23-8.25 8.23z" />
+                        </svg>
+                      </span>
+                      <div className="space-y-1">
+                        <p className="font-sans text-sm text-[#F5F2EF]">
+                          No card needed — we settle on WhatsApp
+                        </p>
+                        <p className="font-sans text-xs text-[#F5F2EF]/50 leading-relaxed">
+                          Submitting sends your item list, quantities and total straight to
+                          our store chat. We reply with UPI or bank transfer details and
+                          confirm dispatch once payment lands.
+                        </p>
+                      </div>
+                    </div>
+
+                    <ol className="space-y-2.5 border-t border-white/[0.06] pt-5">
+                      {[
+                        "Your order is saved to our vault with a reference ID.",
+                        "WhatsApp opens with the full order pre-filled.",
+                        "Send the message and we share the payment details.",
+                      ].map((step, idx) => (
+                        <li key={step} className="flex gap-3 items-start">
+                          <span className="font-mono text-[10px] text-[#E50914] pt-0.5">
+                            0{idx + 1}
+                          </span>
+                          <span className="font-sans text-xs text-[#F5F2EF]/60 leading-relaxed">
+                            {step}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
 
-                  {/* Method Content */}
-                  <div className="bg-[#141414] border border-white/[0.04] p-6">
-                    {paymentMethod === "card" && (
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div className="sm:col-span-2">
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                            Card Number
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === "card"}
-                            value={cardNumber}
-                            onChange={(e) => setCardNumber(e.target.value.replace(/\s?/g, "").replace(/(\d{4})/g, "$1 ").trim().slice(0, 19))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
-                            placeholder="4000 1234 5678 9010"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                            Expiration Date
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === "card"}
-                            value={cardExpiry}
-                            onChange={(e) => setCardExpiry(e.target.value.replace(/\//g, "").replace(/(\d{2})/, "$1/").trim().slice(0, 5))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
-                            placeholder="MM/YY"
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                            CVV / CVC
-                          </label>
-                          <input
-                            type="password"
-                            required={paymentMethod === "card"}
-                            value={cardCvv}
-                            onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
-                            placeholder="•••"
-                          />
-                        </div>
-                        <div className="sm:col-span-2">
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                            Cardholder Name
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === "card"}
-                            value={cardName}
-                            onChange={(e) => setCardName(e.target.value)}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40"
-                            placeholder="Alex Sterling"
-                          />
-                        </div>
-                      </div>
-                    )}
+                  {!isWhatsAppConfigured() && (
+                    <p className="font-sans text-xs text-amber-400 bg-amber-950/20 border border-amber-800/30 p-3 leading-relaxed">
+                      Store WhatsApp number is not configured. Set
+                      <span className="font-mono"> NEXT_PUBLIC_WHATSAPP_NUMBER </span>
+                      in your environment to enable the handoff.
+                    </p>
+                  )}
 
-                    {paymentMethod === "upi" && (
-                      <div className="space-y-4">
-                        {/* Selector */}
-                        <div className="grid grid-cols-4 gap-2 pt-1">
-                          {[
-                            {
-                              id: "gpay",
-                              name: "GPay",
-                              logo: (
-                                <svg viewBox="0 0 40 16" fill="none" className="h-3.5 w-auto">
-                                  <path d="M5.5 8c0-.6.1-1.1.4-1.6l-3.6-2.8C1 5 0 6.4 0 8c0 1.6 1 3 2.3 4.4l3.6-2.8c-.3-.5-.4-1-.4-1.6z" fill="#EA4335"/>
-                                  <path d="M5.5 8c0 .6.1 1.1.4 1.6l3.6 2.8c1.3-1.4 2.3-2.8 2.3-4.4 0-1.6-1-3-2.3-4.4L5.9 6.4c-.3.5-.4 1-.4 1.6z" fill="#34A853"/>
-                                  <path d="M8 0C4.4 0 1.4 2.3.4 5.6l3.6 2.8C4.7 6 6.2 4.5 8 4.5c2 0 3.7 1.5 4.3 3.5l3.6-2.8C14.6 2.3 11.6 0 8 0z" fill="#4285F4"/>
-                                  <path d="M8 16c3.6 0 6.6-2.3 7.6-5.6l-3.6-2.8c-.6 2-2.3 3.5-4.3 3.5-1.8 0-3.3-1.5-4-3.5l-3.6 2.8C1.4 13.7 4.4 16 8 16z" fill="#FBBC05"/>
-                                  <text x="18" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="10" fontWeight="bold">Pay</text>
-                                </svg>
-                              )
-                            },
-                            {
-                              id: "phonepe",
-                              name: "PhonePe",
-                              logo: (
-                                <svg viewBox="0 0 54 16" fill="none" className="h-3.5 w-auto">
-                                  <rect width="14" height="14" rx="3" fill="#5F259F" y="1" />
-                                  <path d="M7 11c1.5 0 2.5-1 2.5-2.5S8.5 6 7 6H5v5h2zm-1-4h1c.8 0 1.3.4 1.3 1.2S7.8 9.5 7 9.5H6V7z" fill="white" />
-                                  <text x="17" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="8" fontWeight="bold">PhonePe</text>
-                                </svg>
-                              )
-                            },
-                            {
-                              id: "paytm",
-                              name: "Paytm",
-                              logo: (
-                                <svg viewBox="0 0 42 16" fill="none" className="h-3.5 w-auto">
-                                  <text x="0" y="12" fill="#00b9f5" fontFamily="sans-serif" fontSize="11" fontWeight="bold">pay</text>
-                                  <text x="18" y="12" fill="#002e6e" fontFamily="sans-serif" fontSize="11" fontWeight="bold">tm</text>
-                                </svg>
-                              )
-                            },
-                            {
-                              id: "upi",
-                              name: "UPI",
-                              logo: (
-                                <svg viewBox="0 0 35 16" fill="none" className="h-3.5 w-auto">
-                                  <path d="M2 14L8 2h3l-6 12H2z" fill="#097939" />
-                                  <path d="M7 14l6-12h3l-6 12H7z" fill="#ED7D31" />
-                                  <text x="17" y="12" fill="#F5F2EF" fontFamily="sans-serif" fontSize="9" fontWeight="bold">UPI</text>
-                                </svg>
-                              )
-                            }
-                          ].map((app) => (
-                            <button
-                              key={app.id}
-                              type="button"
-                              onClick={() => setSelectedUpiApp(app.id as UpiApp)}
-                              className={`py-2.5 px-1 flex flex-col items-center justify-center gap-1.5 border transition-all duration-200 cursor-pointer rounded-sm ${
-                                selectedUpiApp === app.id
-                                  ? "border-[#E50914] bg-[#E50914]/10 text-white"
-                                  : "border-white/[0.06] bg-[#1A0A0A] text-[#F5F2EF]/50 hover:border-white/20"
-                              }`}
-                            >
-                              {app.logo}
-                            </button>
-                          ))}
-                        </div>
-
-                        <div>
-                          <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                            UPI ID
-                          </label>
-                          <input
-                            type="text"
-                            required={paymentMethod === "upi"}
-                            value={upiId}
-                            onChange={(e) => setUpiId(e.target.value)}
-                            className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40 font-mono"
-                            placeholder={
-                              selectedUpiApp === "gpay"
-                                ? "username@oksbi"
-                                : selectedUpiApp === "phonepe"
-                                ? "username@ybl"
-                                : selectedUpiApp === "paytm"
-                                ? "username@paytm"
-                                : "username@upi"
-                            }
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {paymentMethod === "netbanking" && (
-                      <div className="space-y-3">
-                        <label className="block font-sans text-[8px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                          Select Bank
-                        </label>
-                        <select className="w-full bg-[#1e1e1e] border border-white/[0.06] px-3 py-2.5 text-xs text-[#F5F2EF] outline-none focus:border-[#E50914]/40">
-                          <option>State Bank of India</option>
-                          <option>HDFC Bank</option>
-                          <option>ICICI Bank</option>
-                          <option>Axis Bank</option>
-                          <option>Federal Bank</option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
+                  {error && (
+                    <p className="font-sans text-xs text-red-400 bg-red-950/20 border border-red-800/30 p-3">
+                      {error}
+                    </p>
+                  )}
                 </div>
 
                 {/* Complete Order Button */}
@@ -460,7 +386,7 @@ export default function PaymentPage() {
                   id="checkout-complete-order-btn"
                   type="submit"
                   disabled={processing}
-                  className="w-full border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] py-4 px-6 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full border border-[#25D366] bg-[#25D366]/15 hover:bg-[#25D366] hover:text-[#070707] text-[#F5F2EF] py-4 px-6 font-sans text-xs uppercase tracking-widest transition-all duration-300 hover:tracking-[0.15em] cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {processing ? (
                     <>
@@ -468,7 +394,12 @@ export default function PaymentPage() {
                       <span>Forging Receipt...</span>
                     </>
                   ) : (
-                    <span>Complete Order · {formatPrice(total)}</span>
+                    <>
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.97L2 22l5.25-1.38a9.86 9.86 0 004.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm0 18.01h-.01a8.2 8.2 0 01-4.18-1.15l-.3-.18-3.11.82.83-3.04-.19-.31a8.19 8.19 0 01-1.26-4.37c0-4.54 3.7-8.23 8.24-8.23 2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 012.41 5.82c0 4.54-3.7 8.23-8.25 8.23z" />
+                      </svg>
+                      <span>Submit Order on WhatsApp · {formatPrice(total)}</span>
+                    </>
                   )}
                 </button>
               </form>

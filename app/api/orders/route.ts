@@ -37,17 +37,26 @@ export async function POST(request: Request) {
 
     const customerName = String(body?.customerName || "").trim();
     const customerEmail = String(body?.customerEmail || "").trim().toLowerCase();
+    const customerPhone = String(body?.customerPhone || "").trim();
     const address = String(body?.address || "").trim();
     const city = String(body?.city || "").trim();
     const postalCode = String(body?.postalCode || "").trim();
     const shippingZone = body?.shippingZone === "international" ? "international" : "domestic";
-    const paymentMethod = String(body?.paymentMethod || "card");
+    const paymentMethod = String(body?.paymentMethod || "whatsapp");
     const items = normalizeItems(Array.isArray(body?.items) ? body.items : []);
     const total = Number(body?.total);
 
     if (!customerName || !customerEmail) {
       return NextResponse.json(
         { error: "Customer name and email are required." },
+        { status: 400 }
+      );
+    }
+
+    // WhatsApp is the payment channel, so the number is how the store reaches the buyer.
+    if (!customerPhone || customerPhone.replace(/\D/g, "").length < 10) {
+      return NextResponse.json(
+        { error: "A valid WhatsApp phone number is required." },
         { status: 400 }
       );
     }
@@ -75,6 +84,7 @@ export async function POST(request: Request) {
       id: orderId,
       customerName,
       customerEmail,
+      customerPhone,
       items,
       total,
       status: "Pending",
@@ -118,28 +128,43 @@ export async function POST(request: Request) {
       }
     }
 
-    // Try full payload first; fall back to core columns if optional fields don't exist.
+    const corePayload = {
+      id: orderId,
+      customerName,
+      customerEmail,
+      items,
+      total,
+      status: "Pending",
+      date,
+    };
+
+    // Widest payload first, narrowing each time a column is missing from the table.
+    // The phone-only step keeps the WhatsApp contact even on the older v2 schema.
+    const attempts = [
+      orderPayload,
+      { ...corePayload, customerPhone, paymentMethod },
+      { ...corePayload, customerPhone },
+      corePayload,
+    ];
+
     let saved = await supabase
       .from("orders")
-      .insert([orderPayload])
+      .insert([attempts[0]])
       .select("*")
       .single();
 
-    if (saved.error) {
-      const corePayload = {
-        id: orderId,
-        customerName,
-        customerEmail,
-        items,
-        total,
-        status: "Pending",
-        date,
-      };
+    for (let i = 1; i < attempts.length && saved.error; i += 1) {
       saved = await supabase
         .from("orders")
-        .insert([corePayload])
+        .insert([attempts[i]])
         .select("*")
         .single();
+    }
+
+    if (!saved.error && !saved.data?.customerPhone) {
+      console.warn(
+        `Order ${orderId} saved without customerPhone — run the orders migration to add the column.`
+      );
     }
 
     if (saved.error) {
