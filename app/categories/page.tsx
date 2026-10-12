@@ -6,6 +6,7 @@ import {
   filterByCategory,
   getCatalogCategories,
   getCatalogProducts,
+  isShowcaseCategory,
 } from "@/lib/catalog";
 
 export const metadata: Metadata = {
@@ -45,7 +46,7 @@ export default async function CategoriesPage() {
 
       <section className="w-full px-4 md:px-12 lg:px-24 py-20 max-w-6xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {categories.map((category) => {
+          {categories.filter((category) => !isShowcaseCategory(category.name)).map((category) => {
             const count = filterByCategory(products, category.name).length;
             const image = CATEGORY_IMAGES[category.name] || "/images/spider-1.webp";
             const tagline =

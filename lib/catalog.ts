@@ -219,6 +219,43 @@ export function filterByCategory(products: Product[], category: string): Product
   );
 }
 
+export const HANDMADE_CATEGORY = "Handmade";
+export const HAND_PICKED_CATEGORY = "Hand Picked";
+
+function categoryMatches(category: string, names: string[]) {
+  const value = category.toLowerCase();
+  return names.some((name) => {
+    const n = name.toLowerCase();
+    return value === n || value.includes(n);
+  });
+}
+
+export function isShowcaseCategory(name: string) {
+  return categoryMatches(name, ["handmade", "hand picked", "handpicked"]);
+}
+
+/** Products tagged Handmade, or necklaces if that category is still empty. */
+export function filterHandmade(products: Product[]): Product[] {
+  const tagged = products.filter((p) =>
+    categoryMatches(p.category, ["handmade"])
+  );
+  if (tagged.length > 0) return tagged;
+  return products.filter((p) => p.category.toLowerCase().includes("necklace"));
+}
+
+/** Products tagged Hand Picked, or wrist pieces if that category is still empty. */
+export function filterHandPicked(products: Product[]): Product[] {
+  const tagged = products.filter((p) =>
+    categoryMatches(p.category, ["hand picked", "handpicked", "hand-picked"])
+  );
+  if (tagged.length > 0) return tagged;
+  return products.filter((p) =>
+    ["bracelet", "watch", "cuff"].some((kind) =>
+      p.category.toLowerCase().includes(kind)
+    )
+  );
+}
+
 export function filterByCollection(
   products: Product[],
   collectionSlug: string

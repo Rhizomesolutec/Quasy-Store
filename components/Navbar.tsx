@@ -11,6 +11,8 @@ import { formatPrice } from "@/lib/utils";
 
 const SHOP_LINKS = [
   { label: "Shop All", href: "/shop" },
+  { label: "Handmade", href: "/handmade" },
+  { label: "Hand Picked", href: "/hand-picked" },
   { label: "Categories", href: "/categories" },
   { label: "Collections", href: "/collections" },
   { label: "New Arrivals", href: "/new-arrivals" },

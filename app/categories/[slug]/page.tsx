@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { PageHero } from "@/components/ui/PageHero";
 import { ShopExplorer } from "@/components/shop/ShopExplorer";
 import {
   filterByCategory,
   getCatalogCategories,
   getCatalogProducts,
+  isShowcaseCategory,
   resolveCatalogCategoryFromSlug,
 } from "@/lib/catalog";
 
@@ -55,6 +56,11 @@ export default async function CategoryDetailPage({
   const { slug } = await params;
   const category = await resolveCatalogCategoryFromSlug(slug);
   if (!category) notFound();
+  if (isShowcaseCategory(category.name)) {
+    redirect(
+      category.name.toLowerCase().includes("pick") ? "/hand-picked" : "/handmade"
+    );
+  }
 
   const [{ products: all }, { categories }] = await Promise.all([
     getCatalogProducts(),

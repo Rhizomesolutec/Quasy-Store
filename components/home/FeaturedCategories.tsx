@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
-import { categoryToSlug } from "@/lib/catalog";
+import { categoryToSlug, isShowcaseCategory } from "@/lib/catalog";
 import type { Product } from "@/lib/types";
 
 const PREFERRED_ORDER = [
@@ -53,10 +53,11 @@ export function FeaturedCategories({
   products: Product[];
   categories?: string[];
 }) {
-  const liveNames =
+  const liveNames = (
     categories.length > 0
       ? categories
-      : Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+      : Array.from(new Set(products.map((p) => p.category).filter(Boolean)))
+  ).filter((name) => !isShowcaseCategory(name));
 
   const ordered = [
     ...PREFERRED_ORDER.filter((name) =>

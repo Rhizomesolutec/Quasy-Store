@@ -40,7 +40,7 @@ export default async function Home() {
         <Hero isMobileSequenceAvailable={isMobileSequenceAvailable} />
       </div>
 
-      <HandmadeShowcase products={products} />
+      <HandmadeShowcase />
 
       <DetailsPricing />
 

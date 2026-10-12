@@ -146,6 +146,8 @@ export const CATEGORIES = [
   "Key Chain",
   "Jacket Pin",
   "Metal Hook Bookmark",
+  "Handmade",
+  "Hand Picked",
 ] as const;
 
 export const COLLECTIONS = [
