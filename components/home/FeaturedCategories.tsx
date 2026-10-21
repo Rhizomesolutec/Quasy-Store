@@ -21,22 +21,22 @@ const CATEGORY_META: Record<
   Necklaces: {
     image: encodeURI("/images/Nacklace/Spider Collection/vol 2/vol 2.webp"),
     tagline: "Chain-drawn pendants built around the house spider motif.",
-    badge: "SITCOMS",
+    badge: "PENDANTS",
   },
   "Glow Dark Necklace": {
     image: encodeURI("/images/Nacklace/Glow dark nacklace/vol 11/vol 11.webp"),
     tagline: "Photoluminescent crystal pieces that charge by day and glow after dark.",
-    badge: "KIDS",
+    badge: "GLOW",
   },
   Bracelets: {
     image: encodeURI("/images/Nacklace/Bracelet/Bracelet 1.webp"),
     tagline: "Cuffs and chains that translate cathedral scrollwork to the wrist.",
-    badge: "MOVIES",
+    badge: "CUFFS",
   },
   "Denim Sling Bag": {
     image: encodeURI("/images/Nacklace/Denim Sling Bag/Bag 1/Denim sling bag 1.webp"),
     tagline: "Hand-stitched denim carriers finished with industrial metal rings.",
-    badge: "SLING BAGS",
+    badge: "BAGS",
   },
 };
 
@@ -116,7 +116,7 @@ export function FeaturedCategories({
                     <span className="font-pixel text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
-                    <h3 className="font-heading hollow-red-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1">
+                    <h3 className="font-heading hollow-cream-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1">
                       {category}
                     </h3>
                     <p className="hidden sm:block font-sans text-[11px] md:text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-2 md:mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">

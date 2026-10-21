@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +31,7 @@ const MOBILE_LINKS = [
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -84,6 +85,8 @@ export default function Navbar() {
     initial: { scaleX: 0 },
     hover: { scaleX: 1, transition: { duration: 0.3 } },
   };
+
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <>

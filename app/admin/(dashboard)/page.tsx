@@ -666,60 +666,75 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative pt-20 md:pt-24">
+    <div className="min-h-screen min-h-[100dvh] bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative overflow-x-hidden">
       <div className="bg-noise" />
 
       {notice && (
         <div
           role="status"
-          className={`fixed top-24 md:top-28 right-4 z-[90] max-w-sm border px-4 py-3 shadow-lg ${
+          className={`fixed top-3 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-[90] border px-3 sm:px-4 py-2.5 sm:py-3 shadow-lg ${
             notice.type === "success"
               ? "border-green-800/40 bg-[#0d1a12] text-green-300"
               : "border-red-800/40 bg-[#1A0A0A] text-red-300"
           }`}
         >
-          <p className="font-sans text-sm">{notice.message}</p>
+          <p className="font-sans text-xs sm:text-sm">{notice.message}</p>
         </div>
       )}
 
-      {/* Header — sits below the site navbar on all screens */}
-      <header className="border-b border-white/[0.08] bg-[#170909]/80 backdrop-blur-md sticky top-20 md:top-24 z-30 px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className="font-heading text-xl sm:text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
-          <span className="text-[10px] uppercase bg-[#E50914]/20 text-[#E50914] px-2 py-0.5 border border-[#E50914]/30 tracking-widest whitespace-nowrap">
-            Vault Dashboard
-          </span>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-          <Link
-            id="admin-storefront-btn"
-            href="/"
-            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
-          >
-            Go to Store
-          </Link>
-          <button
-            id="admin-seed-btn"
-            onClick={handleSeedDatabase}
-            disabled={seeding}
-            className="border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 disabled:opacity-50 cursor-pointer"
-          >
-            {seeding ? "Seeding..." : "Seed Database"}
-          </button>
-          <button
-            id="admin-signout-btn"
-            onClick={handleSignOut}
-            className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer"
-          >
-            Sign Out
-          </button>
-        </div>
-      </header>
+      <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#170909]/95 backdrop-blur-md">
+        <header className="px-3 sm:px-6 py-2.5 sm:py-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <span className="font-heading text-lg sm:text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
+            <span className="text-[9px] sm:text-[10px] uppercase bg-[#E50914]/20 text-[#E50914] px-1.5 sm:px-2 py-0.5 border border-[#E50914]/30 tracking-widest whitespace-nowrap">
+              Vault
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 w-full sm:flex sm:w-auto sm:items-center sm:gap-3">
+            <Link
+              id="admin-storefront-btn"
+              href="/"
+              className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-2 sm:px-4 py-2 text-[9px] sm:text-xs uppercase tracking-widest text-center transition-all duration-300 cursor-pointer"
+            >
+              Store
+            </Link>
+            <button
+              id="admin-seed-btn"
+              onClick={handleSeedDatabase}
+              disabled={seeding}
+              className="border border-[#E50914] bg-[#E50914]/10 hover:bg-[#E50914] text-[#F5F2EF] px-2 sm:px-4 py-2 text-[9px] sm:text-xs uppercase tracking-widest text-center transition-all duration-300 disabled:opacity-50 cursor-pointer"
+            >
+              {seeding ? "Seeding..." : "Seed"}
+            </button>
+            <button
+              id="admin-signout-btn"
+              onClick={handleSignOut}
+              className="border border-white/[0.1] hover:border-[#E50914] hover:text-[#E50914] bg-transparent text-[#F5F2EF]/60 px-2 sm:px-4 py-2 text-[9px] sm:text-xs uppercase tracking-widest text-center whitespace-nowrap transition-all duration-300 cursor-pointer"
+            >
+              Sign Out
+            </button>
+          </div>
+        </header>
 
-      {/* Main Grid */}
-      <div className="flex-1 grid md:grid-cols-[240px_1fr] relative">
-        {/* Sidebar */}
-        <aside className="border-r border-white/[0.08] bg-[#141414] p-6 space-y-6">
+        <nav className="flex md:hidden overflow-x-auto border-t border-white/[0.08] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {(["products", "categories", "orders", "users", "reviews"] as Tab[]).map((tab) => (
+            <button
+              key={`mobile-${tab}`}
+              onClick={() => setActiveTab(tab)}
+              className={`shrink-0 px-4 py-2.5 text-[10px] uppercase tracking-widest border-b-2 cursor-pointer ${
+                activeTab === tab
+                  ? "bg-[#E50914]/10 text-[#E50914] border-[#E50914]"
+                  : "text-[#F5F2EF]/50 border-transparent"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      <div className="flex-1 flex flex-col md:grid md:grid-cols-[220px_1fr] min-h-0 relative">
+        <aside className="hidden md:block border-r border-white/[0.08] bg-[#141414] p-6 space-y-6">
           <div className="space-y-1">
             <p className="font-heading text-sm text-[#F5F2EF]/40 uppercase tracking-widest">Navigation</p>
             <nav className="flex flex-col gap-1.5 pt-3">
@@ -753,8 +768,7 @@ export default function AdminDashboard() {
           </div>
         </aside>
 
-        {/* Content Area */}
-        <main className="p-8 md:p-10 overflow-y-auto">
+        <main className="p-3 sm:p-6 md:p-10 overflow-y-auto overflow-x-hidden min-w-0">
           {loading ? (
             <div className="h-64 flex items-center justify-center flex-col gap-3">
               <span className="w-8 h-8 border-3 border-[#E50914] border-t-transparent rounded-full animate-spin" />
@@ -764,18 +778,18 @@ export default function AdminDashboard() {
             <>
               {/* PRODUCTS TAB */}
               {activeTab === "products" && (
-                <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                      <h2 className="font-heading text-3xl text-[#F5F2EF]">Product Inventory</h2>
-                      <p className="text-xs text-[#F5F2EF]/50 mt-1">Manage and update all pieces of the vault.</p>
+                      <h2 className="font-heading text-xl sm:text-3xl text-[#F5F2EF]">Product Inventory</h2>
+                      <p className="text-[10px] sm:text-xs text-[#F5F2EF]/50 mt-1">Manage and update all pieces of the vault.</p>
                     </div>
                     <button
                       id="admin-add-product-btn"
                       onClick={openAddProductModal}
-                      className="border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] px-5 py-3 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
+                      className="border border-[#E50914] bg-[#E50914]/15 hover:bg-[#E50914] text-[#F5F2EF] px-3 sm:px-5 py-2 sm:py-3 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
                     >
-                      Add New Product
+                      Add Product
                     </button>
                   </div>
 
@@ -794,7 +808,7 @@ export default function AdminDashboard() {
 
                   {/* Products Grid */}
                   {products.length === 0 ? (
-                    <div className="border border-[#E50914]/20 p-12 text-center bg-[#170909]/60 space-y-4">
+                    <div className="border border-[#E50914]/20 p-6 sm:p-12 text-center bg-[#170909]/60 space-y-4">
                       <p className="text-sm text-[#F5F2EF]/60">Your Supabase database is currently empty.</p>
                       {productsWarning && (
                         <p className="text-xs text-amber-400/80 max-w-md mx-auto">{productsWarning}</p>
@@ -808,71 +822,73 @@ export default function AdminDashboard() {
                       </button>
                     </div>
                   ) : filteredProducts.length === 0 ? (
-                    <div className="border border-white/[0.06] p-12 text-center bg-[#170909]/40">
+                    <div className="border border-white/[0.06] p-6 sm:p-12 text-center bg-[#170909]/40">
                       <p className="text-sm text-[#F5F2EF]/50">No products found matching your search.</p>
                     </div>
                   ) : (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
                       {filteredProducts.map((p) => (
-                        <div key={p.id} className="border border-white/[0.08] bg-[#170909]/50 p-4 flex flex-col justify-between group">
+                        <div key={p.id} className="border border-white/[0.08] bg-[#170909]/50 p-2 sm:p-4 flex flex-col justify-between group min-w-0">
                           <div>
-                            <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden mb-3">
+                            <div className="relative aspect-square bg-black rounded-sm overflow-hidden mb-2 sm:mb-3">
                               {p.images && p.images[0] ? (
                                 <Image
                                   src={p.images[0]}
                                   alt={p.name}
                                   fill
-                                  sizes="(max-width: 768px) 100vw, 33vw"
+                                  sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
                                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               ) : (
-                                <div className="absolute inset-0 flex items-center justify-center text-xs text-[#F5F2EF]/30 bg-[#222]">
+                                <div className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs text-[#F5F2EF]/30 bg-[#222]">
                                   No Image
                                 </div>
                               )}
                             </div>
-                            <div className="space-y-1">
-                              <div className="flex items-start justify-between gap-2">
-                                <h3 className="font-heading text-lg text-[#F5F2EF] truncate">{p.name}</h3>
-                                <span className="font-mono text-sm text-[#E50914] font-semibold">{formatPrice(p.price)}</span>
+                            <div className="space-y-0.5 sm:space-y-1">
+                              <div className="flex items-start justify-between gap-1 sm:gap-2">
+                                <h3 className="font-heading text-xs sm:text-lg text-[#F5F2EF] truncate">{p.name}</h3>
+                                <span className="font-mono text-[10px] sm:text-sm text-[#E50914] font-semibold shrink-0">{formatPrice(p.price)}</span>
                               </div>
-                              <p className="text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">{p.category}</p>
-                              <div className="flex gap-2 pt-2">
+                              <p className="text-[8px] sm:text-[10px] uppercase tracking-wider text-[#F5F2EF]/40 truncate">{p.category}</p>
+                              <div className="flex flex-wrap gap-1 sm:gap-2 pt-1 sm:pt-2">
                                 {p.isNew && (
-                                  <span className="text-[8px] uppercase tracking-wider bg-green-950/40 text-green-400 border border-green-800/40 px-1.5 py-0.5">
+                                  <span className="text-[7px] sm:text-[8px] uppercase tracking-wider bg-green-950/40 text-green-400 border border-green-800/40 px-1 sm:px-1.5 py-0.5">
                                     New
                                   </span>
                                 )}
                                 {p.isBestSeller && (
-                                  <span className="text-[8px] uppercase tracking-wider bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/30 px-1.5 py-0.5">
-                                    Best Seller
+                                  <span className="text-[7px] sm:text-[8px] uppercase tracking-wider bg-[#E50914]/20 text-[#E50914] border border-[#E50914]/30 px-1 sm:px-1.5 py-0.5">
+                                    Best
                                   </span>
                                 )}
-                                <span className={`text-[8px] uppercase tracking-wider px-1.5 py-0.5 border ${
+                                <span className={`text-[7px] sm:text-[8px] uppercase tracking-wider px-1 sm:px-1.5 py-0.5 border ${
                                   p.inStock 
                                     ? "bg-zinc-900 text-[#F5F2EF]/60 border-white/[0.08]" 
                                     : "bg-red-950/20 text-red-500 border-red-800/20"
                                 }`}>
-                                  Stock: {p.stockCount}
+                                  {p.stockCount}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="pt-4 mt-4 border-t border-white/[0.06] flex gap-2">
+                          <div className="pt-2 sm:pt-4 mt-2 sm:mt-4 border-t border-white/[0.06] flex gap-1.5 sm:gap-2">
                             <button
                               type="button"
                               onClick={() => openEditProductModal(p)}
-                              className="flex-1 border border-white/[0.08] hover:border-[#E50914] hover:text-[#E50914] text-xs uppercase py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
+                              className="flex-1 border border-white/[0.08] hover:border-[#E50914] hover:text-[#E50914] text-[9px] sm:text-xs uppercase py-1.5 sm:py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
                             >
-                              Edit Piece
+                              <span className="sm:hidden">Edit</span>
+                              <span className="hidden sm:inline">Edit Piece</span>
                             </button>
                             <button
                               type="button"
                               onClick={() => void handleDeleteProduct(p)}
-                              className="border border-red-900/50 hover:border-red-500 hover:bg-red-950/40 text-red-400 hover:text-red-300 text-xs uppercase px-3 py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
+                              className="border border-red-900/50 hover:border-red-500 hover:bg-red-950/40 text-red-400 hover:text-red-300 text-[9px] sm:text-xs uppercase px-2 sm:px-3 py-1.5 sm:py-2 tracking-wider transition-all duration-200 cursor-pointer text-center"
                             >
-                              Delete
+                              <span className="sm:hidden">Del</span>
+                              <span className="hidden sm:inline">Delete</span>
                             </button>
                           </div>
                         </div>
@@ -884,22 +900,22 @@ export default function AdminDashboard() {
 
               {/* CATEGORIES TAB */}
               {activeTab === "categories" && (
-                <div className="space-y-8 max-w-3xl">
+                <div className="space-y-5 sm:space-y-8 max-w-3xl">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#F5F2EF]">Store Categories</h2>
-                    <p className="text-xs text-[#F5F2EF]/50 mt-1">Add and view product classifications.</p>
+                    <h2 className="font-heading text-xl sm:text-3xl text-[#F5F2EF]">Store Categories</h2>
+                    <p className="text-[10px] sm:text-xs text-[#F5F2EF]/50 mt-1">Add and view product classifications.</p>
                   </div>
 
-                  <div className="grid md:grid-cols-[1fr_320px] gap-8">
+                  <div className="grid md:grid-cols-[1fr_320px] gap-4 sm:gap-8">
                     {/* Categories List */}
-                    <div className="border border-white/[0.08] bg-[#170909]/40 p-6 space-y-4">
+                    <div className="border border-white/[0.08] bg-[#170909]/40 p-4 sm:p-6 space-y-4">
                       <h3 className="font-heading text-lg text-[#F5F2EF]">Active Categories</h3>
                       {categories.length === 0 ? (
                         <p className="text-xs text-[#F5F2EF]/40">No categories found. Seed data to populate.</p>
                       ) : (
                         <div className="divide-y divide-white/[0.06]">
                           {categories.map((c) => (
-                            <div key={c.name} className="py-3 flex justify-between items-center gap-4">
+                            <div key={c.name} className="py-3 flex justify-between items-start sm:items-center gap-3 sm:gap-4">
                               <div>
                                 <p className="font-sans text-sm font-semibold text-[#F5F2EF]">{c.name}</p>
                                 <p className="font-sans text-xs text-[#F5F2EF]/40 mt-0.5">{c.description || "No description"}</p>
@@ -918,7 +934,7 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* Add Category Form */}
-                    <div className="border border-white/[0.08] bg-[#170909]/70 p-6 self-start space-y-5">
+                    <div className="border border-white/[0.08] bg-[#170909]/70 p-4 sm:p-6 self-start space-y-5">
                       <h3 className="font-heading text-lg text-[#F5F2EF]">Add Category</h3>
                       {catError && (
                         <p className="text-xs text-red-500 bg-red-950/20 border border-red-800/30 p-2 text-center">
@@ -966,18 +982,69 @@ export default function AdminDashboard() {
               {activeTab === "orders" && (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#F5F2EF]">Purchase History</h2>
-                    <p className="text-xs text-[#F5F2EF]/50 mt-1">Track and manage customer receipts.</p>
+                    <h2 className="font-heading text-xl sm:text-3xl text-[#F5F2EF]">Purchase History</h2>
+                    <p className="text-[10px] sm:text-xs text-[#F5F2EF]/50 mt-1">Track and manage customer receipts.</p>
                   </div>
 
                   <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
                     {orders.length === 0 ? (
-                      <div className="p-12 text-center">
+                      <div className="p-8 sm:p-12 text-center">
                         <p className="text-sm text-[#F5F2EF]/40">No orders recorded in database.</p>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                      <>
+                      <div className="md:hidden divide-y divide-white/[0.06]">
+                        {orders.map((o) => (
+                          <div key={o.id} className="p-3 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <p className="font-mono text-[11px] font-semibold text-[#E50914] truncate">{o.id}</p>
+                                <p className="text-[10px] text-[#F5F2EF]/50">{o.date}</p>
+                              </div>
+                              <span className={`shrink-0 px-2 py-0.5 border text-[9px] uppercase tracking-wider ${
+                                o.status === "Delivered"
+                                  ? "bg-green-950/20 text-green-400 border-green-800/30"
+                                  : o.status === "Shipped"
+                                  ? "bg-blue-950/20 text-blue-400 border-blue-800/30"
+                                  : "bg-amber-950/20 text-amber-400 border-amber-800/30"
+                              }`}>
+                                {o.status}
+                              </span>
+                            </div>
+                            <p className="text-xs font-semibold truncate">{o.customerName}</p>
+                            <p className="text-[10px] text-[#F5F2EF]/40 truncate">{o.customerEmail}</p>
+                            {o.customerPhone && (
+                              <a
+                                href={`https://wa.me/${o.customerPhone.replace(/\D/g, "")}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[10px] font-mono text-[#25D366]"
+                              >
+                                {o.customerPhone}
+                              </a>
+                            )}
+                            <p className="text-[10px] text-[#F5F2EF]/55 line-clamp-2">
+                              {o.items?.map((item) => `${item.name} (${item.quantity}x)`).join(", ") || "No items"}
+                            </p>
+                            <div className="flex items-center justify-between gap-2 pt-1">
+                              <span className="font-mono text-xs font-semibold">{formatPrice(o.total)}</span>
+                              <select
+                                value={o.status}
+                                onChange={(e) => handleUpdateOrderStatus(o.id, e.target.value)}
+                                className="bg-[#070707] border border-white/[0.08] px-2 py-1 text-[11px] text-[#F5F2EF] outline-none focus:border-[#E50914] max-w-[45%]"
+                              >
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                              </select>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[720px]">
                           <thead>
                             <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
                               <th className="p-4 pl-6">Order ID</th>
@@ -1056,6 +1123,7 @@ export default function AdminDashboard() {
                           </tbody>
                         </table>
                       </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -1063,20 +1131,34 @@ export default function AdminDashboard() {
 
               {/* USERS TAB */}
               {activeTab === "users" && (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   <div>
-                    <h2 className="font-heading text-3xl text-[#F5F2EF]">User Registry</h2>
-                    <p className="text-xs text-[#F5F2EF]/50 mt-1">View list of registered profiles and addresses.</p>
+                    <h2 className="font-heading text-xl sm:text-3xl text-[#F5F2EF]">User Registry</h2>
+                    <p className="text-[10px] sm:text-xs text-[#F5F2EF]/50 mt-1">View list of registered profiles and addresses.</p>
                   </div>
 
                   <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
                     {users.length === 0 ? (
-                      <div className="p-12 text-center">
+                      <div className="p-8 sm:p-12 text-center">
                         <p className="text-sm text-[#F5F2EF]/40">No registered profiles in database.</p>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                      <>
+                      <div className="md:hidden divide-y divide-white/[0.06]">
+                        {users.map((u) => (
+                          <div key={u.email} className="p-3 space-y-1">
+                            <p className="font-semibold text-xs text-[#E50914] break-all">{u.email}</p>
+                            <p className="text-xs">{u.fullName || "Not provided"}</p>
+                            <p className="text-[10px] text-[#F5F2EF]/60">{u.address || "No address"}</p>
+                            <p className="text-[10px] text-[#F5F2EF]/40">
+                              {[u.city, u.postalCode].filter(Boolean).join(" · ") || "-"}
+                              {u.createdAt ? ` · ${new Date(u.createdAt).toLocaleDateString()}` : ""}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[720px]">
                           <thead>
                             <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
                               <th className="p-4 pl-6">Email</th>
@@ -1103,6 +1185,7 @@ export default function AdminDashboard() {
                           </tbody>
                         </table>
                       </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -1110,34 +1193,57 @@ export default function AdminDashboard() {
 
               {/* REVIEWS TAB */}
               {activeTab === "reviews" && (
-                <div className="space-y-8">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-4 sm:space-y-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <div>
-                      <h2 className="font-heading text-3xl text-[#F5F2EF]">Customer Reviews</h2>
-                      <p className="text-xs text-[#F5F2EF]/50 mt-1">
+                      <h2 className="font-heading text-xl sm:text-3xl text-[#F5F2EF]">Customer Reviews</h2>
+                      <p className="text-[10px] sm:text-xs text-[#F5F2EF]/50 mt-1">
                         Moderate and delete customer reviews submitted from the storefront.
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => void loadAdminReviews()}
-                      className="border border-white/[0.08] hover:border-[#E50914] text-[#F5F2EF]/60 hover:text-[#E50914] px-4 py-2 text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
+                      className="border border-white/[0.08] hover:border-[#E50914] text-[#F5F2EF]/60 hover:text-[#E50914] px-3 sm:px-4 py-2 text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer self-start"
                     >
-                      Refresh Reviews
+                      Refresh
                     </button>
                   </div>
 
                   <div className="border border-white/[0.08] bg-[#170909]/40 overflow-hidden">
                     {adminReviews.length === 0 ? (
-                      <div className="p-12 text-center">
+                      <div className="p-8 sm:p-12 text-center">
                         <p className="text-sm text-[#F5F2EF]/40 mb-2">No reviews found.</p>
                         <p className="text-xs text-[#F5F2EF]/25">
                           Customers can leave reviews from the home page or product pages.
                         </p>
                       </div>
                     ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                      <>
+                      <div className="md:hidden divide-y divide-white/[0.06]">
+                        {adminReviews.map((r) => (
+                          <div key={r.id} className="p-3 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <p className="text-xs font-semibold text-[#E50914] truncate">{r.productName || "Unknown"}</p>
+                                <p className="text-[10px] text-[#F5F2EF]/50">{r.author} · {r.date}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => void handleDeleteReview(r.id)}
+                                className="shrink-0 border border-[#E50914]/50 bg-[#E50914]/10 text-[#E50914] px-2 py-1 text-[9px] uppercase tracking-widest"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                            <p className="text-[11px] text-[#E50914]">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</p>
+                            <p className="text-xs font-heading">{r.title}</p>
+                            <p className="text-[11px] text-[#F5F2EF]/60 line-clamp-3">{r.body}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[800px]">
                           <thead>
                             <tr className="border-b border-white/[0.08] bg-black/20 text-[10px] uppercase tracking-wider text-[#F5F2EF]/40">
                               <th className="p-4 pl-6">Product</th>
@@ -1197,8 +1303,9 @@ export default function AdminDashboard() {
                           </tbody>
                         </table>
                       </div>
+                      </>
                     )}
-                    <div className="border-t border-white/[0.06] px-6 py-3 flex flex-wrap gap-6 text-[10px] uppercase tracking-widest text-[#F5F2EF]/40">
+                    <div className="border-t border-white/[0.06] px-3 sm:px-6 py-3 flex flex-wrap gap-4 sm:gap-6 text-[10px] uppercase tracking-widest text-[#F5F2EF]/40">
                       <span>
                         Total: {adminReviews.length} review{adminReviews.length !== 1 ? "s" : ""}
                       </span>
@@ -1222,9 +1329,9 @@ export default function AdminDashboard() {
 
       {/* PRODUCT ADD/EDIT MODAL */}
       {productToDelete && (
-        <div className="fixed inset-0 z-[70] bg-black/80 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#141414] border border-white/[0.08] p-6 space-y-5">
-            <h3 className="font-heading text-xl text-[#F5F2EF]">Delete product</h3>
+        <div className="fixed inset-0 z-[70] bg-black/80 flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="w-full max-w-md bg-[#141414] border border-white/[0.08] p-5 sm:p-6 space-y-5">
+            <h3 className="font-heading text-lg sm:text-xl text-[#F5F2EF]">Delete product</h3>
             <p className="font-sans text-sm text-[#F5F2EF]/70 leading-relaxed">
               Are you sure you want to delete{" "}
               <span className="text-[#F5F2EF] font-semibold">{productToDelete.name}</span>?
@@ -1251,10 +1358,10 @@ export default function AdminDashboard() {
       )}
 
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 overflow-y-auto">
-          <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative p-6 md:p-8 space-y-6">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <h3 className="font-heading text-2xl text-[#F5F2EF]">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 overflow-y-auto">
+          <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-y-auto shadow-2xl relative p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 sm:pb-4 sticky top-0 bg-[#170909] z-10 -mx-4 px-4 sm:static sm:mx-0 sm:px-0">
+              <h3 className="font-heading text-lg sm:text-2xl text-[#F5F2EF] pr-3 truncate">
                 {isNewProduct ? "Forging New Piece" : `Modifying Piece: ${formName}`}
               </h3>
               <button
@@ -1498,7 +1605,7 @@ export default function AdminDashboard() {
 
                   {/* Thumbnail Previews */}
                   {formImages.length > 0 && (
-                    <div className="grid grid-cols-4 gap-2 pt-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2">
                       {formImages.map((imgUrl, idx) => (
                         <div key={idx} className="relative aspect-square border border-white/[0.08] bg-black group rounded-sm overflow-hidden">
                           <Image
@@ -1511,7 +1618,7 @@ export default function AdminDashboard() {
                           <button
                             type="button"
                             onClick={() => removeImage(idx)}
-                            className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[9px] text-red-500 font-bold uppercase tracking-wider cursor-pointer"
+                            className="absolute inset-0 bg-black/75 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center text-[9px] text-red-500 font-bold uppercase tracking-wider cursor-pointer"
                           >
                             Remove
                           </button>
@@ -1592,7 +1699,7 @@ export default function AdminDashboard() {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.08]">
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-4 border-t border-white/[0.08] sticky bottom-0 bg-[#170909] pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}

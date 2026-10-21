@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen w-full flex items-center justify-center bg-[#070707] px-4">
+    <main className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center bg-[#070707] px-4 py-8">
       {/* Noise Overlay */}
       <div className="bg-noise" />
 
@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-[#E50914] opacity-10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[350px] h-[350px] bg-[#E50914] opacity-5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="w-full max-w-md border border-white/[0.06] bg-[#170909]/80 backdrop-blur-xl p-8 md:p-10 shadow-2xl relative">
+      <div className="w-full max-w-md border border-white/[0.06] bg-[#170909]/80 backdrop-blur-xl p-5 sm:p-8 md:p-10 shadow-2xl relative">
         {/* Accent Top Border */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E50914] to-transparent" />
 

@@ -45,6 +45,20 @@
   }
 }
 
+/* Outline-only category titles: stroke with transparent fill, no glow */
+.hollow-cream-text {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 1px #E8DCC4;
+  paint-order: stroke fill;
+}
+
+@media (max-width: 639px) {
+  .hollow-cream-text {
+    -webkit-text-stroke-width: 0.85px;
+  }
+}
+
 html {
   overflow-x: hidden;
   max-width: 100%;
