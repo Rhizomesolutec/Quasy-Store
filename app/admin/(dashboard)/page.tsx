@@ -556,8 +556,8 @@ export default function AdminDashboard() {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Image must be 5MB or smaller.");
+    if (file.size > 4 * 1024 * 1024) {
+      alert("Image must be 4MB or smaller.");
       e.target.value = "";
       return;
     }
@@ -575,7 +575,7 @@ export default function AdminDashboard() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data?.url) {
-        alert(data?.error || "Upload failed. Please try again.");
+        alert(data?.error || `Upload failed (${res.status}). Please try a JPG or PNG under 4MB.`);
         return;
       }
 
@@ -1599,7 +1599,7 @@ export default function AdminDashboard() {
                       {uploadingImage ? "Uploading image..." : "Upload Image from Device"}
                     </span>
                     <span className="text-[9px] text-[#F5F2EF]/40 uppercase tracking-wide">
-                      PNG, JPG, WEBP up to 5MB
+                      PNG, JPG, WEBP up to 4MB
                     </span>
                   </div>
 
