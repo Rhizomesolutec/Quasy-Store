@@ -145,6 +145,8 @@ export function CustomerReviews({ products }: { products: Product[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productId,
+          productSlug: productOptions.find((p) => p.id === productId)?.slug,
+          productName: productOptions.find((p) => p.id === productId)?.name,
           author: author.trim(),
           rating: ratingInput,
           title: title.trim(),

@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
-import { RetroCatalogPage } from "@/components/catalog/RetroCatalogPage";
-import { filterHandPicked, getCatalogProducts } from "@/lib/catalog";
+import { RetroSectionLanding } from "@/components/catalog/RetroSectionLanding";
+import { getCatalogProducts } from "@/lib/catalog";
+import { filterShowcaseSub, getShowcaseLine } from "@/lib/showcase";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Hand Picked",
-  description: "Watches, bracelets, and cuffs picked by hand at Qusay Store.",
+  description: "Watches, bracelets, and pieces picked by hand at Qusay Store.",
 };
 
 export const dynamic = "force-dynamic";
 
 export default async function HandPickedPage() {
+  const line = getShowcaseLine("hand-picked");
+  if (!line) notFound();
   const { products } = await getCatalogProducts();
-
-  return (
-    <RetroCatalogPage
-      eyebrow="For the Wrist"
-      title="Hand Picked"
-      note="Watches, bracelets, and cuffs we pick by hand — selected one by one for the wrist."
-      stamp="Hand Picked"
-      stampColor="#FFE600"
-      products={filterHandPicked(products)}
-    />
-  );
+  const counts: Record<string, number> = {};
+  for (const sub of line.subs) {
+    counts[sub] = filterShowcaseSub(products, line, sub).length;
+  }
+  return <RetroSectionLanding line={line} counts={counts} products={products} />;
 }

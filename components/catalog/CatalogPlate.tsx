@@ -37,14 +37,14 @@ export function CatalogPlate({
 
   return (
     <Link href={`/shop/${product.slug}`} className="group block h-full">
-      <article className="relative h-full bg-[#14110c] border-2 border-[#3a3428] p-2 sm:p-3 retro-box-shadow transition-colors duration-300 group-hover:border-[#E50914]">
-        <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#c4a574] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#c4a574] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-[#c4a574] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#c4a574] pointer-events-none" />
+      <article className="relative h-full bg-[#14110c] border-2 border-white/40 p-2 sm:p-3 retro-box-shadow transition-colors duration-300 group-hover:border-[#ED5903]">
+        <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#FFD400] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#FFD400] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-[#FFD400] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#FFD400] pointer-events-none" />
 
         <div className="flex items-center justify-between mb-2 px-0.5">
-          <span className="font-pixel text-[7px] sm:text-[8px] uppercase tracking-widest text-[#c4a574]">
+          <span className="font-pixel text-[7px] sm:text-[8px] uppercase tracking-widest text-[#FFD400]">
             Plate {plate}
           </span>
           <span className="font-mono text-[8px] sm:text-[9px] text-[#F5F2EF]/35">CH {plate}</span>
@@ -65,12 +65,12 @@ export function CatalogPlate({
         </div>
 
         <div className="mt-2 sm:mt-3 px-0.5">
-          <h3 className="font-heading text-sm sm:text-lg text-[#E8DCC4] leading-tight truncate group-hover:text-[#F5F2EF] transition-colors">
+          <h3 className="font-heading text-sm sm:text-lg text-white leading-tight truncate group-hover:text-[#FFD400] transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-center justify-between mt-1.5 border-t border-[#3a3428] pt-1.5">
-            <span className="font-pixel text-[9px] sm:text-[10px] text-[#FFE600]">{formatPrice(product.price)}</span>
-            <span className="font-mono text-[8px] uppercase tracking-widest text-[#E50914]">View ►</span>
+          <div className="flex items-center justify-between mt-1.5 border-t border-white/20 pt-1.5">
+            <span className="font-pixel text-[9px] sm:text-[10px] text-[#FFD400]">{formatPrice(product.price)}</span>
+            <span className="font-mono text-[8px] uppercase tracking-widest text-[#ED5903]">View ►</span>
           </div>
         </div>
       </article>

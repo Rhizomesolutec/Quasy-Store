@@ -24,7 +24,7 @@ export function BrandStoryPreview() {
             sizes="(min-width: 768px) 40vw, 50vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070707]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg/50 to-transparent" />
         </motion.div>
 
         <motion.div

@@ -26,8 +26,8 @@ export function FeaturedCollectionBanner() {
           priority={false}
         />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/75 to-[#070707]/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-vintage-bg via-vintage-bg/75 to-vintage-bg/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg via-transparent to-vintage-bg/50" />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-12 lg:px-24 py-24">
         <motion.div

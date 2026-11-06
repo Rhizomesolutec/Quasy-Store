@@ -81,7 +81,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-[100vh] bg-[#0b0b0b] overflow-hidden flex flex-col justify-center items-center py-16 px-6 lg:px-16 z-0 select-none"
+      className="relative w-full min-h-[100vh] bg-vintage-bg overflow-hidden flex flex-col justify-center items-center py-16 px-6 lg:px-16 z-0 select-none"
     >
       {/* PNG Sequence Background Canvas Wrapper (fades out completely when animation finishes) */}
       <div
@@ -147,7 +147,7 @@ export default function Hero({ isMobileSequenceAvailable = false }: HeroProps) {
                     damping: 16,
                     delay: i * 0.12 + 0.6,
                   }}
-                  className="w-[1px] bg-gradient-to-b from-[#E50914]/15 via-[#E50914]/60 to-[#F5F2EF]/30 origin-top"
+                  className="w-[1px] bg-gradient-to-b from-[#ED5903]/15 via-[#ED5903]/70 to-[#FFD400]/40 origin-top"
                 />
 
                 {/* Hanging swaying Letter */}

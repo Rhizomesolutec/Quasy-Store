@@ -27,7 +27,7 @@ export function PageHero({ eyebrow, title, description, breadcrumbs, align = "ce
               className="object-cover opacity-20 grayscale-[0.5] brightness-[0.4] scale-105"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/80 z-0 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg via-transparent to-vintage-bg/80 z-0 pointer-events-none" />
         </>
       ) : (
         <div

@@ -114,6 +114,7 @@ export default async function ProductDetailPage({
           reviews={product.reviews}
           rating={product.rating}
           count={product.reviewCount}
+          productId={product.id}
           productSlug={product.slug}
           productName={product.name}
         />

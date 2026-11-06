@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { RetroCatalogPage } from "@/components/catalog/RetroCatalogPage";
-import { chainImageForIndex } from "@/lib/chainImages";
-import { filterHandmade, getCatalogProducts } from "@/lib/catalog";
+import { RetroSectionLanding } from "@/components/catalog/RetroSectionLanding";
+import { getCatalogProducts } from "@/lib/catalog";
+import { filterShowcaseSub, getShowcaseLine } from "@/lib/showcase";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Handmade",
@@ -11,20 +12,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function HandmadePage() {
+  const line = getShowcaseLine("handmade");
+  if (!line) notFound();
   const { products } = await getCatalogProducts();
-  const handmade = filterHandmade(products).map((product, index) => ({
-    ...product,
-    images: [chainImageForIndex(index)],
-  }));
-
-  return (
-    <RetroCatalogPage
-      eyebrow="From the Bench"
-      title="Handmade"
-      note="Cast, filed, and finished by hand — every plate in this drawer is a workshop original."
-      stamp="Handmade"
-      stampColor="#00FF66"
-      products={handmade}
-    />
-  );
+  const counts: Record<string, number> = {};
+  for (const sub of line.subs) {
+    counts[sub] = filterShowcaseSub(products, line, sub).length;
+  }
+  return <RetroSectionLanding line={line} counts={counts} products={products} />;
 }

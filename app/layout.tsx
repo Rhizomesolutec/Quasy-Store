@@ -56,7 +56,7 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${dmSerifDisplay.variable} ${pressStart2P.variable} ${vt323.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#070707] text-[#F5F2EF] font-sans selection:bg-[#E50914] selection:text-[#F5F2EF]">
+      <body className="min-h-full flex flex-col bg-vintage-bg text-white font-sans selection:bg-[#ED5903] selection:text-white">
         <CartProvider>
           <WishlistProvider>
             <CustomCursor />

@@ -48,7 +48,7 @@ export default async function CollectionDetailPage({
           priority
           className="object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#070707]/40 via-[#070707]/60 to-[#070707]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-vintage-bg/40 via-vintage-bg/60 to-vintage-bg" />
         <div className="relative z-10 max-w-3xl px-6 text-center flex flex-col items-center">
           <div className="mb-6">
             <Breadcrumb

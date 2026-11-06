@@ -76,7 +76,7 @@ export function FeaturedProductsCarousel({ products }: { products: Product[] }) 
                   draggable={false}
                   className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070707]/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="absolute bottom-4 left-4 right-4 font-mono text-[10px] uppercase font-bold tracking-widest text-[#E50914] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-1">
                   <span>View Details</span>
                   <span>►</span>

@@ -18,6 +18,7 @@ export interface Product {
   slug: string;
   name: string;
   category: string;
+  line?: string;
   collection: string;
   price: number;
   compareAtPrice?: number;

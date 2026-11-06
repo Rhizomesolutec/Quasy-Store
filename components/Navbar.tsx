@@ -13,6 +13,9 @@ const SHOP_LINKS = [
   { label: "Shop All", href: "/shop" },
   { label: "Handmade", href: "/handmade" },
   { label: "Hand Picked", href: "/hand-picked" },
+  { label: "Qusay Made", href: "/qusay-made" },
+  { label: "Toys", href: "/toys" },
+  { label: "Crystals", href: "/crystals" },
   { label: "Categories", href: "/categories" },
   { label: "Collections", href: "/collections" },
   { label: "New Arrivals", href: "/new-arrivals" },
@@ -75,8 +78,8 @@ export default function Navbar() {
   // Nav link animations
   const linkVariants = {
     hover: {
-      color: "#E50914",
-      textShadow: "0 0 8px rgba(229, 9, 20, 0.6)",
+      color: "#ED5903",
+      textShadow: "0 0 8px rgba(237, 89, 3, 0.6)",
       transition: { duration: 0.2 },
     },
   };
@@ -96,7 +99,7 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 font-sans ${isScrolled
-          ? "py-4 bg-[#0b0b0b]/85 backdrop-blur-md border-b border-[#E50914]/20 shadow-lg shadow-black/35"
+          ? "py-4 bg-vintage-bg/85 backdrop-blur-md border-b border-[#ED5903]/20 shadow-lg shadow-black/35"
           : "py-6 bg-transparent border-b border-transparent"
           }`}
       >
@@ -130,7 +133,7 @@ export default function Navbar() {
                   variants={borderVariants}
                   initial="initial"
                   animate={isShopMenuOpen ? "hover" : "initial"}
-                  className="absolute bottom-0 left-0 w-full h-[1px] bg-[#E50914] origin-left"
+                  className="absolute bottom-0 left-0 w-full h-[1px] bg-[#ED5903] origin-left"
                 />
               </Link>
 
@@ -143,12 +146,12 @@ export default function Navbar() {
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute top-full left-0 pt-3 w-56"
                   >
-                    <div className="bg-[#070707]/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
+                    <div className="bg-vintage-bg/95 backdrop-blur-md border border-white/[0.08] shadow-xl py-2">
                       {SHOP_LINKS.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#F5F2EF]/70 hover:text-[#E50914] hover:bg-white/[0.03] transition-colors"
+                          className="block px-5 py-2.5 text-[11px] uppercase tracking-[0.15em] text-[#F5F2EF]/70 hover:text-[#ED5903] hover:bg-white/[0.03] transition-colors"
                         >
                           {link.label}
                         </Link>
@@ -167,7 +170,7 @@ export default function Navbar() {
                   </motion.span>
                   <motion.span
                     variants={borderVariants}
-                    className="absolute bottom-0 left-0 w-full h-[1px] bg-[#E50914] origin-left"
+                    className="absolute bottom-0 left-0 w-full h-[1px] bg-[#ED5903] origin-left"
                     style={{ scaleX: 0 }}
                     whileHover={{ scaleX: 1 }}
                   />
@@ -179,7 +182,7 @@ export default function Navbar() {
           {/* Branding Logo (Centered) */}
           <Link
             href="/"
-            className={`absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#E50914] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(229,9,20,0.5)] hover:text-[#FF3B5C] hover:drop-shadow-[0_0_12px_rgba(229,9,20,0.75)] transition-all duration-300 ${
+            className={`absolute left-1/2 -translate-x-1/2 font-heading text-xl md:text-2xl text-[#ED5903] tracking-[0.25em] font-bold drop-shadow-[0_0_8px_rgba(237,89,3,0.5)] hover:text-[#FFD400] hover:drop-shadow-[0_0_12px_rgba(255,212,0,0.55)] transition-all duration-300 ${
               isSearchOpen ? "hidden md:block" : "block"
             }`}
           >
@@ -202,7 +205,7 @@ export default function Navbar() {
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                     placeholder="Search relics..."
-                    className="bg-[#1A0A0A]/90 border border-white/[0.12] rounded px-3 py-1 text-xs text-[#F5F2EF] placeholder-[#F5F2EF]/40 outline-none focus:border-[#E50914]/60 mr-1.5 max-xs:w-28"
+                    className="bg-[#1A0A0A]/90 border border-white/[0.12] rounded px-3 py-1 text-xs text-[#F5F2EF] placeholder-[#F5F2EF]/40 outline-none focus:border-[#ED5903]/60 mr-1.5 max-xs:w-28"
                   />
                 )}
               </AnimatePresence>
@@ -211,7 +214,7 @@ export default function Navbar() {
                 onClick={() => {
                   if (!isSearchOpen) setIsSearchOpen(true);
                 }}
-                className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center justify-center cursor-pointer select-none"
+                className="text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-1 flex items-center justify-center cursor-pointer select-none"
                 aria-label="Search"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -223,7 +226,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsSearchOpen(false)}
-                  className="text-[#F5F2EF]/50 hover:text-[#E50914] text-xs p-1 ml-0.5"
+                  className="text-[#F5F2EF]/50 hover:text-[#ED5903] text-xs p-1 ml-0.5"
                   aria-label="Close search"
                 >
                   ✕
@@ -234,7 +237,7 @@ export default function Navbar() {
             {/* Wishlist Link */}
             <Link
               href="/wishlist"
-              className="hidden sm:block relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 select-none"
+              className="hidden sm:block relative text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-1 select-none"
               aria-label="Wishlist"
             >
               <svg className="w-5 h-5" viewBox="0 0 9 9" fill="currentColor">
@@ -252,7 +255,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
+                    className="absolute -top-1 -right-1.5 w-4 h-4 bg-[#ED5903] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
                   >
                     {wishlist.length}
                   </motion.span>
@@ -263,7 +266,7 @@ export default function Navbar() {
             {/* Profile Link */}
             <Link
               href="/account"
-              className="hidden sm:block text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 select-none"
+              className="hidden sm:block text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-1 select-none"
               aria-label="Account"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -277,7 +280,7 @@ export default function Navbar() {
             {/* Shopping Cart Button */}
             <button
               onClick={openCart}
-              className="relative text-[#F5F2EF] hover:text-[#E50914] transition-colors p-1 flex items-center select-none cursor-pointer"
+              className="relative text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-1 flex items-center select-none cursor-pointer"
               aria-label="Cart"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
@@ -292,7 +295,7 @@ export default function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1 right-0 sm:-right-1.5 w-4 h-4 bg-[#E50914] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
+                    className="absolute -top-1 right-0 sm:-right-1.5 w-4 h-4 bg-[#ED5903] text-[#F5F2EF] rounded-full text-[8px] font-pixel font-bold flex items-center justify-center"
                   >
                     {cartTotalItems}
                   </motion.span>
@@ -311,12 +314,12 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 bg-[#070707] z-50 flex flex-col justify-center items-center gap-5 overflow-y-auto py-24"
+            className="fixed inset-0 bg-vintage-bg z-50 flex flex-col justify-center items-center gap-5 overflow-y-auto py-24"
           >
             {/* Close Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="absolute top-6 right-6 text-[#F5F2EF] hover:text-[#E50914] transition-colors p-2"
+              className="absolute top-6 right-6 text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-2"
               aria-label="Close menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -335,7 +338,7 @@ export default function Navbar() {
                 <Link
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="font-heading text-xl md:text-2xl tracking-widest text-[#F5F2EF] hover:text-[#E50914] transition-colors"
+                  className="font-heading text-xl md:text-2xl tracking-widest text-[#F5F2EF] hover:text-[#ED5903] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -371,7 +374,7 @@ export default function Navbar() {
                 <h3 className="font-heading text-lg text-[#F5F2EF] tracking-wider uppercase font-semibold">Shopping Bag</h3>
                 <button
                   onClick={closeCart}
-                  className="text-[#F5F2EF] hover:text-[#E50914] transition-colors p-2"
+                  className="text-[#F5F2EF] hover:text-[#ED5903] transition-colors p-2"
                   aria-label="Close cart"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +392,7 @@ export default function Navbar() {
                       <Link
                         href="/shop"
                         onClick={closeCart}
-                        className="border border-[#E50914] px-6 py-2 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#E50914] transition-all duration-300"
+                        className="border border-[#ED5903] px-6 py-2 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#ED5903] transition-all duration-300"
                       >
                         Browse Shop
                       </Link>
@@ -439,7 +442,7 @@ export default function Navbar() {
 
                                 <button
                                   onClick={() => removeItem(item.productId, item.variant, item.size)}
-                                  className="text-[#F5F2EF]/40 hover:text-[#E50914] transition-colors p-1"
+                                  className="text-[#F5F2EF]/40 hover:text-[#ED5903] transition-colors p-1"
                                   aria-label="Remove item"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -470,14 +473,14 @@ export default function Navbar() {
                         <Link
                           href="/cart"
                           onClick={closeCart}
-                          className="block w-full text-center border border-[#E50914] text-[#F5F2EF] uppercase tracking-widest text-xs py-3 font-semibold hover:bg-[#E50914] transition-all duration-300"
+                          className="block w-full text-center border border-[#ED5903] text-[#F5F2EF] uppercase tracking-widest text-xs py-3 font-semibold hover:bg-[#ED5903] transition-all duration-300"
                         >
                           View Full Bag
                         </Link>
                         <Link
                           href="/payment"
                           onClick={closeCart}
-                          className="block w-full text-center bg-[#E50914] text-[#F5F2EF] uppercase tracking-widest text-xs py-3.5 font-semibold hover:bg-[#660000] transition-all duration-300 shadow-[0_0_20px_rgba(229, 9, 20,0.2)]"
+                          className="block w-full text-center bg-[#ED5903] text-white uppercase tracking-widest text-xs py-3.5 font-semibold hover:bg-[#FFD400] hover:text-[#2A2F93] transition-all duration-300 shadow-[0_0_20px_rgba(237,89,3,0.25)]"
                         >
                           Proceed to Checkout
                         </Link>
@@ -490,14 +493,14 @@ export default function Navbar() {
               {/* Checkout Progress States */}
               {checkoutStep === "processing" && (
                 <div className="flex-1 flex flex-col justify-center items-center text-center p-6 space-y-4">
-                  <div className="w-8 h-8 border-2 border-[#F5F2EF]/20 border-t-[#E50914] rounded-full animate-spin" />
+                  <div className="w-8 h-8 border-2 border-[#F5F2EF]/20 border-t-[#ED5903] rounded-full animate-spin" />
                   <p className="font-sans text-xs tracking-widest text-[#F5F2EF]/60 uppercase animate-pulse">Securing Transaction...</p>
                 </div>
               )}
 
               {checkoutStep === "success" && (
                 <div className="flex-1 flex flex-col justify-center items-center text-center p-6 space-y-6">
-                  <div className="w-12 h-12 bg-[#E50914]/20 rounded-full flex items-center justify-center border border-[#E50914]/40 animate-bounce">
+                  <div className="w-12 h-12 bg-[#ED5903]/20 rounded-full flex items-center justify-center border border-[#ED5903]/40 animate-bounce">
                     <svg className="w-6 h-6 text-[#F5F2EF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -510,7 +513,7 @@ export default function Navbar() {
                   </div>
                   <button
                     onClick={resetCheckout}
-                    className="border border-[#E50914] px-8 py-2.5 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#E50914] transition-all duration-300"
+                    className="border border-[#ED5903] px-8 py-2.5 text-xs tracking-widest uppercase text-[#F5F2EF] hover:bg-[#ED5903] transition-all duration-300"
                   >
                     Done
                   </button>

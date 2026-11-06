@@ -98,9 +98,9 @@ export function FeaturedCategories({
               >
                 <Link
                   href={`/categories/${categoryToSlug(category)}`}
-                  className="group relative block aspect-square sm:aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#E50914]/50 retro-box-shadow transition-all duration-500 hover:border-[#E50914]"
+                  className="group relative block aspect-square sm:aspect-[5/4] overflow-hidden rounded-sm bg-black border-2 border-[#ED5903]/70 retro-box-shadow transition-all duration-500 hover:border-[#FFD400]"
                 >
-                  <div className="absolute top-2 left-2 md:top-3 md:left-3 z-20 px-2 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#E50914]">
+                  <div className="absolute top-2 left-2 md:top-3 md:left-3 z-20 px-2 py-0.5 md:px-3 md:py-1 text-[9px] md:text-[10px] font-black text-white uppercase tracking-wider border border-black font-mono shadow-sm bg-[#ED5903]">
                     {meta.badge}
                   </div>
 
@@ -111,9 +111,9 @@ export function FeaturedCategories({
                     sizes="50vw"
                     className="object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg via-vintage-bg/30 to-transparent" />
                   <div className="absolute inset-0 flex flex-col items-start justify-end p-3 sm:p-4 md:p-8">
-                    <span className="font-pixel text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-1 text-[#E50914]">
+                    <span className="font-pixel text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-1 text-[#FFD400]">
                       {count} {count === 1 ? "piece" : "pieces"}
                     </span>
                     <h3 className="font-heading hollow-cream-text text-sm sm:text-2xl md:text-4xl mb-1 md:mb-2 tracking-wide sm:tracking-wider whitespace-nowrap sm:whitespace-normal transition-all duration-300 group-hover:translate-x-1">
@@ -122,9 +122,9 @@ export function FeaturedCategories({
                     <p className="hidden sm:block font-sans text-[11px] md:text-xs text-[#F5F2EF]/70 max-w-xs leading-relaxed mb-2 md:mb-4 opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 font-mono">
                       {meta.tagline}
                     </p>
-                    <span className="font-mono text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-wider sm:tracking-widest text-[#F5F2EF] border-b border-[#E50914]/40 pb-0.5 sm:pb-1 transition-colors duration-300 flex items-center gap-1 font-bold max-w-full">
+                    <span className="font-mono text-[8px] sm:text-[9px] md:text-[10px] uppercase tracking-wider sm:tracking-widest text-white border-b border-[#ED5903]/50 pb-0.5 sm:pb-1 transition-colors duration-300 flex items-center gap-1 font-bold max-w-full">
                       <span className="truncate">Explore {category}</span>
-                      <span className="text-[#E50914] shrink-0">►</span>
+                      <span className="text-[#FFD400] shrink-0">►</span>
                     </span>
                   </div>
                 </Link>

@@ -40,7 +40,7 @@ export function SocialGallery() {
                   sizes="(min-width: 768px) 25vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-[#070707]/0 group-hover:bg-[#070707]/60 transition-colors duration-500 flex flex-col items-center justify-center gap-2">
+                <div className="absolute inset-0 bg-vintage-bg/0 group-hover:bg-vintage-bg/60 transition-colors duration-500 flex flex-col items-center justify-center gap-2">
                   <span className="font-mono text-[10px] uppercase font-black tracking-widest px-3 py-1 text-white border border-black bg-[#E50914] opacity-0 group-hover:opacity-100 transition-opacity">
                     VIEW POST ►
                   </span>

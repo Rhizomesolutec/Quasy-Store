@@ -7,6 +7,13 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import { PRODUCTS, COLLECTIONS, CATEGORIES } from "@/lib/products";
+import {
+  SHOWCASE_LINES,
+  parseLineFromDetails,
+  shopCategoryForSub,
+  stripLineFromDetails,
+  withLineInDetails,
+} from "@/lib/showcase";
 
 const supabase = createClient();
 
@@ -45,7 +52,7 @@ interface DBProduct {
   variantLabel: string;
   tagline: string;
   description: string;
-  details: string[];
+  details?: string[];
   shippingInfo: string;
   video?: string | null;
 }
@@ -118,6 +125,8 @@ export default function AdminDashboard() {
   const [formName, setFormName] = useState("");
   const [formSlug, setFormSlug] = useState("");
   const [formCategory, setFormCategory] = useState("");
+  const [formLine, setFormLine] = useState("");
+  const [formType, setFormType] = useState("");
   const [formCollection, setFormCollection] = useState("");
   const [formPrice, setFormPrice] = useState(0);
   const [formCompareAtPrice, setFormCompareAtPrice] = useState<number | "">("");
@@ -494,7 +503,9 @@ export default function AdminDashboard() {
     setFormId(Math.floor(1000 + Math.random() * 9000).toString());
     setFormName("");
     setFormSlug("");
-    setFormCategory(categories[0]?.name || CATEGORIES[0] || "");
+    setFormLine("Handmade");
+    setFormType("Necklace");
+    setFormCategory(shopCategoryForSub("Necklace"));
     setFormCollection(COLLECTIONS[0]?.slug || "");
     setFormPrice(0);
     setFormCompareAtPrice("");
@@ -519,6 +530,23 @@ export default function AdminDashboard() {
     setFormId(p.id);
     setFormName(p.name);
     setFormSlug(p.slug);
+    const savedLine =
+      parseLineFromDetails(p.details) ||
+      SHOWCASE_LINES.find((line) => line.name.toLowerCase() === p.category.toLowerCase())?.name ||
+      "";
+    const matchedLine = SHOWCASE_LINES.find((line) => line.name === savedLine);
+    setFormLine(savedLine);
+    if (matchedLine && matchedLine.subs.length > 0) {
+      const type =
+        matchedLine.subs.find(
+          (sub) =>
+            shopCategoryForSub(sub).toLowerCase() === p.category.toLowerCase() ||
+            sub.toLowerCase() === p.category.toLowerCase()
+        ) || matchedLine.subs[0];
+      setFormType(type);
+    } else {
+      setFormType(p.category);
+    }
     setFormCategory(p.category);
     setFormCollection(p.collection || "");
     setFormPrice(p.price);
@@ -533,7 +561,7 @@ export default function AdminDashboard() {
     setFormShippingInfo(p.shippingInfo || "");
     setFormVideo(p.video || "");
     setFormImages(p.images || []);
-    setFormDetailsText(p.details?.join("\n") || "");
+    setFormDetailsText(stripLineFromDetails(p.details).join("\n"));
     setFormColors(p.colors || []);
     setIsProductModalOpen(true);
   };
@@ -625,7 +653,10 @@ export default function AdminDashboard() {
       shippingInfo: formShippingInfo.trim(),
       video: formVideo.trim() || null,
       images: formImages,
-      details: formDetailsText.split("\n").map(d => d.trim()).filter(Boolean),
+      details: withLineInDetails(
+        formDetailsText.split("\n").map((d) => d.trim()).filter(Boolean),
+        formLine
+      ),
       colors: formColors,
     };
 
@@ -666,7 +697,7 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-[#070707] text-[#F5F2EF] font-sans flex flex-col relative overflow-x-hidden">
+    <div className="min-h-screen min-h-[100dvh] bg-vintage-bg text-[#F5F2EF] font-sans flex flex-col relative overflow-x-hidden">
       <div className="bg-noise" />
 
       {notice && (
@@ -1419,21 +1450,64 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-4 gap-5">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div>
                   <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
-                    Category
+                    Catalog
+                  </label>
+                  <select
+                    value={formLine}
+                    onChange={(e) => {
+                      const nextLine = e.target.value;
+                      setFormLine(nextLine);
+                      const match = SHOWCASE_LINES.find((line) => line.name === nextLine);
+                      if (match && match.subs.length > 0) {
+                        setFormType(match.subs[0]);
+                        setFormCategory(shopCategoryForSub(match.subs[0]));
+                      } else if (match) {
+                        setFormType(match.name);
+                        setFormCategory(match.name);
+                      }
+                    }}
+                    className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]"
+                  >
+                    <option value="">Shop only</option>
+                    {SHOWCASE_LINES.map((line) => (
+                      <option key={line.slug} value={line.name}>
+                        {line.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[9px] uppercase tracking-widest text-[#F5F2EF]/40 mb-1">
+                    Type
                   </label>
                   <select
                     required
-                    value={formCategory}
-                    onChange={(e) => setFormCategory(e.target.value)}
+                    value={formType || formCategory}
+                    onChange={(e) => {
+                      const nextType = e.target.value;
+                      setFormType(nextType);
+                      setFormCategory(shopCategoryForSub(nextType));
+                    }}
                     className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]"
                   >
-                    <option value="" disabled>-- Choose Category --</option>
-                    {(categories.length > 0 ? categories.map((c) => c.name) : CATEGORIES).map((catName) => (
-                      <option key={catName} value={catName}>
-                        {catName}
+                    <option value="" disabled>-- Choose Type --</option>
+                    {(
+                      SHOWCASE_LINES.find((line) => line.name === formLine)?.subs.length
+                        ? SHOWCASE_LINES.find((line) => line.name === formLine)!.subs
+                        : formLine === "Crystals"
+                          ? ["Crystals"]
+                          : Array.from(
+                              new Set([
+                                ...(categories.length > 0 ? categories.map((c) => c.name) : []),
+                                ...CATEGORIES,
+                              ])
+                            )
+                    ).map((typeName) => (
+                      <option key={typeName} value={typeName}>
+                        {typeName}
                       </option>
                     ))}
                   </select>

@@ -10,12 +10,14 @@ export function ProductReviews({
   count,
   productSlug,
   productName,
+  productId,
 }: {
   reviews: Review[];
   rating: number;
   count: number;
   productSlug: string;
   productName: string;
+  productId?: string;
 }) {
   const [localReviews, setLocalReviews] = useState<Review[]>(reviews);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -67,6 +69,7 @@ export function ProductReviews({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          productId,
           productSlug,
           productName,
           author: author.trim(),

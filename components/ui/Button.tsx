@@ -19,11 +19,11 @@ const sizes: Record<NonNullable<CommonProps["size"]>, string> = {
 
 const variants: Record<NonNullable<CommonProps["variant"]>, string> = {
   filled:
-    "bg-black text-[#00FF66] border-white/60 hover:border-[#FF0055] hover:text-white shadow-sm active:scale-95",
+    "bg-[#ED5903] text-white border-white hover:bg-[#FFD400] hover:text-[#2A2F93] hover:border-[#FFD400] shadow-sm active:scale-95",
   outline:
-    "bg-black text-white border-white/60 hover:border-[#FF0055] hover:text-[#00FF66] shadow-sm active:scale-95",
+    "bg-transparent text-white border-white hover:border-[#ED5903] hover:text-[#FFD400] shadow-sm active:scale-95",
   ghost:
-    "bg-transparent text-white border border-white/40 hover:border-[#00FF66] hover:text-[#00FF66]",
+    "bg-transparent text-white border border-white/40 hover:border-[#FFD400] hover:text-[#FFD400]",
 };
 
 export function Button({

@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center bg-[#070707] px-4 py-8">
+    <main className="relative min-h-screen min-h-[100dvh] w-full flex items-center justify-center bg-vintage-bg px-4 py-8">
       {/* Noise Overlay */}
       <div className="bg-noise" />
 

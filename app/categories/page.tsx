@@ -63,7 +63,7 @@ export default async function CategoriesPage() {
                   fill
                   className="object-cover opacity-60 grayscale-[0.2] transition-all duration-700 group-hover:opacity-80 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-[#070707]/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg via-vintage-bg/20 to-transparent" />
                 <div className="absolute inset-0 flex flex-col items-start justify-end p-6 md:p-8">
                   <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#E50914] mb-2">
                     {count} {count === 1 ? "piece" : "pieces"}

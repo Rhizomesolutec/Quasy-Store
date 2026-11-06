@@ -1,5 +1,12 @@
 import { createAdminClient } from "@/utils/supabase/admin";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
+import {
+  filterShowcaseLine,
+  getShowcaseLine,
+  isShowcaseCategory as isShowcaseLineName,
+  parseLineFromDetails,
+  stripLineFromDetails,
+} from "@/lib/showcase";
 import type { Product, Review } from "@/lib/types";
 
 type RawProduct = Record<string, unknown>;
@@ -66,11 +73,15 @@ export function normalizeProduct(row: RawProduct): Product {
       ? src.replace(/\.(jpe?g|png|gif|bmp)(\?.*)?$/i, ".webp$2")
       : src;
 
+  const details = asStringArray(row.details);
+  const line = asString(row.line) || parseLineFromDetails(details);
+
   return {
     id: asString(row.id),
     slug: asString(row.slug),
     name: asString(row.name),
     category: asString(row.category),
+    line: line || undefined,
     collection: asString(row.collection),
     price: asNumber(row.price),
     compareAtPrice:
@@ -89,7 +100,7 @@ export function normalizeProduct(row: RawProduct): Product {
     variantLabel: asString(row.variantLabel),
     tagline: asString(row.tagline),
     description: asString(row.description),
-    details: asStringArray(row.details),
+    details: stripLineFromDetails(details),
     shippingInfo: asString(
       row.shippingInfo,
       "Ships in 2–4 business days. Free returns within 30 days."
@@ -222,38 +233,18 @@ export function filterByCategory(products: Product[], category: string): Product
 export const HANDMADE_CATEGORY = "Handmade";
 export const HAND_PICKED_CATEGORY = "Hand Picked";
 
-function categoryMatches(category: string, names: string[]) {
-  const value = category.toLowerCase();
-  return names.some((name) => {
-    const n = name.toLowerCase();
-    return value === n || value.includes(n);
-  });
-}
-
 export function isShowcaseCategory(name: string) {
-  return categoryMatches(name, ["handmade", "hand picked", "handpicked"]);
+  return isShowcaseLineName(name);
 }
 
-/** Products tagged Handmade, or necklaces if that category is still empty. */
 export function filterHandmade(products: Product[]): Product[] {
-  const tagged = products.filter((p) =>
-    categoryMatches(p.category, ["handmade"])
-  );
-  if (tagged.length > 0) return tagged;
-  return products.filter((p) => p.category.toLowerCase().includes("necklace"));
+  const line = getShowcaseLine("handmade");
+  return line ? filterShowcaseLine(products, line) : products;
 }
 
-/** Products tagged Hand Picked, or wrist pieces if that category is still empty. */
 export function filterHandPicked(products: Product[]): Product[] {
-  const tagged = products.filter((p) =>
-    categoryMatches(p.category, ["hand picked", "handpicked", "hand-picked"])
-  );
-  if (tagged.length > 0) return tagged;
-  return products.filter((p) =>
-    ["bracelet", "watch", "cuff"].some((kind) =>
-      p.category.toLowerCase().includes(kind)
-    )
-  );
+  const line = getShowcaseLine("hand-picked");
+  return line ? filterShowcaseLine(products, line) : products;
 }
 
 export function filterByCollection(

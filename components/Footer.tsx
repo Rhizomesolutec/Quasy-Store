@@ -16,7 +16,7 @@ export default function Footer() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <footer className="w-full border-t border-white/[0.08] bg-[#0a0a0c] mt-auto">
+    <footer className="w-full border-t border-white/[0.08] bg-vintage-bg mt-auto">
       <div className="max-w-7xl mx-auto px-4 md:px-12 lg:px-24 py-12 md:py-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
         <div>
           <p className="font-heading text-xl tracking-widest text-[#F5F2EF] mb-3">{STORE.name}</p>
@@ -36,7 +36,7 @@ export default function Footer() {
               href={STORE.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block pt-2 text-[10px] uppercase tracking-widest text-[#E50914] hover:text-[#F5F2EF] transition-colors"
+              className="inline-block pt-2 text-[10px] uppercase tracking-widest text-[#ED5903] hover:text-[#F5F2EF] transition-colors"
             >
               Open in Google Maps ►
             </a>
@@ -46,13 +46,13 @@ export default function Footer() {
         <div>
           <h3 className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/40 mb-4">Contact</h3>
           <div className="flex flex-col gap-2 font-sans text-sm text-[#F5F2EF]/70">
-            <a href={storeTelHref()} className="hover:text-[#E50914] transition-colors">
+            <a href={storeTelHref()} className="hover:text-[#ED5903] transition-colors">
               {STORE.phoneDisplay}
             </a>
             <a href={storeWhatsAppHref()} target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">
               WhatsApp orders
             </a>
-            <a href={storeMailHref()} className="hover:text-[#E50914] transition-colors">
+            <a href={storeMailHref()} className="hover:text-[#ED5903] transition-colors">
               {STORE.email}
             </a>
           </div>
@@ -61,7 +61,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/50 hover:text-[#E50914] transition-colors"
+                className="font-sans text-[10px] uppercase tracking-widest text-[#F5F2EF]/50 hover:text-[#ED5903] transition-colors"
               >
                 {link.label}
               </Link>

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { PRODUCTS } from "@/lib/products";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -93,6 +94,49 @@ async function resolveProduct(
   return null;
 }
 
+function localCatalogProduct(productId?: string, productSlug?: string) {
+  return (
+    PRODUCTS.find(
+      (p) =>
+        (productId && p.id === productId) ||
+        (productSlug && p.slug === productSlug)
+    ) || null
+  );
+}
+
+async function ensureProductRow(
+  supabase: ReturnType<typeof createAdminClient>,
+  product: {
+    id: string;
+    slug: string;
+    name: string;
+    category?: string;
+    collection?: string;
+    price?: number;
+    images?: string[];
+  }
+) {
+  const stub = {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    category: product.category || "Shop",
+    collection: product.collection || null,
+    price: product.price || 0,
+    images: product.images || [],
+    colors: [],
+    sizes: [],
+    details: [],
+    inStock: true,
+  };
+
+  const inserted = await supabase.from("products").upsert([stub], {
+    onConflict: "id",
+    ignoreDuplicates: true,
+  });
+  return inserted.error ? inserted.error : null;
+}
+
 async function refreshProductRating(
   supabase: ReturnType<typeof createAdminClient>,
   productId: string
@@ -160,33 +204,31 @@ export async function GET(request: Request) {
     if (productId) query = query.eq("productId", productId);
     else if (productSlug) query = query.eq("productSlug", productSlug);
 
-    const { data, error } = await query.order("date", { ascending: false });
+    let { data, error } = await query.order("date", { ascending: false });
 
-    if (error) {
-      // Fallback if productSlug column missing — resolve product then filter by productId.
-      if (productSlug && !productId) {
-        const product = await resolveProduct(supabase, undefined, productSlug);
-        if (product) {
-          const retry = await supabase
-            .from("reviews")
-            .select("*")
-            .eq("productId", product.id)
-            .order("date", { ascending: false });
-          if (!retry.error) {
-            return NextResponse.json({
-              reviews: (retry.data || []).map((r) =>
-                normalizeReview(r as Record<string, unknown>)
-              ),
-              storage: "supabase",
-            });
-          }
+    if ((error || !data?.length) && productSlug && !productId) {
+      const product =
+        (await resolveProduct(supabase, undefined, productSlug)) ||
+        localCatalogProduct(undefined, productSlug);
+      if (product) {
+        const retry = await supabase
+          .from("reviews")
+          .select("*")
+          .eq("productId", product.id)
+          .order("date", { ascending: false });
+        if (!retry.error) {
+          data = retry.data;
+          error = null;
         }
       }
-      throw error;
     }
 
+    if (error) throw error;
+
     return NextResponse.json({
-      reviews: (data || []).map((r) => normalizeReview(r as Record<string, unknown>)),
+      reviews: (data || []).map((r) =>
+        normalizeReview(r as Record<string, unknown>)
+      ),
       storage: "supabase",
     });
   } catch (error) {
@@ -218,24 +260,42 @@ export async function POST(request: Request) {
     }
 
     const supabase = createAdminClient();
-    const product = await resolveProduct(
-      supabase,
-      body.productId ? String(body.productId) : undefined,
-      body.productSlug ? String(body.productSlug) : undefined
-    );
+    const requestedId = body.productId ? String(body.productId) : undefined;
+    const requestedSlug = body.productSlug ? String(body.productSlug) : undefined;
+    let product = await resolveProduct(supabase, requestedId, requestedSlug);
+    const local = localCatalogProduct(requestedId, requestedSlug);
 
     if (!product) {
-      return NextResponse.json(
-        { error: "Product not found for this review." },
-        { status: 404 }
-      );
+      const fallback = {
+        id: requestedId || local?.id || `p-${Date.now()}`,
+        slug: requestedSlug || local?.slug || "",
+        name: String(body.productName || local?.name || "").trim(),
+        category: local?.category,
+        price: local?.price,
+        images: local?.images,
+      };
+
+      if (!fallback.slug || !fallback.name) {
+        return NextResponse.json(
+          { error: "Choose a product and fill every review field." },
+          { status: 400 }
+        );
+      }
+
+      const ensureError = await ensureProductRow(supabase, fallback);
+      if (ensureError) {
+        console.warn("Review product stub failed:", ensureError.message);
+      }
+
+      product =
+        (await resolveProduct(supabase, fallback.id, fallback.slug)) || fallback;
     }
 
     const payload = {
       id: String(body.id || `rev-${Date.now()}`),
       productId: String(product.id),
       productSlug: String(product.slug),
-      productName: String(product.name),
+      productName: String(product.name || body.productName || local?.name || ""),
       author,
       rating,
       title,

@@ -14,11 +14,11 @@ export function RetroCatalogGrid({
 }) {
   if (products.length === 0) {
     return (
-      <div className="border-2 border-[#3a3428] bg-[#14110c] p-8 sm:p-12 text-center retro-box-shadow">
-        <p className="font-pixel text-[10px] uppercase tracking-widest text-[#c4a574] mb-3">
+      <div className="border-2 border-white/40 bg-[#14110c] p-8 sm:p-12 text-center retro-box-shadow">
+        <p className="font-pixel text-[10px] uppercase tracking-widest text-[#FFD400] mb-3">
           ● Empty drawer
         </p>
-        <p className="font-mono text-xs text-[#F5F2EF]/50">
+        <p className="font-mono text-xs text-white/55">
           No plates in this catalog yet. New pieces will land here first.
         </p>
       </div>

@@ -146,8 +146,20 @@ export const CATEGORIES = [
   "Key Chain",
   "Jacket Pin",
   "Metal Hook Bookmark",
-  "Handmade",
-  "Hand Picked",
+  "Pendant",
+  "Jacket",
+  "Ring",
+  "Watch",
+  "Cap",
+  "T shirt",
+  "Shirt",
+  "Pant",
+  "Perfume",
+  "Mhr merch",
+  "Action figure",
+  "Metal cars",
+  "Games",
+  "Crystals",
 ] as const;
 
 export const COLLECTIONS = [

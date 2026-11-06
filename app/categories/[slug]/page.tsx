@@ -57,8 +57,17 @@ export default async function CategoryDetailPage({
   const category = await resolveCatalogCategoryFromSlug(slug);
   if (!category) notFound();
   if (isShowcaseCategory(category.name)) {
+    const value = category.name.toLowerCase();
     redirect(
-      category.name.toLowerCase().includes("pick") ? "/hand-picked" : "/handmade"
+      value.includes("pick")
+        ? "/hand-picked"
+        : value.includes("qusay")
+          ? "/qusay-made"
+          : value.includes("toy")
+            ? "/toys"
+            : value.includes("crystal")
+              ? "/crystals"
+              : "/handmade"
     );
   }
 

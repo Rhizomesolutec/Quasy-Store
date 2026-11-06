@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-vintage-bg: #070707;
-  --color-vintage-text: #F5F2EF;
-  --color-vintage-accent: #E50914;
+  --color-vintage-bg: #2A2F93;
+  --color-vintage-text: #FFFFFF;
+  --color-vintage-accent: #ED5903;
+  --color-vintage-yellow: #FFD400;
   
   --font-sans: var(--font-fraunces);
   --font-heading: var(--font-dm-serif);
@@ -22,16 +23,16 @@
 .hollow-red-text {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  -webkit-text-stroke: 1.4px #B3121D !important;
+  -webkit-text-stroke: 1.4px #ED5903 !important;
   paint-order: stroke fill;
-  filter: drop-shadow(0 0 4px rgba(179, 18, 29, 0.4));
+  filter: drop-shadow(0 0 4px rgba(237, 89, 3, 0.45));
 }
 
-/* Full-strength red reads as glare on mobile and tablet, where the type is smaller */
+/* Full-strength orange reads as glare on mobile and tablet, where the type is smaller */
 @media (max-width: 1023px) {
   .stranger-things-title,
   .hollow-red-text {
-    -webkit-text-stroke-color: #4A0A0F !important;
+    -webkit-text-stroke-color: #C44A02 !important;
     -webkit-text-stroke-width: 0.9px !important;
     filter: none;
   }
@@ -49,7 +50,7 @@
 .hollow-cream-text {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
-  -webkit-text-stroke: 1px #E8DCC4;
+  -webkit-text-stroke: 1px #FFFFFF;
   paint-order: stroke fill;
 }
 
@@ -67,8 +68,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background-color: #070707;
-  background-image: radial-gradient(circle at center, #0B0B0B 0%, #070707 100%);
+  background-color: #2A2F93;
+  background-image: none;
   color: var(--color-vintage-text);
   overflow-x: hidden;
   max-width: 100%;
@@ -83,12 +84,12 @@ body::before {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: radial-gradient(circle at 50% 25%, rgba(229, 9, 20, 0.055) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 25%, rgba(237, 89, 3, 0.12) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Heading Styling: Large, Bold, Uppercase, Wide letter spacing, Deep red color, Soft outer glow, Subtle shadow */
+/* Heading Styling: Large, Bold, Uppercase, Wide letter spacing, Poster orange, Soft outer glow */
 h1.font-heading,
 h2.font-heading,
 h3.font-heading,
@@ -96,8 +97,8 @@ h4.font-heading,
 .font-heading {
   text-transform: uppercase;
   letter-spacing: 0.16em !important;
-  color: #E50914 !important;
-  text-shadow: 0 0 10px rgba(229, 9, 20, 0.45), 0 0 2px rgba(0, 0, 0, 0.95);
+  color: #ED5903 !important;
+  text-shadow: 0 0 10px rgba(237, 89, 3, 0.45), 0 0 2px rgba(0, 0, 0, 0.95);
   font-weight: 700;
 }
 
@@ -107,7 +108,7 @@ h4.font-heading,
   text-shadow: none !important;
 }
 .product-card-title:hover {
-  color: #E50914 !important;
+  color: #ED5903 !important;
 }
 
 /* Custom Scrollbar - Retro 80s */
@@ -115,14 +116,14 @@ h4.font-heading,
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #070707; 
+  background: #2A2F93; 
 }
 ::-webkit-scrollbar-thumb {
-  background: #660000; 
+  background: #ED5903; 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #E50914; 
+  background: #FFD400; 
 }
 
 /* Global Forms Override */
@@ -135,7 +136,7 @@ input[type="search"],
 textarea,
 select {
   background-color: #1A0A0A !important;
-  border: 1px solid #660000 !important;
+  border: 1px solid #ED5903 !important;
   color: #F5F2EF !important;
   outline: none !important;
   transition: all 0.3s ease !important;
@@ -149,8 +150,8 @@ input[type="number"]:focus,
 input[type="search"]:focus,
 textarea:focus,
 select:focus {
-  border-color: #E50914 !important;
-  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4) !important;
+  border-color: #FFD400 !important;
+  box-shadow: 0 0 8px rgba(255, 212, 0, 0.35) !important;
 }
 
 input::placeholder,
@@ -174,13 +175,13 @@ textarea::placeholder {
 /* Category Title outline red style */
 h3.font-heading.text-outline-red {
   color: transparent !important;
-  -webkit-text-stroke: 1.2px #C50813;
-  text-shadow: 0 0 5px rgba(197, 8, 19, 0.3) !important;
+  -webkit-text-stroke: 1.2px #ED5903;
+  text-shadow: 0 0 5px rgba(237, 89, 3, 0.3) !important;
 }
 
 .group:hover h3.font-heading.text-outline-red {
-  -webkit-text-stroke: 1.2px #E50914;
-  text-shadow: 0 0 8px rgba(229, 9, 20, 0.5) !important;
+  -webkit-text-stroke: 1.2px #FFD400;
+  text-shadow: 0 0 8px rgba(255, 212, 0, 0.45) !important;
 }
 
 /* 90s Retro Web CRT & Scanline Effects */
@@ -245,7 +246,7 @@ h3.font-heading.text-outline-red {
 }
 
 .retro-box-shadow-pink {
-  box-shadow: 4px 4px 0px #FF0055;
+  box-shadow: 4px 4px 0px #ED5903;
 }
 
 

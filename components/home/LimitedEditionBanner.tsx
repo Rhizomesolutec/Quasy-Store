@@ -16,7 +16,7 @@ export function LimitedEditionBanner() {
           sizes="100vw"
           className="object-cover opacity-35"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-vintage-bg via-vintage-bg/80 to-transparent" />
         <div
           className="absolute inset-0 opacity-[0.07] pointer-events-none"
           style={{
