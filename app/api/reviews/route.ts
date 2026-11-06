@@ -70,11 +70,19 @@ async function enrichReviewsWithProducts(
   });
 }
 
+type ReviewProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  rating?: number;
+  reviewCount?: number;
+};
+
 async function resolveProduct(
   supabase: ReturnType<typeof createAdminClient>,
   productId?: string,
   productSlug?: string
-) {
+): Promise<ReviewProduct | null> {
   if (productId) {
     const byId = await supabase
       .from("products")
@@ -266,13 +274,12 @@ export async function POST(request: Request) {
     const local = localCatalogProduct(requestedId, requestedSlug);
 
     if (!product) {
-      const fallback = {
+      const fallback: ReviewProduct = {
         id: requestedId || local?.id || `p-${Date.now()}`,
         slug: requestedSlug || local?.slug || "",
         name: String(body.productName || local?.name || "").trim(),
-        category: local?.category,
-        price: local?.price,
-        images: local?.images,
+        rating: local?.rating || 0,
+        reviewCount: local?.reviewCount || 0,
       };
 
       if (!fallback.slug || !fallback.name) {
@@ -282,7 +289,12 @@ export async function POST(request: Request) {
         );
       }
 
-      const ensureError = await ensureProductRow(supabase, fallback);
+      const ensureError = await ensureProductRow(supabase, {
+        ...fallback,
+        category: local?.category,
+        price: local?.price,
+        images: local?.images,
+      });
       if (ensureError) {
         console.warn("Review product stub failed:", ensureError.message);
       }
