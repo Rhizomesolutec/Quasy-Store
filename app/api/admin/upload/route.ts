@@ -75,6 +75,18 @@ function isQuotaError(message: string) {
   );
 }
 
+function isSharpUnavailable(message: string) {
+  return /sharp|libvips|ERR_DLOPEN|dlopen|cannot open shared object|Failed to load external module/i.test(
+    message
+  );
+}
+
+function clientSafeError(error: unknown, fallback: string) {
+  const message = errorText(error);
+  if (!message || isSharpUnavailable(message) || message.length > 180) return fallback;
+  return message;
+}
+
 function sniffImage(buf: Buffer): string | null {
   if (buf.length < 12) return null;
   if (buf[0] === 0xff && buf[1] === 0xd8) return "jpeg";
@@ -97,32 +109,74 @@ function sniffImage(buf: Buffer): string | null {
   return null;
 }
 
-async function inspectImage(input: Buffer) {
+type InspectedImage = {
+  format: string;
+  width: number;
+  height: number;
+  sniffed: string | null;
+  sharpAvailable: boolean;
+};
+
+async function tryLoadSharp() {
+  try {
+    const sharp = (await import("sharp")).default;
+    sharp.cache(false);
+    sharp.concurrency(1);
+    return sharp;
+  } catch (error) {
+    logUpload("warn", "sharp_unavailable", { error: errorText(error) });
+    return null;
+  }
+}
+
+async function inspectImage(input: Buffer): Promise<InspectedImage> {
   const sniffed = sniffImage(input);
   if (sniffed === "xml") {
     throw new Error("SVG and HTML files are not allowed.");
   }
 
-  const sharp = (await import("sharp")).default;
-  sharp.cache(false);
-  sharp.concurrency(1);
-  const meta = await sharp(input, { failOn: "none", animated: false }).metadata();
-  const format = (meta.format || sniffed || "").toLowerCase();
-
-  if (!format || !ALLOWED_SHARP_FORMATS.has(format)) {
-    throw new Error("File is not a supported image. Use JPG, PNG, or WEBP.");
-  }
-  if (!meta.width || !meta.height) {
-    throw new Error("Image has no readable dimensions.");
+  const sharp = await tryLoadSharp();
+  if (!sharp) {
+    if (!sniffed || !["jpeg", "png", "webp", "gif", "avif", "heif"].includes(sniffed)) {
+      throw new Error("File is not a supported image. Use JPG, PNG, or WEBP.");
+    }
+    return { format: sniffed, width: 0, height: 0, sniffed, sharpAvailable: false };
   }
 
-  return { format, width: meta.width, height: meta.height, sniffed };
+  try {
+    const meta = await sharp(input, { failOn: "none", animated: false }).metadata();
+    const format = (meta.format || sniffed || "").toLowerCase();
+
+    if (!format || !ALLOWED_SHARP_FORMATS.has(format)) {
+      throw new Error("File is not a supported image. Use JPG, PNG, or WEBP.");
+    }
+    if (!meta.width || !meta.height) {
+      throw new Error("Image has no readable dimensions.");
+    }
+
+    return {
+      format,
+      width: meta.width,
+      height: meta.height,
+      sniffed,
+      sharpAvailable: true,
+    };
+  } catch (error) {
+    if (!isSharpUnavailable(errorText(error))) throw error;
+    logUpload("warn", "sharp_metadata_failed", { error: errorText(error), sniffed });
+    if (!sniffed || !["jpeg", "png", "webp", "gif", "avif", "heif"].includes(sniffed)) {
+      throw new Error("File is not a supported image. Use JPG, PNG, or WEBP.");
+    }
+    return { format: sniffed, width: 0, height: 0, sniffed, sharpAvailable: false };
+  }
 }
 
 async function convertUpload(input: Buffer) {
-  const sharp = (await import("sharp")).default;
-  sharp.cache(false);
-  sharp.concurrency(1);
+  const sharp = await tryLoadSharp();
+  if (!sharp) {
+    throw new Error("Image converter is unavailable on this server.");
+  }
+
   const pipeline = () =>
     sharp(input, { failOn: "none", animated: false }).rotate().resize(1600, 1600, {
       fit: "inside",
@@ -133,7 +187,8 @@ async function convertUpload(input: Buffer) {
     const webp = await pipeline().webp({ quality: 80, effort: 2 }).toBuffer();
     if (!webp.length) throw new Error("empty webp");
     return { bytes: webp, contentType: "image/webp", ext: "webp" as const };
-  } catch {
+  } catch (webpError) {
+    if (isSharpUnavailable(errorText(webpError))) throw webpError;
     const jpeg = await pipeline().jpeg({ quality: 82, mozjpeg: true }).toBuffer();
     if (!jpeg.length) throw new Error("empty jpeg");
     return { bytes: jpeg, contentType: "image/jpeg", ext: "jpg" as const };
@@ -293,7 +348,9 @@ export async function POST(request: Request) {
     const declaredType = (file.type || "").toLowerCase();
     const typeOk =
       ALLOWED_TYPES.has(declaredType) ||
-      (!declaredType && ALLOWED_EXT.has(ext));
+      ALLOWED_EXT.has(ext) ||
+      !declaredType ||
+      declaredType === "application/octet-stream";
 
     if (!typeOk) {
       logUpload("warn", "rejected_mime", {
@@ -335,7 +392,12 @@ export async function POST(request: Request) {
         error: errorText(inspectError),
       });
       return NextResponse.json(
-        { error: errorText(inspectError) || "File is not a supported image." },
+        {
+          error: clientSafeError(
+            inspectError,
+            "File is not a supported image. Use JPG, PNG, or WEBP."
+          ),
+        },
         { status: 400 }
       );
     }
@@ -365,7 +427,7 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      if (!["jpeg", "png", "webp", "gif"].includes(inspected.format)) {
+      if (!["jpeg", "png", "webp", "gif", "avif"].includes(inspected.format)) {
         return NextResponse.json(
           { error: "Could not convert this image. Upload a JPG, PNG, or WEBP instead." },
           { status: 400 }
@@ -379,7 +441,9 @@ export async function POST(request: Request) {
             ? "image/webp"
             : inspected.format === "gif"
               ? "image/gif"
-              : "image/jpeg";
+              : inspected.format === "avif"
+                ? "image/avif"
+                : "image/jpeg";
       fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${inspected.format === "jpeg" ? "jpg" : inspected.format}`;
     }
 
@@ -449,7 +513,10 @@ export async function POST(request: Request) {
     logUpload("error", "unexpected_failure", { error: errorText(error) });
     return NextResponse.json(
       {
-        error: "Unexpected error while uploading image",
+        error: clientSafeError(
+          error,
+          "Could not upload this image. Try a JPG, PNG, or WEBP under 4MB."
+        ),
       },
       { status: 500 }
     );
