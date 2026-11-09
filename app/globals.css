@@ -83,6 +83,11 @@ body:has([data-admin-shell]) {
   overscroll-behavior: none;
 }
 
+nextjs-portal {
+  display: none !important;
+  pointer-events: none !important;
+}
+
 /* Subtle cinematic ambient lighting */
 body::before {
   content: "";

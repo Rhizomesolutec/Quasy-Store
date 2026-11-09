@@ -1396,9 +1396,9 @@ export default function AdminDashboard() {
       )}
 
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 overflow-y-auto">
-          <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-y-auto shadow-2xl relative p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 sm:pb-4 sticky top-0 bg-[#170909] z-10 -mx-4 px-4 sm:static sm:mx-0 sm:px-0">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 overflow-hidden">
+          <div className="bg-[#170909] border border-white/[0.08] w-full max-w-4xl h-[100dvh] sm:h-[90vh] sm:max-h-[90vh] overflow-hidden shadow-2xl relative p-4 sm:p-6 md:p-8 flex flex-col">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 sm:pb-4 shrink-0">
               <h3 className="font-heading text-lg sm:text-2xl text-[#F5F2EF] pr-3 truncate">
                 {isNewProduct ? "Forging New Piece" : `Modifying Piece: ${formName}`}
               </h3>
@@ -1413,8 +1413,9 @@ export default function AdminDashboard() {
             <form
               onSubmit={handleProductSubmit}
               noValidate
-              className="space-y-6"
+              className="flex-1 min-h-0 flex flex-col"
             >
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-6 pr-1">
               {/* Product Basic Fields */}
               <div className="grid md:grid-cols-3 gap-5">
                 <div>
@@ -1778,8 +1779,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              </div>
+
               {/* Submit Buttons */}
-              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-4 border-t border-white/[0.08] sticky bottom-0 bg-[#170909] pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+              <div className="shrink-0 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-4 mt-4 border-t border-white/[0.08] bg-[#170909] pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}

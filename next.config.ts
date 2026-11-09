@@ -2,11 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["sharp"],
+  devIndicators: false,
   images: {
     // Never proxy through /_next/image (Vercel optimizer quota returns 402).
     unoptimized: true,
-    loader: "custom",
-    loaderFile: "./lib/directImageLoader.ts",
     remotePatterns: [
       {
         protocol: "https",
