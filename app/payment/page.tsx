@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { useCart } from "@/context/CartContext";
@@ -414,7 +414,7 @@ export default function PaymentPage() {
                   {cart.map((item, idx) => (
                     <div key={idx} className="flex gap-3 pt-3 first:pt-0">
                       <div className="relative w-12 aspect-[4/5] bg-black rounded-sm overflow-hidden flex-shrink-0">
-                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                        <ProductImage src={item.image} alt={item.name} fill />
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-between">
                         <div>

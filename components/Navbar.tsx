@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatPrice } from "@/lib/utils";
@@ -405,11 +405,11 @@ export default function Navbar() {
                           <div key={`${item.productId}-${item.variant}-${item.size ?? ""}`} className="flex gap-4 border-b border-white/[0.03] pb-6">
                             {/* Product Thumbnail */}
                             <div className="relative w-20 aspect-[4/5] bg-black rounded overflow-hidden border border-white/[0.05]">
-                              <Image
+                              <ProductImage
                                 src={item.image}
                                 alt={item.name}
                                 fill
-                                className="object-cover opacity-80"
+                                className="opacity-80"
                               />
                             </div>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import { safePublicSrc } from "@/lib/chainImages";
+import { resolveProductImageSrc } from "@/lib/productImage";
 import type { Product } from "@/lib/types";
 
 export type CatalogItem = {
@@ -12,7 +13,7 @@ export type CatalogItem = {
 };
 
 export function productToCatalogItem(product: Product): CatalogItem {
-  const image = product.images[0] || "/images/spider-1.webp";
+  const image = resolveProductImageSrc(product.images[0]) || "/images/spider-1.webp";
   return {
     id: product.id,
     slug: product.slug,

@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
+import { ProductImage } from "@/components/ui/ProductImage";
+import { resolveProductImageSrc } from "@/lib/productImage";
 
 export function ProductGallery({ images, alt, video }: { images: string[]; alt: string; video?: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -43,19 +44,19 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
           />
         ) : (
           <>
-            <Image
+            <ProductImage
               src={images[activeIndex] || "/images/spider-1.webp"}
               alt={alt}
               fill
               priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className={`object-cover transition-opacity duration-300 ${zoomStyle ? "opacity-0" : "opacity-100"}`}
+              className={`transition-opacity duration-300 ${zoomStyle ? "opacity-0" : "opacity-100"}`}
             />
             {zoomStyle && images[activeIndex] && (
               <div
                 className="absolute inset-0 transition-opacity duration-150"
                 style={{
-                  backgroundImage: `url("${encodeURI(images[activeIndex])}")`,
+                  backgroundImage: `url("${resolveProductImageSrc(images[activeIndex])}")`,
                   backgroundSize: "200%",
                   backgroundPosition: zoomStyle.backgroundPosition,
                   backgroundRepeat: "no-repeat",
@@ -78,7 +79,7 @@ export function ProductGallery({ images, alt, video }: { images: string[]; alt: 
               idx === activeIndex ? "border-[#E50914]" : "border-white/[0.08] hover:border-white/20"
             }`}
           >
-            <Image src={img} alt="" fill className="object-cover" />
+            <ProductImage src={img} alt="" fill />
           </button>
         ))}
 

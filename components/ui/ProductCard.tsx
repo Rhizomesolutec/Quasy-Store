@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import { useWishlist } from "@/context/WishlistContext";
 import { Rating } from "./Rating";
+import { ProductImage } from "./ProductImage";
 
 interface ProductCardProps {
   product: Product;
@@ -32,22 +32,22 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
       <div className="relative aspect-[4/5] bg-black rounded-none overflow-hidden border border-white/[0.05]">
         <Link href={`/shop/${product.slug}`} className="block absolute inset-0 z-10" aria-label={product.name} />
 
-        <Image
+        <ProductImage
           src={product.images[0]}
           alt={product.name}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className={`object-cover opacity-90 transition-all duration-700 ${
+          className={`opacity-90 transition-all duration-700 ${
             product.images[1] ? "group-hover:opacity-0" : "group-hover:scale-110 group-hover:opacity-100"
           }`}
         />
         {product.images[1] && (
-          <Image
+          <ProductImage
             src={product.images[1]}
             alt=""
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-90"
+            className="opacity-0 transition-opacity duration-500 group-hover:opacity-90"
           />
         )}
 

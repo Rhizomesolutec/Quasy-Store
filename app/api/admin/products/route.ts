@@ -9,6 +9,7 @@ import {
   type AdminStoredProduct,
 } from "@/lib/adminProductStore";
 import { normalizeProduct } from "@/lib/catalog";
+import { rewriteStoredImageSrc } from "@/lib/productImage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,7 +55,9 @@ function toStoredProduct(body: AdminStoredProduct): AdminStoredProduct {
     description: String(body.description || ""),
     shippingInfo: String(body.shippingInfo || ""),
     video: body.video ? String(body.video) : null,
-    images: Array.isArray(body.images) ? body.images : [],
+    images: Array.isArray(body.images)
+      ? body.images.map((img) => rewriteStoredImageSrc(String(img))).filter(Boolean)
+      : [],
     sizes: [],
     details: Array.isArray(body.details) ? body.details : [],
     colors: Array.isArray(body.colors) ? body.colors : [],

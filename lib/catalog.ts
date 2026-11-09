@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/utils/supabase/admin";
 import { PRODUCTS, CATEGORIES } from "@/lib/products";
+import { normalizeImageList } from "@/lib/productImage";
 import {
   filterShowcaseLine,
   getShowcaseLine,
@@ -88,7 +89,7 @@ export function normalizeProduct(row: RawProduct): Product {
       compareAt === undefined || compareAt === null || compareAt === ""
         ? undefined
         : asNumber(compareAt),
-    images: asStringArray(row.images).map(toWebp),
+    images: normalizeImageList(asStringArray(row.images).map(toWebp)),
     colors: asColors(row.colors),
     sizes: [],
     rating: asNumber(row.rating),

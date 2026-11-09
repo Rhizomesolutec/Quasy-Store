@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { useWishlist } from "@/context/WishlistContext";
 import { formatPrice } from "@/lib/utils";
 import { SHARED_SPIDER_IMAGES } from "@/lib/sharedImages";
@@ -142,7 +142,7 @@ export function Dashboard({ email, onSignOut }: { email: string; onSignOut: () =
                 {wishlist.slice(0, 6).map((item) => (
                   <Link key={item.productId} href={`/shop/${item.slug}`} className="border border-white/[0.08] p-3">
                     <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden mb-2">
-                      <Image src={item.image} alt={item.name} fill className="object-cover" />
+                      <ProductImage src={item.image} alt={item.name} fill />
                     </div>
                     <p className="font-sans text-xs text-[#F5F2EF] truncate">{item.name}</p>
                     <p className="font-sans text-xs text-[#E50914]">{formatPrice(item.price)}</p>
@@ -184,7 +184,7 @@ function OrderRow({ order }: { order: (typeof MOCK_ORDERS)[number] }) {
   return (
     <div className="flex items-center gap-4 border border-white/[0.08] p-4">
       <div className="relative w-14 aspect-[4/5] bg-black rounded-sm overflow-hidden flex-shrink-0">
-        <Image src={order.image} alt="" fill className="object-cover" />
+        <ProductImage src={order.image} alt="" fill />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-sans text-sm text-[#F5F2EF]">{order.id}</p>

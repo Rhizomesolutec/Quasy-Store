@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { PageHero } from "@/components/ui/PageHero";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
@@ -36,11 +36,11 @@ export default async function NewArrivalsPage() {
           <RevealOnScroll>
             <Link href={`/shop/${feature.slug}`} className="group grid md:grid-cols-2 gap-10 md:gap-16 items-center">
               <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden shadow-2xl">
-                <Image
+                <ProductImage
                   src={feature.images[0]}
                   alt={feature.name}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="transition-transform duration-700 group-hover:scale-105"
                 />
                 <span className="absolute top-4 left-4 bg-[#F5F2EF]/10 border border-[#F5F2EF]/30 text-[#F5F2EF] text-[9px] uppercase tracking-widest font-semibold px-2 py-1 backdrop-blur-sm">
                   New

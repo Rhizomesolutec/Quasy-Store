@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { motion } from "framer-motion";
 import { PageHero } from "@/components/ui/PageHero";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -85,7 +85,7 @@ export default function CartPage() {
               {cart.map((item) => (
                 <div key={`${item.productId}-${item.variant}-${item.size ?? ""}`} className="flex gap-4 md:gap-6 border-b border-white/[0.06] pb-6">
                   <Link href={`/shop/${item.slug}`} className="relative w-24 md:w-28 aspect-[4/5] bg-black rounded-sm overflow-hidden flex-shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                    <ProductImage src={item.image} alt={item.name} fill />
                   </Link>
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>

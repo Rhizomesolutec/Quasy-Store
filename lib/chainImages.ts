@@ -16,7 +16,6 @@ export const CHAIN_IMAGES = [
 
 export function safePublicSrc(src: string) {
   if (!src) return encodeURI(CHAIN_IMAGES[0]);
-  if (src.startsWith("http://") || src.startsWith("https://")) return src;
   try {
     return encodeURI(decodeURI(src));
   } catch {

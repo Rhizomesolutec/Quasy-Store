@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { SHOWCASE_LINES } from "@/lib/showcase";
+import { ProductImage } from "@/components/ui/ProductImage";
 
 export function HandmadeShowcase() {
   return (
@@ -44,12 +44,12 @@ export function HandmadeShowcase() {
                   </div>
 
                   <div className="relative aspect-square overflow-hidden bg-black border border-[#2a261c]">
-                    <Image
+                    <ProductImage
                       src={line.image}
                       alt={line.name}
                       fill
                       sizes="(min-width: 1024px) 18vw, (min-width: 640px) 30vw, 45vw"
-                      className="object-cover sepia-[0.35] contrast-110 saturate-75 group-hover:sepia-0 group-hover:saturate-100 transition-all duration-700"
+                      className="sepia-[0.35] contrast-110 saturate-75 group-hover:sepia-0 group-hover:saturate-100 transition-all duration-700"
                     />
                     <div className="absolute inset-0 crt-scanlines pointer-events-none opacity-40" />
                     <span

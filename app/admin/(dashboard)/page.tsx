@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { formatPrice } from "@/lib/utils";
 import { PRODUCTS, COLLECTIONS, CATEGORIES } from "@/lib/products";
 import {
@@ -863,12 +863,12 @@ export default function AdminDashboard() {
                           <div>
                             <div className="relative aspect-square bg-black rounded-sm overflow-hidden mb-2 sm:mb-3">
                               {p.images && p.images[0] ? (
-                                <Image
+                                <ProductImage
                                   src={p.images[0]}
                                   alt={p.name}
                                   fill
                                   sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-                                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                  className="group-hover:scale-105 transition-transform duration-500"
                                 />
                               ) : (
                                 <div className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs text-[#F5F2EF]/30 bg-[#222]">
@@ -1682,12 +1682,11 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2">
                       {formImages.map((imgUrl, idx) => (
                         <div key={idx} className="relative aspect-square border border-white/[0.08] bg-black group rounded-sm overflow-hidden">
-                          <Image
+                          <ProductImage
                             src={imgUrl}
                             alt="Preview"
                             fill
                             sizes="80px"
-                            className="object-cover"
                           />
                           <button
                             type="button"

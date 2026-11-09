@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
 import { formatPrice } from "@/lib/utils";
@@ -68,13 +68,13 @@ export function FeaturedProductsCarousel({ products }: { products: Product[] }) 
           >
             <Link href={`/shop/${product.slug}`} className="group block">
               <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden border-2 border-[#E50914]/40 mb-4 retro-box-shadow group-hover:border-[#E50914] transition-colors">
-                <Image
+                <ProductImage
                   src={product.images[0]}
                   alt={product.name}
                   fill
                   sizes="340px"
                   draggable={false}
-                  className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+                  className="opacity-90 transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-vintage-bg/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <span className="absolute bottom-4 left-4 right-4 font-mono text-[10px] uppercase font-bold tracking-widest text-[#E50914] opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-1">

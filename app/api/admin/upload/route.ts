@@ -47,15 +47,23 @@ function errorText(error: unknown) {
   }
 }
 
-async function toWebp(input: Buffer) {
+async function convertUpload(input: Buffer) {
   const sharp = (await import("sharp")).default;
   sharp.cache(false);
   sharp.concurrency(1);
-  return sharp(input, { failOn: "none" })
-    .rotate()
-    .resize(1600, 1600, { fit: "inside", withoutEnlargement: true })
-    .webp({ quality: 80, effort: 2 })
-    .toBuffer();
+  const pipeline = () =>
+    sharp(input, { failOn: "none", animated: false }).rotate().resize(1600, 1600, {
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+
+  try {
+    const webp = await pipeline().webp({ quality: 80, effort: 2 }).toBuffer();
+    return { bytes: webp, contentType: "image/webp", ext: "webp" as const };
+  } catch {
+    const jpeg = await pipeline().jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+    return { bytes: jpeg, contentType: "image/jpeg", ext: "jpg" as const };
+  }
 }
 
 async function saveLocally(bytes: Uint8Array, fileName: string) {
@@ -149,17 +157,26 @@ export async function POST(request: Request) {
     }
 
     const input = Buffer.from(await file.arrayBuffer());
+    const originalType = (file.type || "").toLowerCase();
+    const isHeic = originalType.includes("heic") || originalType.includes("heif") || ext === "heic" || ext === "heif";
+
     let bytes: Uint8Array = new Uint8Array(input);
     let contentType = file.type || "image/jpeg";
     let fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${ext === "jpeg" ? "jpg" : ext}`;
 
     try {
-      const webpBuffer = await toWebp(input);
-      bytes = new Uint8Array(webpBuffer);
-      contentType = "image/webp";
-      fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.webp`;
+      const converted = await convertUpload(input);
+      bytes = new Uint8Array(converted.bytes);
+      contentType = converted.contentType;
+      fileName = `${Date.now()}-${randomUUID().slice(0, 8)}.${converted.ext}`;
     } catch (convertError) {
       console.warn("Image convert skipped, uploading original:", errorText(convertError));
+      if (isHeic) {
+        return NextResponse.json(
+          { error: "This photo format is not supported in the browser. Upload a JPG, PNG, or WEBP instead." },
+          { status: 400 }
+        );
+      }
     }
 
     const remotePath = `products/${fileName}`;

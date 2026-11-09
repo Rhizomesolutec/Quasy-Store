@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   serverExternalPackages: ["sharp"],
   images: {
-    formats: ["image/avif", "image/webp"],
+    // Vercel image optimization returns 402 once the quota is exceeded,
+    // which leaves product cards as black squares. Serve originals instead.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

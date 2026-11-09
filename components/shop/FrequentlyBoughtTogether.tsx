@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
@@ -41,7 +41,7 @@ export function FrequentlyBoughtTogether({ main, companions }: { main: Product; 
                 className="w-4 h-4 accent-[#E50914]"
               />
               <div className="relative w-16 aspect-[4/5] bg-black rounded-sm overflow-hidden border border-white/[0.08]">
-                <Image src={p.images[0]} alt={p.name} fill className="object-cover" />
+                <ProductImage src={p.images[0]} alt={p.name} fill />
               </div>
               <div>
                 <p className="font-sans text-xs text-[#F5F2EF]">{p.name}</p>

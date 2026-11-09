@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { PageHero } from "@/components/ui/PageHero";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkButton, Button } from "@/components/ui/Button";
@@ -50,7 +50,7 @@ export default function WishlistPage() {
             {wishlist.map((item) => (
               <div key={item.productId} className="flex flex-col border border-white/[0.08] p-4">
                 <Link href={`/shop/${item.slug}`} className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden mb-4">
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  <ProductImage src={item.image} alt={item.name} fill />
                 </Link>
                 <Link href={`/shop/${item.slug}`} className="font-heading text-lg text-[#F5F2EF] hover:text-[#E50914] transition-colors mb-1">
                   {item.name}

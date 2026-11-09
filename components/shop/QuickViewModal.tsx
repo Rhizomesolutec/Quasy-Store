@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { ProductImage } from "@/components/ui/ProductImage";
 import { AnimatePresence, motion } from "framer-motion";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
@@ -54,7 +54,7 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <div className="relative aspect-[4/5] bg-black rounded-sm overflow-hidden">
-                  <Image src={product.images[activeImage]} alt={product.name} fill className="object-cover" />
+                  <ProductImage src={product.images[activeImage]} alt={product.name} fill />
                 </div>
                 <div className="flex gap-2">
                   {product.images.map((img, idx) => (
@@ -65,7 +65,7 @@ export function QuickViewModal({ product, onClose }: { product: Product | null; 
                         idx === activeImage ? "border-[#E50914]" : "border-white/[0.08]"
                       }`}
                     >
-                      <Image src={img} alt="" fill className="object-cover" />
+                      <ProductImage src={img} alt="" fill />
                     </button>
                   ))}
                 </div>
