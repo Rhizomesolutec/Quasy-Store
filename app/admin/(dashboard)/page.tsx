@@ -15,8 +15,6 @@ import {
   withLineInDetails,
 } from "@/lib/showcase";
 
-const supabase = createClient();
-
 type Tab = "products" | "categories" | "orders" | "users" | "reviews";
 
 interface AdminReview {
@@ -265,6 +263,7 @@ export default function AdminDashboard() {
   const handleSeedDatabase = async () => {
     setSeeding(true);
     try {
+      const supabase = createClient();
       // A. Seed Collections
       const cleanCollections = COLLECTIONS.map((c) => ({
         slug: c.slug,
@@ -607,7 +606,15 @@ export default function AdminDashboard() {
         return;
       }
 
-      setFormImages((prev) => [...prev, data.url as string]);
+      const uploadedUrl = String(data.url);
+      if (data.storage !== "supabase" || uploadedUrl.startsWith("/uploads/")) {
+        alert(
+          "Cloud storage is required before this photo can be saved on a product. Check the product-images bucket and try again."
+        );
+        return;
+      }
+
+      setFormImages((prev) => [...prev, uploadedUrl]);
       if (typeof data.warning === "string" && data.warning) {
         console.warn(data.warning);
       }
@@ -697,8 +704,8 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-vintage-bg text-[#F5F2EF] font-sans flex flex-col relative overflow-x-hidden">
-      <div className="bg-noise" />
+    <div className="h-full max-h-dvh bg-vintage-bg text-[#F5F2EF] font-sans flex flex-col overflow-hidden">
+      <div className="bg-noise pointer-events-none" />
 
       {notice && (
         <div
@@ -713,7 +720,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#170909]/95 backdrop-blur-md">
+      <div className="shrink-0 z-30 border-b border-white/[0.08] bg-[#170909]/95 backdrop-blur-md">
         <header className="px-3 sm:px-6 py-2.5 sm:py-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <span className="font-heading text-lg sm:text-2xl tracking-widest text-[#F5F2EF]">QUSAY</span>
@@ -764,8 +771,8 @@ export default function AdminDashboard() {
         </nav>
       </div>
 
-      <div className="flex-1 flex flex-col md:grid md:grid-cols-[220px_1fr] min-h-0 relative">
-        <aside className="hidden md:block border-r border-white/[0.08] bg-[#141414] p-6 space-y-6">
+      <div className="flex-1 min-h-0 flex flex-col md:grid md:grid-cols-[220px_1fr] overflow-hidden relative">
+        <aside className="hidden md:block min-h-0 overflow-y-auto border-r border-white/[0.08] bg-[#141414] p-6 space-y-6">
           <div className="space-y-1">
             <p className="font-heading text-sm text-[#F5F2EF]/40 uppercase tracking-widest">Navigation</p>
             <nav className="flex flex-col gap-1.5 pt-3">
@@ -799,7 +806,7 @@ export default function AdminDashboard() {
           </div>
         </aside>
 
-        <main className="p-3 sm:p-6 md:p-10 overflow-y-auto overflow-x-hidden min-w-0">
+        <main className="flex-1 min-h-0 min-w-0 p-3 sm:p-6 md:p-10 overflow-y-auto overflow-x-hidden overscroll-contain">
           {loading ? (
             <div className="h-64 flex items-center justify-center flex-col gap-3">
               <span className="w-8 h-8 border-3 border-[#E50914] border-t-transparent rounded-full animate-spin" />

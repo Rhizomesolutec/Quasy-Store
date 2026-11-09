@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 import { safePublicSrc } from "@/lib/chainImages";
 import { resolveProductImageSrc } from "@/lib/productImage";
+import { ProductImage } from "@/components/ui/ProductImage";
 import type { Product } from "@/lib/types";
 
 export type CatalogItem = {
@@ -52,10 +53,11 @@ export function CatalogPlate({
         </div>
 
         <div className="relative aspect-square overflow-hidden bg-[#1a1610] border border-[#2a261c]">
-          <img
+          <ProductImage
             src={product.image}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+            fill
+            className="group-hover:scale-105 transition-transform duration-500"
           />
           <span
             className="absolute top-2 right-2 sm:top-3 sm:right-3 rotate-[-12deg] border-2 px-1.5 py-0.5 font-pixel text-[7px] sm:text-[8px] uppercase tracking-widest bg-black/60"

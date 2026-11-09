@@ -3,9 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   serverExternalPackages: ["sharp"],
   images: {
-    // Vercel image optimization returns 402 once the quota is exceeded,
-    // which leaves product cards as black squares. Serve originals instead.
+    // Never proxy through /_next/image (Vercel optimizer quota returns 402).
     unoptimized: true,
+    loader: "custom",
+    loaderFile: "./lib/directImageLoader.ts",
     remotePatterns: [
       {
         protocol: "https",

@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
+  const isAdmin = pathname?.startsWith("/admin");
 
   // Motion values for client mouse coordinates
   const mouseX = useMotionValue(-100);
@@ -16,6 +19,7 @@ export default function CustomCursor() {
   const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
+    if (isAdmin) return;
     // Disable custom cursor on touch devices to preserve mobile performance
     const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
@@ -44,9 +48,9 @@ export default function CustomCursor() {
         style.parentNode.removeChild(style);
       }
     };
-  }, [mouseX, mouseY]);
+  }, [isAdmin, mouseX, mouseY]);
 
-  if (!isVisible) return null;
+  if (isAdmin || !isVisible) return null;
 
   return (
     <motion.div

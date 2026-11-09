@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { SectionHeader } from "./SectionHeader";
-import { categoryToSlug, isShowcaseCategory } from "@/lib/catalog";
+import { categoryToSlug } from "@/lib/products";
+import { isShowcaseCategory } from "@/lib/showcase";
 import type { Product } from "@/lib/types";
 
 const PREFERRED_ORDER = [

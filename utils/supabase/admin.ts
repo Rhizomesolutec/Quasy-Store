@@ -1,3 +1,4 @@
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
 /**
@@ -12,6 +13,10 @@ export function createAdminClient() {
 
   if (!supabaseUrl || !serviceRoleKey) {
     throw new Error("Supabase admin credentials are not configured");
+  }
+
+  if (serviceRoleKey.startsWith("sb_publishable_")) {
+    throw new Error("Supabase admin client requires the service-role key, not the public anon key");
   }
 
   return createClient(supabaseUrl, serviceRoleKey, {

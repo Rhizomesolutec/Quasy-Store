@@ -11,6 +11,7 @@ type ProductImageProps = {
   sizes?: string;
   draggable?: boolean;
   priority?: boolean;
+  fallbackSrc?: string;
 };
 
 export function ProductImage({
@@ -20,28 +21,39 @@ export function ProductImage({
   fill = false,
   draggable,
   priority = false,
+  fallbackSrc,
 }: ProductImageProps) {
   const resolved = resolveProductImageSrc(src);
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const failed = !resolved || failedSrc === resolved;
+  const fallback = resolveProductImageSrc(fallbackSrc);
+  const [broken, setBroken] = useState<string[]>([]);
 
-  if (failed) {
+  const current =
+    resolved && !broken.includes(resolved)
+      ? resolved
+      : fallback && fallback !== resolved && !broken.includes(fallback)
+        ? fallback
+        : "";
+
+  if (!current) {
     return (
       <span
         className={fill ? "absolute inset-0 bg-[#171717]" : "block h-full w-full bg-[#171717]"}
-        aria-hidden
+        role="img"
+        aria-label={alt || "Image unavailable"}
       />
     );
   }
 
   return (
     <img
-      src={resolved}
+      src={current}
       alt={alt}
       draggable={draggable}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
-      onError={() => setFailedSrc(resolved)}
+      onError={() => {
+        setBroken((prev) => (prev.includes(current) ? prev : [...prev, current]));
+      }}
       className={fill ? `absolute inset-0 h-full w-full object-cover ${className}` : className}
     />
   );

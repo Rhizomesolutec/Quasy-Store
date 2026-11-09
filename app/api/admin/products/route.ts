@@ -9,7 +9,7 @@ import {
   type AdminStoredProduct,
 } from "@/lib/adminProductStore";
 import { normalizeProduct } from "@/lib/catalog";
-import { rewriteStoredImageSrc } from "@/lib/productImage";
+import { persistProductImages } from "@/lib/imageStorage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,7 +56,7 @@ function toStoredProduct(body: AdminStoredProduct): AdminStoredProduct {
     shippingInfo: String(body.shippingInfo || ""),
     video: body.video ? String(body.video) : null,
     images: Array.isArray(body.images)
-      ? body.images.map((img) => rewriteStoredImageSrc(String(img))).filter(Boolean)
+      ? body.images.map((img) => String(img).trim()).filter(Boolean)
       : [],
     sizes: [],
     details: Array.isArray(body.details) ? body.details : [],
@@ -121,7 +121,21 @@ export async function GET() {
       const cloudIds = new Set(cloud.map((p) => p.id));
       const missing = local.filter((p) => !cloudIds.has(p.id));
       for (const product of missing) {
-        const payload = toSupabaseProduct(toStoredProduct(product));
+        const persisted = persistProductImages(product.images);
+        if (!persisted.ok) {
+          console.warn(
+            JSON.stringify({
+              scope: "admin/products",
+              event: "skip_local_product_with_invalid_images",
+              id: product.id,
+              error: persisted.error,
+            })
+          );
+          continue;
+        }
+        const payload = toSupabaseProduct(
+          toStoredProduct({ ...product, images: persisted.images })
+        );
         const upsert = await supabase
           .from("products")
           .upsert([payload])
@@ -184,7 +198,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const productPayload = toStoredProduct(body);
+    const persistedImages = persistProductImages(body.images);
+    if (!persistedImages.ok) {
+      return NextResponse.json({ error: persistedImages.error }, { status: 400 });
+    }
+
+    const productPayload = toStoredProduct({ ...body, images: persistedImages.images });
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("products")

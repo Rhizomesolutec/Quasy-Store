@@ -76,6 +76,13 @@ body {
   position: relative;
 }
 
+html:has([data-admin-shell]),
+body:has([data-admin-shell]) {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 /* Subtle cinematic ambient lighting */
 body::before {
   content: "";

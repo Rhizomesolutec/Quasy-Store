@@ -13,5 +13,9 @@ export default async function AdminDashboardLayout({
     redirect("/admin/login");
   }
 
-  return children;
+  return (
+    <div data-admin-shell className="h-dvh overflow-hidden">
+      {children}
+    </div>
+  );
 }
