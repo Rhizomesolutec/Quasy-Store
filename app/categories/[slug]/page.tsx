@@ -37,6 +37,10 @@ function getCategoryBgImage(category: string): string {
       return "/images/Nacklace/Spider Collection/vol 2/vol 2.webp";
     case "Glow Dark Necklace":
       return "/images/Nacklace/Glow dark nacklace/vol 11/vol 11.webp";
+    case "Resin necklace":
+      return "/images/showcase/subs/handmade-resin-necklace.webp";
+    case "Hoodie":
+      return "/images/showcase/subs/handpicked-hoodie.webp";
     case "Bracelets":
       return "/images/Nacklace/Bracelet/Bracelet 1.webp";
     case "Denim Sling Bag":

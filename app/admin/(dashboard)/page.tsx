@@ -675,10 +675,10 @@ export default function AdminDashboard() {
       });
       const result = await res.json().catch(() => ({}));
 
-      if (!res.ok) {
+      if (!res.ok || result?.storage !== "supabase" || result?.success === false) {
         setNotice({
           type: "error",
-          message: result?.error || "Failed to save product.",
+          message: result?.error || "Failed to save product to the store.",
         });
       } else {
         setIsProductModalOpen(false);

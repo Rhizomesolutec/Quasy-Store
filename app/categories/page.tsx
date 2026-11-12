@@ -25,6 +25,8 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "Key Chain": encodeURI("/images/Nacklace/Keychain/Keychain 1/Keychain 1.webp"),
   "Jacket Pin": encodeURI("/images/Nacklace/Jacket pin/Jacket pin 1.webp"),
   "Metal Hook Bookmark": encodeURI("/images/Nacklace/Metal hook bookmark/Metal hook bookmark 1/Metal hook bookmark 1.webp"),
+  "Resin necklace": "/images/showcase/subs/handmade-resin-necklace.webp",
+  Hoodie: "/images/showcase/subs/handpicked-hoodie.webp",
 };
 
 export default async function CategoriesPage() {

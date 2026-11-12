@@ -140,6 +140,7 @@ function reviewsFor(seedName: string): Review[] {
 export const CATEGORIES = [
   "Necklaces",
   "Glow Dark Necklace",
+  "Resin necklace",
   "Bracelets",
   "Pant Hook Chain",
   "Denim Sling Bag",
@@ -153,6 +154,7 @@ export const CATEGORIES = [
   "Cap",
   "T shirt",
   "Shirt",
+  "Hoodie",
   "Pant",
   "Perfume",
   "Mhr merch",

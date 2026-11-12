@@ -24,7 +24,16 @@ export const SHOWCASE_LINES: ShowcaseLine[] = [
     stampColor: "#ED5903",
     channel: "01",
     image: "/images/showcase/handmade.webp",
-    subs: ["Necklace", "Bracelet", "Bag", "Keychain", "Pant chain", "Pendant"],
+    subs: [
+      "Necklace",
+      "Bracelet",
+      "Bag",
+      "Keychain",
+      "Pant chain",
+      "Pendant",
+      "Glow in the dark necklace",
+      "Resin necklace",
+    ],
   },
   {
     slug: "hand-picked",
@@ -46,6 +55,8 @@ export const SHOWCASE_LINES: ShowcaseLine[] = [
       "Watch",
       "Pendant",
       "Cap",
+      "Shirt",
+      "Hoodie",
     ],
   },
   {
@@ -97,6 +108,9 @@ const SUB_TO_SHOP: Record<string, string> = {
   watch: "Watch",
   cap: "Cap",
   shirt: "Shirt",
+  hoodie: "Hoodie",
+  "glow in the dark necklace": "Glow Dark Necklace",
+  "resin necklace": "Resin necklace",
   perfume: "Perfume",
   "mhr merch": "Mhr merch",
   "action figure": "Action figure",
@@ -169,10 +183,36 @@ function hasExplicitLine(product: Product) {
 
 export function matchesSub(product: Product, sub: string) {
   const category = product.category.toLowerCase().trim();
+  const name = product.name.toLowerCase();
   const key = sub.toLowerCase();
   const shop = shopCategoryForSub(sub).toLowerCase();
-  if (category === shop || category === key) return true;
-  if (key === "necklace") return category.includes("necklace");
+  const isGlowNecklace =
+    (category.includes("glow") && category.includes("necklace")) ||
+    (name.includes("glow") && name.includes("necklace"));
+  const isResinNecklace =
+    (category.includes("resin") && category.includes("necklace")) ||
+    (name.includes("resin") && name.includes("necklace"));
+  if (category === shop || category === key) {
+    if (key === "necklace" && (isGlowNecklace || isResinNecklace)) return false;
+    return true;
+  }
+  if (key === "necklace") {
+    return category.includes("necklace") && !isGlowNecklace && !isResinNecklace;
+  }
+  if (key === "glow in the dark necklace") {
+    return (
+      (category.includes("glow") && category.includes("necklace")) ||
+      (name.includes("glow") && name.includes("necklace"))
+    );
+  }
+  if (key === "resin necklace") {
+    return (
+      (category.includes("resin") && category.includes("necklace")) ||
+      (name.includes("resin") && name.includes("necklace"))
+    );
+  }
+  if (key === "hoodie") return category.includes("hoodie") || name.includes("hoodie");
+  if (key === "shirt") return category === "shirt" || category === "shirts";
   if (key === "bracelet") return category.includes("bracelet") || category.includes("cuff");
   if (key === "watch") return category.includes("watch");
   if (key === "bag") return category.includes("bag") || category.includes("sling");
@@ -217,6 +257,8 @@ const CARD_IMAGES: Record<string, string> = {
   "handmade:keychain": "/images/showcase/subs/handmade-keychain.webp",
   "handmade:pant chain": "/images/showcase/subs/handmade-pant-chain.webp",
   "handmade:pendant": "/images/showcase/subs/handmade-pendant.webp",
+  "handmade:glow in the dark necklace": "/images/showcase/subs/handmade-glow-necklace.webp",
+  "handmade:resin necklace": "/images/showcase/subs/handmade-resin-necklace.webp",
 
   "hand-picked:necklace": "/images/showcase/subs/handpicked-necklace.webp",
   "hand-picked:bracelet": "/images/showcase/subs/handpicked-bracelet.webp",
@@ -228,6 +270,8 @@ const CARD_IMAGES: Record<string, string> = {
   "hand-picked:watch": "/images/showcase/subs/handpicked-watch.webp",
   "hand-picked:pendant": "/images/showcase/subs/handpicked-pendant.webp",
   "hand-picked:cap": "/images/showcase/subs/handpicked-cap.webp",
+  "hand-picked:shirt": "/images/showcase/subs/handpicked-shirt.webp",
+  "hand-picked:hoodie": "/images/showcase/subs/handpicked-hoodie.webp",
 
   "qusay-made:jacket": "/images/showcase/subs/qusaymade-jacket.webp",
   "qusay-made:t shirt": "/images/showcase/subs/qusaymade-tshirt.webp",

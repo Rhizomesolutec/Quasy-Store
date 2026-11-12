@@ -30,6 +30,18 @@ export type AdminStoredProduct = {
 
 const STORE_PATH = path.join(process.cwd(), "data", "admin-products.json");
 
+/** Serialize local file writes so GET/POST/DELETE cannot clobber each other. */
+let storeLock: Promise<void> = Promise.resolve();
+
+function withStoreLock<T>(fn: () => Promise<T>): Promise<T> {
+  const run = storeLock.then(fn, fn);
+  storeLock = run.then(
+    () => undefined,
+    () => undefined
+  );
+  return run;
+}
+
 /** Local file mirror is for local/dev only — Vercel filesystem is read-only. */
 function localStoreEnabled() {
   return process.env.VERCEL !== "1" && process.env.DISABLE_LOCAL_PRODUCT_STORE !== "1";
@@ -72,29 +84,31 @@ export async function upsertLocalProduct(
 
   if (!localStoreEnabled()) return stamped;
 
-  try {
-    const products = await readLocalProducts();
-    const index = products.findIndex(
-      (item) => item.id === product.id || item.slug === product.slug
-    );
+  return withStoreLock(async () => {
+    try {
+      const products = await readLocalProducts();
+      const index = products.findIndex(
+        (item) => item.id === product.id || item.slug === product.slug
+      );
 
-    const next: AdminStoredProduct = {
-      ...stamped,
-      createdAt: index >= 0 ? products[index].createdAt || now : now,
-    };
+      const next: AdminStoredProduct = {
+        ...stamped,
+        createdAt: index >= 0 ? products[index].createdAt || now : now,
+      };
 
-    if (index >= 0) {
-      products[index] = { ...products[index], ...next };
-    } else {
-      products.unshift(next);
+      if (index >= 0) {
+        products[index] = { ...products[index], ...next };
+      } else {
+        products.unshift(next);
+      }
+
+      await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
+      return next;
+    } catch (error) {
+      console.warn("Local product store write skipped:", error);
+      return stamped;
     }
-
-    await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
-    return next;
-  } catch (error) {
-    console.warn("Local product store write skipped:", error);
-    return stamped;
-  }
+  });
 }
 
 export async function deleteLocalProduct(
@@ -102,16 +116,18 @@ export async function deleteLocalProduct(
 ): Promise<AdminStoredProduct | null> {
   if (!localStoreEnabled()) return null;
 
-  try {
-    const products = await readLocalProducts();
-    const index = products.findIndex((item) => item.id === id);
-    if (index < 0) return null;
+  return withStoreLock(async () => {
+    try {
+      const products = await readLocalProducts();
+      const index = products.findIndex((item) => item.id === id);
+      if (index < 0) return null;
 
-    const [removed] = products.splice(index, 1);
-    await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
-    return removed;
-  } catch (error) {
-    console.warn("Local product store delete skipped:", error);
-    return null;
-  }
+      const [removed] = products.splice(index, 1);
+      await fs.writeFile(STORE_PATH, JSON.stringify(products, null, 2), "utf8");
+      return removed;
+    } catch (error) {
+      console.warn("Local product store delete skipped:", error);
+      return null;
+    }
+  });
 }

@@ -84,13 +84,6 @@ function mapProducts(rows: AdminStoredProduct[]) {
   );
 }
 
-/** Best-effort local mirror — never throw (Vercel FS is read-only). */
-async function mirrorLocal(rows: AdminStoredProduct[]) {
-  for (const row of rows) {
-    await upsertLocalProduct(toStoredProduct(row));
-  }
-}
-
 export async function GET() {
   if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -115,46 +108,16 @@ export async function GET() {
 
     const cloud = ((data || []) as AdminStoredProduct[]).map(toStoredProduct);
 
-    // Push any local-only products into Supabase (local/dev only).
-    const local = await readLocalProducts();
-    if (local.length > 0) {
-      const cloudIds = new Set(cloud.map((p) => p.id));
-      const missing = local.filter((p) => !cloudIds.has(p.id));
-      for (const product of missing) {
-        const persisted = persistProductImages(product.images);
-        if (!persisted.ok) {
-          console.warn(
-            JSON.stringify({
-              scope: "admin/products",
-              event: "skip_local_product_with_invalid_images",
-              id: product.id,
-              error: persisted.error,
-            })
-          );
-          continue;
-        }
-        const payload = toSupabaseProduct(
-          toStoredProduct({ ...product, images: persisted.images })
-        );
-        const upsert = await supabase
-          .from("products")
-          .upsert([payload])
-          .select("*")
-          .single();
-        if (!upsert.error && upsert.data) {
-          cloud.unshift(toStoredProduct(upsert.data as AdminStoredProduct));
-        }
-      }
-    }
-
+    // GET is read-only. Never upsert local cache into Supabase here —
+    // that race can resurrect a product right after admin deletes it.
     if (cloud.length > 0) {
-      // Mirror for local/dev only — must not break the response on Vercel.
-      void mirrorLocal(cloud);
       return NextResponse.json({
         products: mapProducts(cloud),
         storage: "supabase",
       });
     }
+
+    const local = await readLocalProducts();
 
     if (local.length > 0) {
       return NextResponse.json({
