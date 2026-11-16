@@ -9,6 +9,7 @@ import { formatPrice } from "@/lib/utils";
 import { PRODUCTS, COLLECTIONS, CATEGORIES } from "@/lib/products";
 import {
   SHOWCASE_LINES,
+  adminTypeOptions,
   parseLineFromDetails,
   shopCategoryForSub,
   stripLineFromDetails,
@@ -205,12 +206,18 @@ export default function AdminDashboard() {
       const categoriesRes = await fetch("/api/admin/categories", { cache: "no-store" });
       if (categoriesRes.ok) {
         const categoriesJson = await categoriesRes.json();
-        setCategories(
-          ((categoriesJson.categories as DBCategory[]) || []).map((c) => ({
-            name: c.name,
-            description: c.description || `Premium ${c.name} pieces`,
-          }))
-        );
+        const fromApi = ((categoriesJson.categories as DBCategory[]) || []).map((c) => ({
+          name: c.name,
+          description: c.description || `Premium ${c.name} pieces`,
+        }));
+        const seen = new Set(fromApi.map((c) => c.name.toLowerCase()));
+        setCategories([
+          ...fromApi,
+          ...CATEGORIES.filter((name) => !seen.has(name.toLowerCase())).map((name) => ({
+            name,
+            description: `Premium ${name} pieces`,
+          })),
+        ]);
       } else {
         setCategories(CATEGORIES.map((name) => ({ name, description: `Premium ${name} pieces` })));
       }
@@ -1502,17 +1509,9 @@ export default function AdminDashboard() {
                     className="w-full bg-[#1A0A0A] border border-white/[0.08] px-3 py-2 text-sm text-[#F5F2EF] outline-none focus:border-[#E50914]"
                   >
                     <option value="" disabled>-- Choose Type --</option>
-                    {(
-                      SHOWCASE_LINES.find((line) => line.name === formLine)?.subs.length
-                        ? SHOWCASE_LINES.find((line) => line.name === formLine)!.subs
-                        : formLine === "Crystals"
-                          ? ["Crystals"]
-                          : Array.from(
-                              new Set([
-                                ...(categories.length > 0 ? categories.map((c) => c.name) : []),
-                                ...CATEGORIES,
-                              ])
-                            )
+                    {adminTypeOptions(
+                      formLine,
+                      categories.length > 0 ? categories.map((c) => c.name) : [...CATEGORIES]
                     ).map((typeName) => (
                       <option key={typeName} value={typeName}>
                         {typeName}

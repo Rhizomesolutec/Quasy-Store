@@ -1,22 +1,10 @@
-import { type NextRequest } from "next/server";
-import { createClient } from "@/utils/supabase/middleware";
+import { type NextRequest, NextResponse } from "next/server";
 
 /**
- * Keep this proxy narrowly scoped.
- * A broad matcher in Next.js 16.2.x can make valid App Router pages
- * (including /admin/login) return 404 in development.
- *
- * Admin auth is enforced in app/admin route layouts instead.
+ * Next.js 16.2 can 404 valid App Router pages if this proxy clones
+ * the request (the old Supabase session-refresh pattern).
+ * Keep it as a passthrough. Admin auth stays in app/admin layouts.
  */
-export async function proxy(request: NextRequest) {
-  return await createClient(request);
+export function proxy(_request: NextRequest) {
+  return NextResponse.next();
 }
-
-export const config = {
-  matcher: [
-    "/account",
-    "/account/:path*",
-    "/payment",
-    "/payment/:path*",
-  ],
-};

@@ -33,6 +33,11 @@ export const SHOWCASE_LINES: ShowcaseLine[] = [
       "Pendant",
       "Glow in the dark necklace",
       "Resin necklace",
+      "Jacket",
+      "Shirt",
+      "Pant",
+      "Perfume",
+      "Mhr merch",
     ],
   },
   {
@@ -132,6 +137,24 @@ export function shopCategoryForSub(sub: string) {
   return SUB_TO_SHOP[sub.toLowerCase()] || sub;
 }
 
+/** Shop category names used by every catalog card, for admin + storefront seed. */
+export function allShopCategoryNames() {
+  const names = new Set<string>();
+  for (const line of SHOWCASE_LINES) {
+    if (line.subs.length === 0) names.add(line.name);
+    for (const sub of line.subs) names.add(shopCategoryForSub(sub));
+  }
+  return Array.from(names);
+}
+
+/** Type dropdown options for a Catalog selection in admin. */
+export function adminTypeOptions(lineName: string, extra: string[] = []) {
+  const line = SHOWCASE_LINES.find((item) => item.name === lineName);
+  if (line && line.subs.length > 0) return line.subs;
+  if (line?.slug === "crystals") return ["Crystals"];
+  return Array.from(new Set([...extra, ...allShopCategoryNames()]));
+}
+
 export function subToSlug(sub: string) {
   return sub.toLowerCase().replace(/\s+/g, "-");
 }
@@ -213,6 +236,10 @@ export function matchesSub(product: Product, sub: string) {
   }
   if (key === "hoodie") return category.includes("hoodie") || name.includes("hoodie");
   if (key === "shirt") return category === "shirt" || category === "shirts";
+  if (key === "jacket") return category === "jacket" || category === "jackets";
+  if (key === "pant") return category === "pant" || category === "pants";
+  if (key === "perfume") return category.includes("perfume");
+  if (key === "mhr merch") return category.includes("mhr");
   if (key === "bracelet") return category.includes("bracelet") || category.includes("cuff");
   if (key === "watch") return category.includes("watch");
   if (key === "bag") return category.includes("bag") || category.includes("sling");
@@ -259,6 +286,11 @@ const CARD_IMAGES: Record<string, string> = {
   "handmade:pendant": "/images/showcase/subs/handmade-pendant.webp",
   "handmade:glow in the dark necklace": "/images/showcase/subs/handmade-glow-necklace.webp",
   "handmade:resin necklace": "/images/showcase/subs/handmade-resin-necklace.webp",
+  "handmade:jacket": "/images/showcase/subs/handmade-jacket.webp",
+  "handmade:shirt": "/images/showcase/subs/handmade-shirt.webp",
+  "handmade:pant": "/images/showcase/subs/handmade-pant.webp",
+  "handmade:perfume": "/images/showcase/subs/handmade-perfume.webp",
+  "handmade:mhr merch": "/images/showcase/subs/handmade-mhr-merch.webp",
 
   "hand-picked:necklace": "/images/showcase/subs/handpicked-necklace.webp",
   "hand-picked:bracelet": "/images/showcase/subs/handpicked-bracelet.webp",

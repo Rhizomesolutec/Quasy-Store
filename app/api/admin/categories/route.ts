@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { CATEGORIES } from "@/lib/products";
 import { categoryToSlug } from "@/lib/catalog";
+import { allShopCategoryNames } from "@/lib/showcase";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,10 @@ type CategoryRow = {
   description: string | null;
 };
 
+function seedCategoryNames() {
+  return Array.from(new Set([...CATEGORIES, ...allShopCategoryNames()]));
+}
+
 export async function GET() {
   if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -42,18 +47,38 @@ export async function GET() {
     if (error) throw error;
 
     let rows = (data || []) as CategoryRow[];
+    const wanted = seedCategoryNames();
+    const have = new Set(rows.map((row) => row.name.toLowerCase()));
+    const missing = wanted.filter((name) => !have.has(name.toLowerCase()));
 
-    // Bootstrap empty table from the static seed so admin isn't blank on first load.
-    if (rows.length === 0) {
-      const seed = CATEGORIES.map((name) => ({
+    // Keep admin in sync with catalog cards even when the table already has older rows.
+    if (missing.length > 0) {
+      const seed = missing.map((name) => ({
         name,
         description: `Premium ${name} pieces`,
       }));
       const seeded = await supabase.from("categories").upsert(seed).select("*");
       if (!seeded.error && seeded.data) {
-        rows = seeded.data as CategoryRow[];
+        const seen = new Set(rows.map((row) => row.name.toLowerCase()));
+        for (const row of seeded.data as CategoryRow[]) {
+          if (!seen.has(row.name.toLowerCase())) {
+            rows.push(row);
+            seen.add(row.name.toLowerCase());
+          }
+        }
       } else {
-        rows = seed;
+        rows = [
+          ...rows,
+          ...seed.filter((row) => !have.has(row.name.toLowerCase())),
+        ];
+      }
+    }
+
+    const present = new Set(rows.map((row) => row.name.toLowerCase()));
+    for (const name of wanted) {
+      if (!present.has(name.toLowerCase())) {
+        rows.push({ name, description: `Premium ${name} pieces` });
+        present.add(name.toLowerCase());
       }
     }
 
@@ -68,7 +93,7 @@ export async function GET() {
   } catch (error) {
     console.error("Admin categories GET error:", error);
     return NextResponse.json({
-      categories: CATEGORIES.map((name) => ({
+      categories: seedCategoryNames().map((name) => ({
         name,
         description: `Premium ${name} pieces`,
         slug: categoryToSlug(name),

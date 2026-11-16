@@ -319,6 +319,9 @@ export async function getCatalogCategories(): Promise<{
     for (const product of products) {
       add(product.category);
     }
+    for (const name of CATEGORIES) {
+      add(name, `Premium ${name} pieces`);
+    }
 
     if (byName.size > 0) {
       return {
